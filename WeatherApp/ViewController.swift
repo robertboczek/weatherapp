@@ -15,11 +15,33 @@ import Alamofire
 
 import FBAudienceNetwork;
 
-class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDelegate {
+class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate {
 
+    @IBOutlet weak var searchButton: UIButton!
+    
+    @IBOutlet weak var searchCityLabel: UILabel!
+    @IBOutlet weak var searchCitiesTableView: UITableView!
+    
+    @IBOutlet weak var currentLocationButton: UIButton!
+    var selectedItem: JSON? = nil
+    
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var dayLabel: UILabel!
     @IBOutlet weak var tomorrowLabel: UILabel!
+    
+    @IBOutlet weak var time1: UILabel!
+    @IBOutlet weak var time2: UILabel!
+    @IBOutlet weak var time3: UILabel!
+    
+    @IBOutlet weak var conditionSmall1: UIImageView!
+    @IBOutlet weak var conditionSmall2: UIImageView!
+    @IBOutlet weak var conditionSmall3: UIImageView!
+    
+    
+    @IBOutlet weak var windLabel: UILabel!
+    @IBOutlet weak var humidityLabel: UILabel!
+    @IBOutlet weak var pressureLabel: UILabel!
+    
     
     @IBOutlet weak var conditionImageView: UIImageView!
     @IBOutlet weak var conditionLabel: UILabel!
@@ -32,6 +54,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     
     @IBOutlet weak var adView: UIView!
     @IBOutlet weak var nowLabel: UILabel!
+    
+    @IBOutlet weak var citySearchInputText: UITextField!
+    
+    var citiesDict = [[String]]()
+    var matchingCitiesDict = [[String]]()
+    var matchingCities: [String] = Array()
+    //var possibleMatches: [JSON] = []
     
     var apiUnit: String
     var apiEndpoint: String
@@ -48,14 +77,22 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     var activityIndicator: NVActivityIndicatorView!
     let locationManager = CLLocationManager()
     
-    var cachedForecastC : JSON? = nil
+    /*var cachedForecastC : JSON? = nil
     var lastForecastCallTimestampC = 0
     var cachedForecastF : JSON? = nil
     var lastForecastCallTimestampF = 0
     var cachedWeatherC : JSON? = nil
     var lastWeatherCallTimestampC = 0
     var cachedWeatherF : JSON? = nil
-    var lastWeatherCallTimestampF = 0
+    var lastWeatherCallTimestampF = 0*/
+    
+    var time1JSON: JSON?
+    var time2JSON: JSON?
+    var time3JSON: JSON?
+    
+    var timezone = 0
+    
+    var shouldCheckLocation = true
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?)   {
         print("init")
@@ -84,7 +121,27 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        updateFonts()
+        let fileContent = readDataFromFile(file: "worldcities")
+        //print(fileContent)
+        
+        //let content = "eddy,chung,loves,swift\nsecond,line,of, text" //string with CSV file content
+        let parsedCSV: [[String]] = fileContent!.components(separatedBy: "\n").map{ $0.components(separatedBy: ",") }
+
+        print(parsedCSV[5][1])
+        citiesDict = parsedCSV
+        
+        citySearchInputText.delegate = self
+        citySearchInputText.addTarget(self, action: #selector(searchRecords(_ :)), for: .editingChanged)
+        
+        searchCitiesTableView.delegate = self
+        searchCitiesTableView.dataSource = self
+        
+        citySearchInputText.isHidden = true
+        searchCityLabel.isHidden = true
+        currentLocationButton.isHidden = true
+        searchCitiesTableView.isHidden = true
+        
+        updateDayFonts()
         
         // set view controller delegate in app delegate
         //let appDelegate: AppDelegate = UIApplication.shared.delegate! as! AppDelegate
@@ -120,28 +177,151 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.tomorrowLabel.isUserInteractionEnabled = true
         self.tomorrowLabel.addGestureRecognizer(tomorrowLabelTap)
         
+        let searchButtonTap = UITapGestureRecognizer(target: self, action: #selector(self.searchButtonTapped(_:)))
+        self.searchButton.isUserInteractionEnabled = true
+        self.searchButton.addGestureRecognizer(searchButtonTap)
+        
+        let currentLocationButtonTap = UITapGestureRecognizer(target: self, action: #selector(self.currentLocationButtonTapped(_:)))
+        self.currentLocationButton.isUserInteractionEnabled = true
+        self.currentLocationButton.addGestureRecognizer(currentLocationButtonTap)
+        
+        // label taps
+        let time1LabelT = UITapGestureRecognizer(target: self, action: #selector(self.time1LabelTap(_:)))
+        let time1LabelT2 = UITapGestureRecognizer(target: self, action: #selector(self.time1LabelTap(_:)))
+        
+        self.time1.isUserInteractionEnabled = true
+        self.time1.addGestureRecognizer(time1LabelT)
+        self.conditionSmall1.isUserInteractionEnabled = true
+        self.conditionSmall1.addGestureRecognizer(time1LabelT2)
+        
+        let time2LabelT = UITapGestureRecognizer(target: self, action: #selector(self.time2LabelTap(_:)))
+        let time2LabelT2 = UITapGestureRecognizer(target: self, action: #selector(self.time2LabelTap(_:)))
+        
+        self.time2.isUserInteractionEnabled = true
+        self.time2.addGestureRecognizer(time2LabelT)
+        self.conditionSmall2.isUserInteractionEnabled = true
+        self.conditionSmall2.addGestureRecognizer(time2LabelT2)
+        
+        let time3LabelT = UITapGestureRecognizer(target: self, action: #selector(self.time3LabelTap(_:)))
+        let time3LabelT2 = UITapGestureRecognizer(target: self, action: #selector(self.time3LabelTap(_:)))
+        
+        self.time3.isUserInteractionEnabled = true
+        self.time3.addGestureRecognizer(time3LabelT)
+        self.conditionSmall3.isUserInteractionEnabled = true
+        self.conditionSmall3.addGestureRecognizer(time3LabelT2)
+        
         reloadView()
-    }
-    
-    func reloadView() {
-        print("Reload the view.")
-        updateItemsVisibility(isHidden: true)
-        self.activityIndicator.startAnimating()
-        if (CLLocationManager.locationServicesEnabled()) {
-            locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyBest
-            
-            locationManager.startUpdatingLocation()
-        }
+        
         // Make the native ad view container visible.
         self.adView.isHidden = true
         
         loadBannerAd()
     }
     
+    @objc func searchRecords(_ textField: UITextField) {
+        self.matchingCitiesDict.removeAll()
+        self.matchingCities.removeAll()
+        
+        if citySearchInputText.text?.count != 0 {
+            for city in citiesDict {
+                if let cityToSearch = textField.text {
+                    if (city.count > 1) {
+                      let location = city[1] + " - " + city[4]
+                      let range = location.lowercased().range(of: cityToSearch, options: .caseInsensitive, range: nil, locale: nil)
+                      if range != nil {
+                        self.matchingCities.append(location)
+                        self.matchingCitiesDict.append(city)
+                      }
+                    }
+                }
+            }
+        } else {
+            for city in citiesDict {
+                if (city.count > 1) {
+                  let location = city[1] + " - " + city[4]
+                  self.matchingCities.append(location)
+                  self.matchingCitiesDict.append(city)
+                }
+            }
+        }
+        
+        searchCitiesTableView.reloadData()
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return matchingCities.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        var cell = tableView.dequeueReusableCell(withIdentifier: "City")
+        if cell == nil {
+            cell = UITableViewCell(style: .default, reuseIdentifier: "City")
+        }
+        cell?.textLabel?.text = matchingCities[indexPath.row]
+        return cell!
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        print("Selected Row: \(indexPath.row)")
+        
+        citySearchInputText.isHidden = true
+        searchCitiesTableView.isHidden = true
+        searchCityLabel.isHidden = true
+        currentLocationButton.isHidden = true
+        updateItemsVisibility(isHidden: false)
+        clearCache()
+        
+        let selectedRow = matchingCitiesDict[indexPath.row]
+        
+        self.lat = Double.init(String(selectedRow[2]))!
+        self.lon = Double.init(String(selectedRow[3]))!
+        
+        shouldCheckLocation = false
+        locationLabel.text = selectedRow[1]
+        updateWeather(location: nil)
+        
+        citySearchInputText.endEditing(true)
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    func readDataFromFile(file: String)-> String! {
+        // File location
+        let fileURLProject = Bundle.main.path(forResource: file, ofType: "csv")
+        // Read from the file
+        var readStringProject = ""
+        do {
+            readStringProject = try String(contentsOfFile: fileURLProject!, encoding: String.Encoding.utf8)
+        } catch let error as NSError {
+             print("Failed reading from URL: \(file), Error: " + error.localizedDescription)
+        }
+        return readStringProject
+    }
+    
+    func reloadView() {
+        print("Reload the view.")
+        updateItemsVisibility(isHidden: true)
+        updateConditionComponents(isHidden: true)
+        self.dayLabel.isHidden = true
+        
+        self.activityIndicator.startAnimating()
+        if (!shouldCheckLocation) {
+          updateWeather(location: nil)
+        } else if (shouldCheckLocation && CLLocationManager.locationServicesEnabled()) {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            
+            locationManager.startUpdatingLocation()
+        }
+    }
+    
     func updateItemsVisibility(isHidden: Bool) {
         self.conditionImageView.isHidden = isHidden
-        self.dayLabel.isHidden = isHidden
         self.tomorrowLabel.isHidden = isHidden
         self.temperatureLabel.isHidden = isHidden
         self.locationLabel.isHidden = isHidden
@@ -149,23 +329,42 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.temperatureLabel.isHidden = isHidden
         self.metricLabel.isHidden = isHidden
         self.imperialLabel.isHidden = isHidden
-        self.nowLabel.isHidden = isHidden
+        self.searchButton.isHidden = isHidden
+        
+        self.windLabel.isHidden = isHidden
+        self.pressureLabel.isHidden = isHidden
+        self.humidityLabel.isHidden = isHidden
+        //updateConditionComponents(isHidden: isHidden)
+    }
+    
+    func updateConditionComponents(isHidden: Bool) {
+        self.time1.isHidden = isHidden
+        self.conditionSmall1.isHidden = isHidden
+        self.time2.isHidden = isHidden
+        self.conditionSmall2.isHidden = isHidden
+        self.time3.isHidden = isHidden
+        self.conditionSmall3.isHidden = isHidden
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let location = locations[0]
-        lat = location.coordinate.latitude
-        lon = location.coordinate.longitude
-        print("lat: \(lat)")
-        print("lat: \(lon)")
-        
-        let endpoint = self.apiEndpoint
+      let location = locations[0]
+      lat = location.coordinate.latitude
+      lon = location.coordinate.longitude
+      print("lat: \(lat)")
+      print("lat: \(lon)")
+      updateWeather(location: location)
+    }
+    
+    
+    func updateWeather(location: CLLocation?) {
+        let endpoint = "forecast" //always query forecast endpoint
         var jsonResponse: JSON
         
         let geocoder = CLGeocoder()
         
+        if (location != nil) {
         // Look up the location and pass it to the completion handler
-        geocoder.reverseGeocodeLocation(location,
+        geocoder.reverseGeocodeLocation(location!,
                     completionHandler: { (placemarks, error) in
             if error == nil {
                 self.locationLabel.text = placemarks?[0].locality
@@ -176,11 +375,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             }
             self.locationLabel.isHidden = false
         })
+        }
         
-        let todayDate = Date()
-        let nowTimestamp = Int(todayDate.timeIntervalSince1970)
+        //let todayDate = Date()
+        //let nowTimestamp = Int(todayDate.timeIntervalSince1970)
         
-        if ((self.apiUnit == "imperial" && self.apiEndpoint == "forecast" && cachedForecastF != nil && nowTimestamp - lastForecastCallTimestampF <  3600) ||
+        /*if (shouldCheckLocation && (self.apiUnit == "imperial" && self.apiEndpoint == "forecast" && cachedForecastF != nil && nowTimestamp - lastForecastCallTimestampF <  3600) ||
             (self.apiUnit == "metric" && self.apiEndpoint == "forecast" && cachedForecastC != nil && nowTimestamp - lastForecastCallTimestampC <  3600) ||
             (self.apiUnit == "imperial" && self.apiEndpoint == "weather" && cachedWeatherF != nil &&
             nowTimestamp - lastWeatherCallTimestampF < 3600) ||
@@ -193,16 +393,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             }
             print("Using cached value")
             
-            self.updateWeather(json: jsonResponse)
-            return
-        }
+            // disable cache for now!!
+            //self.updateWeather(json: jsonResponse)
+            //return
+        }*/
     Alamofire.request("http://api.openweathermap.org/data/2.5/\(endpoint)?lat=\(lat)&lon=\(lon)&appid=\(apiKey)&units=\(apiUnit)").responseJSON {
           response in
         if let responseStr = response.result.value {
             print("Calling weather service")
             let jsonResponse = JSON(responseStr)
+            self.timezone = jsonResponse["city"]["timezone"].int!
             // cache result to reduce number of service calls
-            if (self.apiEndpoint == "forecast") {
+            /*if (self.apiEndpoint == "forecast") {
                 if (self.apiUnit == "imperial") {
                     self.cachedForecastF = jsonResponse
                     self.lastForecastCallTimestampF = nowTimestamp
@@ -218,68 +420,102 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
                     self.cachedWeatherC = jsonResponse
                     self.lastWeatherCallTimestampC = nowTimestamp
                 }
-            }
+            }*/
+            
             self.updateWeather(json: jsonResponse)
         }
         }
     }
     
     func updateWeather(json: JSON) {
-        var jsonResponse = json
+        let jsonResponse = json
         let dateFormatter = DateFormatter()
-        let todayDate = Date()
-        let tomorrowDate = Calendar.current.date(byAdding: .day, value: 1, to: todayDate)!
+        var todayDate = Date()
+        
+        updateItemsVisibility(isHidden: false)
+        updateConditionComponents(isHidden: true)
+        
+        self.time1JSON = nil
+        self.time2JSON = nil
+        self.time3JSON = nil
+        
+        let timezoneOffset =  TimeZone.current.secondsFromGMT()
+        
+        print("UPDATE WEATHER!!")
         
         var dt : JSON!
-        if (self.apiEndpoint == "forecast") {
-            dateFormatter.dateFormat = "HH"
-            for weatherInstance in jsonResponse["list"].array! {
-                //print("Iterate jsonResponse")
-                dt = weatherInstance["dt"]
-                //print(weatherInstance)
-                jsonResponse = weatherInstance
-                let date = Date(timeIntervalSince1970: TimeInterval(dt.int32Value))
-                print(Int(dateFormatter.string(from: date))!)
-                if (!Calendar.current.isDate(todayDate, inSameDayAs: date) && Int(dateFormatter.string(from: date))! >= 12) {
-                        break
-                }
+        dateFormatter.dateFormat = "HH"
+        var i = 0
+        
+        var rowsForToday = 0
+        for weatherInstance in jsonResponse["list"].array! {
+          //print("Iterate jsonResponse")
+          dt = weatherInstance["dt"]
+          /*let t1 = dt.int32Value + Int32(self.timezone) - Int32(timezoneOffset)
+          let date = Date(timeIntervalSince1970: TimeInterval(t1))
+          let currentDate = Date(timeIntervalSince1970: TimeInterval(todayDate.timeIntervalSince1970 - Double(timezoneOffset)))
+          if (Calendar.current.isDate(currentDate, inSameDayAs: date)) {
+            rowsForToday += 1
+          }*/
+          let t1 = dt.int32Value + Int32(self.timezone) - Int32(timezoneOffset)
+          var date = NSDate(timeIntervalSince1970: TimeInterval(t1))
+          let dayTimePeriodFormatter = DateFormatter()
+          dayTimePeriodFormatter.dateFormat = "dd"
+            if (dayTimePeriodFormatter.string(from: date as Date) == dayTimePeriodFormatter.string(from: todayDate)) {
+                rowsForToday += 1
             }
-        } else {
-            dt = jsonResponse["dt"]
         }
+        //print("Rows For Today")
+        //print(rowsForToday)
+        
+        /*let t1 = todayDate.timeIntervalSince1970 + Double(self.timezone) - Double(timezoneOffset)
+        todayDate = Date(timeIntervalSince1970: t1)*/
+        
+        var lastIndex = 0
+        var selectedFound = false
+        for weatherInstance in jsonResponse["list"].array! {
+            //print("Iterate jsonResponse")
+            dt = weatherInstance["dt"]
+            //print(weatherInstance)
             
-        let jsonWeather = jsonResponse["weather"].array![0]
-        let jsonTemp = jsonResponse["main"]
-        let iconName = jsonWeather["icon"].stringValue
+            let t1 = dt.int32Value + Int32(self.timezone) - Int32(timezoneOffset)
+            let date = Date(timeIntervalSince1970: TimeInterval(t1))
             
-        //print(iconName)
+            let dayTimePeriodFormatter = DateFormatter()
+            dayTimePeriodFormatter.dateFormat = "dd"
             
-        self.conditionImageView.image = UIImage(named: iconName)
-        self.conditionLabel.text = jsonWeather["main"].stringValue + " (" + jsonWeather["description"].stringValue + ")"
-            
-        print(jsonResponse["name"].stringValue);
-            
-        self.temperatureLabel.text = "\(Int(round(jsonTemp["temp"].doubleValue)))"
-        //self.temperatureLabel.text = "18"
-        //self.conditionLabel.text = "Snow"
-            
-        dateFormatter.dateFormat = "EEEE"
-            
-        self.dayLabel.text = dateFormatter.string(from: todayDate)
-        self.tomorrowLabel.text = dateFormatter.string(from: tomorrowDate)
-        let suffix = iconName.suffix(1)
-        if (suffix == "n") {
-            setGrayGraidentBackground()
-        } else {
-            setBlueGradientBackground()
+            //print(Int(dateFormatter.string(from: date))!)
+            if (self.apiEndpoint == "forecast" && /*!Calendar.current.isDate(todayDate, inSameDayAs: date)*/ dayTimePeriodFormatter.string(from: date as Date) != dayTimePeriodFormatter.string(from: todayDate)) {
+                if (i % 2 == 0) {
+                  fillCondition(index: (i + 1)/2, conditionJSON: weatherInstance, selected: Int(dateFormatter.string(from: date))! >= 10 && !selectedFound)
+                  if (Int(dateFormatter.string(from: date))! >= 10) {
+                    selectedFound = true
+                  }
+                }
+                i = i + 1
+            } else if (self.apiEndpoint == "weather" && /*Calendar.current.isDate(todayDate, inSameDayAs: date)*/ dayTimePeriodFormatter.string(from: date as Date) == dayTimePeriodFormatter.string(from: todayDate) && rowsForToday > 1) {
+                //print(i)
+                if (rowsForToday > 4) {
+                    if (i % 2 == 0) {
+                      fillCondition(index: (i / 2) + 1, conditionJSON: weatherInstance, selected: ((i / 2) + 1 == 2))
+                    }
+                } else {
+                    fillCondition(index: i + 1, conditionJSON: weatherInstance, selected: (i == 1))
+                }
+                i = i + 1
+            } else if (self.apiEndpoint == "weather" && rowsForToday <= 1) {
+                tomorrowLabelTapped(UITapGestureRecognizer.init())
+                break
+            }
         }
+        
+        dayLabel.isHidden = (rowsForToday <= 1)
             
         // update time
-        dateFormatter.dateFormat = "HH:mm"
-        let returnedDate = Date(timeIntervalSince1970: TimeInterval(dt.int32Value))
-        self.nowLabel.text = dateFormatter.string(from: returnedDate)
-            
-        self.updateItemsVisibility(isHidden: false)
+        //dateFormatter.dateFormat = "HH:mm"
+        //let returnedDate = Date(timeIntervalSince1970: TimeInterval(dt.int32Value))
+        //self.nowLabel.text = dateFormatter.string(from: returnedDate)
+
         locationManager.stopUpdatingLocation()
         self.activityIndicator.stopAnimating()
     }
@@ -333,16 +569,28 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     
     @objc func applicationDidBecomeActive(notification: NSNotification) {
         print("Active")
+        
+        // default to old view
+        citySearchInputText.isHidden = true
+        searchCityLabel.isHidden = true
+        currentLocationButton.isHidden = true
+        
         self.reloadView()
     }
     
-    func updateFonts() {
+    func updateDayFonts() {
       self.imperialLabel.font = (self.apiUnit == "metric") ? self.notSelectedItemFont : self.selectedItemFont
       self.metricLabel.font = (self.apiUnit == "metric") ? self.selectedItemFont : self.notSelectedItemFont
       
 
       self.dayLabel.font = (self.apiEndpoint == "forecast") ? self.notSelectedItemFont : self.selectedItemFont
       self.tomorrowLabel.font = (self.apiEndpoint == "forecast") ? self.selectedItemFont : self.notSelectedItemFont
+    }
+    
+    func updateHourFonts(index: Int) {
+        self.time1.font = (index == 1) ? self.selectedItemFont : self.notSelectedItemFont
+        self.time2.font = (index == 2) ? self.selectedItemFont : self.notSelectedItemFont
+        self.time3.font = (index == 3) ? self.selectedItemFont : self.notSelectedItemFont
     }
     
     @objc func metricLabelTapped(_ sender: UITapGestureRecognizer) {
@@ -352,7 +600,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         }
         print("metricLabelTapped")
         self.apiUnit = "metric"
-        updateFonts()
+        updateDayFonts()
         
         updateUserDefaults()
         
@@ -366,11 +614,50 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         }
         print("imperialLabelTapped")
         self.apiUnit = "imperial"
-        updateFonts()
+        updateDayFonts()
         
         updateUserDefaults()
         
         reloadView()
+    }
+    
+    @objc func time1LabelTap(_ sender: UITapGestureRecognizer) {
+        print("time1 tap")
+        if (self.time1JSON != nil) {
+          fillCondition(index: 1, conditionJSON: self.time1JSON!, selected: true)
+        }
+        if (self.time2JSON != nil) {
+          fillCondition(index: 2, conditionJSON: self.time2JSON!, selected: false)
+        }
+        if (self.time3JSON != nil) {
+          fillCondition(index: 3, conditionJSON: self.time3JSON!, selected: false)
+        }
+    }
+    
+    @objc func time2LabelTap(_ sender: UITapGestureRecognizer) {
+        print("time2 tap")
+        if (self.time1JSON != nil) {
+          fillCondition(index: 1, conditionJSON: self.time1JSON!, selected: false)
+        }
+        if (self.time2JSON != nil) {
+          fillCondition(index: 2, conditionJSON: self.time2JSON!, selected: true)
+        }
+        if (self.time3JSON != nil) {
+          fillCondition(index: 3, conditionJSON: self.time3JSON!, selected: false)
+        }
+    }
+    
+    @objc func time3LabelTap(_ sender: UITapGestureRecognizer) {
+        print("time3 tap")
+        if (self.time1JSON != nil) {
+          fillCondition(index: 1, conditionJSON: self.time1JSON!, selected: false)
+        }
+        if (self.time2JSON != nil) {
+          fillCondition(index: 2, conditionJSON: self.time2JSON!, selected: false)
+        }
+        if (self.time3JSON != nil) {
+          fillCondition(index: 3, conditionJSON: self.time3JSON!, selected: true)
+        }
     }
     
     @objc func todayLabelTapped(_ sender: UITapGestureRecognizer) {
@@ -380,7 +667,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         }
         print("todayLabelTapped")
         self.apiEndpoint = "weather"
-        updateFonts()
+        updateDayFonts()
         
         updateUserDefaults()
         
@@ -394,11 +681,156 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         }
         print("tomorrowLabelTapped")
         self.apiEndpoint = "forecast"
-        updateFonts()
+        updateDayFonts()
         
         updateUserDefaults()
         
         reloadView()
+    }
+    
+    @objc func searchButtonTapped(_ sender: UITapGestureRecognizer) {
+        updateItemsVisibility(isHidden: true)
+        updateConditionComponents(isHidden: true)
+        self.dayLabel.isHidden = true
+        selectedItem = nil
+        currentLocationButton.isHidden = false
+        citySearchInputText.isHidden = false
+        searchCityLabel.isHidden = false
+        searchCitiesTableView.isHidden = false
+        
+        citySearchInputText.text = ""
+        searchRecords(citySearchInputText)
+    }
+    
+    @objc func currentLocationButtonTapped(_ sender: UITapGestureRecognizer) {
+        selectedItem = nil
+        
+        citySearchInputText.isHidden = true
+        searchCityLabel.isHidden = true
+        searchCitiesTableView.isHidden = true
+        currentLocationButton.isHidden = true
+        citySearchInputText.endEditing(true)
+        updateItemsVisibility(isHidden: false)
+        citySearchInputText.endEditing(true)
+        clearCache()
+        
+        shouldCheckLocation = true
+        reloadView()
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        return true
+    }
+    
+    func clearCache() {
+        /*cachedForecastC = nil
+        cachedForecastF = nil
+        cachedWeatherC = nil
+        cachedWeatherF = nil*/
+    }
+    
+    func fillCondition(index: Int, conditionJSON: JSON, selected: Bool) {
+        var imgView: UIImageView!
+        var label: UILabel!
+        if (index == 1) {
+            self.time1JSON = conditionJSON
+            imgView = self.conditionSmall1
+            label = self.time1
+        } else if (index == 2) {
+            self.time2JSON = conditionJSON
+            imgView = self.conditionSmall2
+            label = self.time2
+        } else if (index == 3) {
+            self.time3JSON = conditionJSON
+            imgView = self.conditionSmall3
+            label = self.time3
+        } else {
+            return
+        }
+        
+        imgView.isHidden = false
+        label.isHidden = false
+        
+        let dateFormatter = DateFormatter()
+        let todayDate = Date()
+        let tomorrowDate = Calendar.current.date(byAdding: .day, value: 1, to: todayDate)!
+        
+        dateFormatter.dateFormat = "HH"
+        //print(conditionJSON)
+        
+        let jsonWeather = conditionJSON["weather"].array![0]
+        let jsonTemp = conditionJSON["main"]
+        var iconName = jsonWeather["icon"].stringValue
+            
+        //print(conditionJSON["name"].stringValue);
+        let tmp = "\(Int(round(jsonTemp["temp"].doubleValue)))"
+        print("Temperature: ")
+        print(tmp)
+            
+        if (selected) {
+            self.temperatureLabel.text = tmp
+            self.windLabel.text = "Wind: " + String(format: "%.2f", conditionJSON["wind"]["speed"].doubleValue) + ((self.apiUnit == "imperial") ? " mph" : " m/s")
+            self.humidityLabel.text = "Humidity: " + jsonTemp["humidity"].stringValue  + "%"
+            self.pressureLabel.text = "Pressure: " + jsonTemp["pressure"].stringValue + " hPa"
+        }
+
+        dateFormatter.dateFormat = "EEEE"
+        self.dayLabel.text = dateFormatter.string(from: todayDate)
+        
+        let timezoneOffset =  TimeZone.current.secondsFromGMT()
+        print("timezoneOffset")
+        print(timezoneOffset)
+        
+        var time_dt = conditionJSON["dt"].int!
+        print("DT Time")
+        print(self.timezone)
+        print(time_dt)
+        time_dt += self.timezone - timezoneOffset
+        
+        //self.time1.text = String(self.time1.text!.prefix(5))
+        let date = NSDate(timeIntervalSince1970: TimeInterval(time_dt))
+        let dayTimePeriodFormatter = DateFormatter()
+        dayTimePeriodFormatter.dateFormat = "hh a"
+        
+        let dateString = dayTimePeriodFormatter.string(from: date as Date)
+        label.text = dateString
+        
+        dayTimePeriodFormatter.dateFormat = "hh"
+        let timeString = dayTimePeriodFormatter.string(from: date as Date)
+        let timeInt = Int(timeString)!
+        
+        dayTimePeriodFormatter.dateFormat = "a"
+        let timeOfTheDayString = dayTimePeriodFormatter.string(from: date as Date)
+        
+        self.tomorrowLabel.text = dateFormatter.string(from: tomorrowDate)
+
+        //let suffix = iconName.suffix(1)
+        // show night or day background depending on the local time in the place
+        var dayOrNight = ""
+        if ((timeOfTheDayString == "AM" && timeInt <= 5) || (timeOfTheDayString == "PM" && timeInt >= 9 && timeInt < 12)) {
+            dayOrNight = "n"
+            if (selected) {
+              setGrayGraidentBackground()
+            }
+        } else {
+            dayOrNight = "d"
+            if (selected) {
+              setBlueGradientBackground()
+            }
+        }
+        
+        iconName = iconName.prefix(2) + dayOrNight
+        print("Selected: ")
+        print(selected)
+        if (selected) {
+          self.conditionImageView.image = UIImage(named: iconName)
+          self.conditionLabel.text = jsonWeather["description"].stringValue
+          updateHourFonts(index: index)
+        }
+        iconName = "s_" + iconName
+        print("Icon Name: " + iconName)
+        imgView.image = UIImage(named: iconName)
     }
 }
 
