@@ -90,6 +90,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     var time2JSON: JSON?
     var time3JSON: JSON?
     
+    
+    @IBOutlet weak var additionalInfoLabel1: UILabel!
+    @IBOutlet weak var additionalInfoLabel2: UILabel!
+    
     var timezone = 0
     
     var shouldCheckLocation = true
@@ -334,6 +338,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.windLabel.isHidden = isHidden
         self.pressureLabel.isHidden = isHidden
         self.humidityLabel.isHidden = isHidden
+        self.additionalInfoLabel1.isHidden = isHidden
+        self.additionalInfoLabel2.isHidden = isHidden
         //updateConditionComponents(isHidden: isHidden)
     }
     
@@ -431,15 +437,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         let jsonResponse = json
         let dateFormatter = DateFormatter()
         var todayDate = Date()
-        
+        let timezoneOffset =  TimeZone.current.secondsFromGMT()
+        let currentTime = Int(todayDate.timeIntervalSince1970)
         updateItemsVisibility(isHidden: false)
         updateConditionComponents(isHidden: true)
         
         self.time1JSON = nil
         self.time2JSON = nil
         self.time3JSON = nil
-        
-        let timezoneOffset =  TimeZone.current.secondsFromGMT()
         
         print("UPDATE WEATHER!!")
         
@@ -448,6 +453,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         var i = 0
         
         var rowsForToday = 0
+        print("today date")
+        print(todayDate.timeIntervalSince1970)
+        todayDate = Date(timeIntervalSince1970: TimeInterval(currentTime))
         for weatherInstance in jsonResponse["list"].array! {
           //print("Iterate jsonResponse")
           dt = weatherInstance["dt"]
@@ -457,53 +465,62 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
           if (Calendar.current.isDate(currentDate, inSameDayAs: date)) {
             rowsForToday += 1
           }*/
-          let t1 = dt.int32Value + Int32(self.timezone) - Int32(timezoneOffset)
+          
+          let t1 = dt.intValue + Int(self.timezone) - Int(timezoneOffset)
+          print("timezoneOffset")
+          print(timezoneOffset)
           var date = NSDate(timeIntervalSince1970: TimeInterval(t1))
           let dayTimePeriodFormatter = DateFormatter()
           dayTimePeriodFormatter.dateFormat = "dd"
-            if (dayTimePeriodFormatter.string(from: date as Date) == dayTimePeriodFormatter.string(from: todayDate)) {
+            if (dayTimePeriodFormatter.string(from: date as Date) == dayTimePeriodFormatter.string(from: todayDate as Date)) {
+                print("t1")
+                print(t1)
+                print(dayTimePeriodFormatter.string(from: date as Date) + " " + dayTimePeriodFormatter.string(from: todayDate as Date))
                 rowsForToday += 1
             }
         }
-        //print("Rows For Today")
-        //print(rowsForToday)
+        
+        print("Rows For Today")
+        print(rowsForToday)
         
         /*let t1 = todayDate.timeIntervalSince1970 + Double(self.timezone) - Double(timezoneOffset)
         todayDate = Date(timeIntervalSince1970: t1)*/
-        
-        var lastIndex = 0
+
         var selectedFound = false
         for weatherInstance in jsonResponse["list"].array! {
             //print("Iterate jsonResponse")
             dt = weatherInstance["dt"]
             //print(weatherInstance)
             
-            let t1 = dt.int32Value + Int32(self.timezone) - Int32(timezoneOffset)
+            let t1 = dt.int32Value + Int32(self.timezone)
             let date = Date(timeIntervalSince1970: TimeInterval(t1))
             
             let dayTimePeriodFormatter = DateFormatter()
             dayTimePeriodFormatter.dateFormat = "dd"
             
             //print(Int(dateFormatter.string(from: date))!)
-            if (self.apiEndpoint == "forecast" && /*!Calendar.current.isDate(todayDate, inSameDayAs: date)*/ dayTimePeriodFormatter.string(from: date as Date) != dayTimePeriodFormatter.string(from: todayDate)) {
-                if (i % 2 == 0) {
-                  fillCondition(index: (i + 1)/2, conditionJSON: weatherInstance, selected: Int(dateFormatter.string(from: date))! >= 10 && !selectedFound)
+            if (self.apiEndpoint == "forecast" && /*!Calendar.current.isDate(todayDate, inSameDayAs: date)*/ Int(dayTimePeriodFormatter.string(from: date as Date))! > Int(dayTimePeriodFormatter.string(from: todayDate))!) {
+                if (i % 2 == 1 && (i / 2) + 1 <= 3) {
+                  fillCondition(index: (i / 2) + 1, conditionJSON: weatherInstance, selected: Int(dateFormatter.string(from: date))! >= 10 && !selectedFound)
                   if (Int(dateFormatter.string(from: date))! >= 10) {
                     selectedFound = true
                   }
                 }
                 i = i + 1
-            } else if (self.apiEndpoint == "weather" && /*Calendar.current.isDate(todayDate, inSameDayAs: date)*/ dayTimePeriodFormatter.string(from: date as Date) == dayTimePeriodFormatter.string(from: todayDate) && rowsForToday > 1) {
+            } else if (self.apiEndpoint == "weather" && /*Calendar.current.isDate(todayDate, inSameDayAs: date)*/ Int(dayTimePeriodFormatter.string(from: date as Date)) == Int(dayTimePeriodFormatter.string(from: todayDate))! &&
+                rowsForToday > 1
+            ) {
                 //print(i)
                 if (rowsForToday > 4) {
                     if (i % 2 == 0) {
                       fillCondition(index: (i / 2) + 1, conditionJSON: weatherInstance, selected: ((i / 2) + 1 == 2))
                     }
-                } else {
+                } else if (i < rowsForToday) {
                     fillCondition(index: i + 1, conditionJSON: weatherInstance, selected: (i == 1))
                 }
                 i = i + 1
             } else if (self.apiEndpoint == "weather" && rowsForToday <= 1) {
+                dayLabel.isHidden = (rowsForToday <= 1)
                 tomorrowLabelTapped(UITapGestureRecognizer.init())
                 break
             }
@@ -622,7 +639,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     @objc func time1LabelTap(_ sender: UITapGestureRecognizer) {
-        print("time1 tap")
+        //print("time1 tap")
         if (self.time1JSON != nil) {
           fillCondition(index: 1, conditionJSON: self.time1JSON!, selected: true)
         }
@@ -635,7 +652,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     @objc func time2LabelTap(_ sender: UITapGestureRecognizer) {
-        print("time2 tap")
+        //print("time2 tap")
         if (self.time1JSON != nil) {
           fillCondition(index: 1, conditionJSON: self.time1JSON!, selected: false)
         }
@@ -648,7 +665,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     @objc func time3LabelTap(_ sender: UITapGestureRecognizer) {
-        print("time3 tap")
+        //print("time3 tap")
         if (self.time1JSON != nil) {
           fillCondition(index: 1, conditionJSON: self.time1JSON!, selected: false)
         }
@@ -665,7 +682,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             // ignore until previous action is not completed
             return
         }
-        print("todayLabelTapped")
+        //print("todayLabelTapped")
         self.apiEndpoint = "weather"
         updateDayFonts()
         
@@ -679,7 +696,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             // ignore until previous action is not completed
             return
         }
-        print("tomorrowLabelTapped")
+        //print("tomorrowLabelTapped")
         self.apiEndpoint = "forecast"
         updateDayFonts()
         
@@ -765,27 +782,44 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             
         //print(conditionJSON["name"].stringValue);
         let tmp = "\(Int(round(jsonTemp["temp"].doubleValue)))"
-        print("Temperature: ")
-        print(tmp)
+        //print("Temperature: ")
+        //print(tmp)
             
         if (selected) {
+            self.additionalInfoLabel1.text = ""
+            self.additionalInfoLabel2.text = ""
             self.temperatureLabel.text = tmp
             self.windLabel.text = "Wind: " + String(format: "%.2f", conditionJSON["wind"]["speed"].doubleValue) + ((self.apiUnit == "imperial") ? " mph" : " m/s")
             self.humidityLabel.text = "Humidity: " + jsonTemp["humidity"].stringValue  + "%"
             self.pressureLabel.text = "Pressure: " + jsonTemp["pressure"].stringValue + " hPa"
+            let clouds = conditionJSON["clouds"]["all"].intValue
+            let rain = conditionJSON["rain"]["3h"].doubleValue
+            //print("Clouds")
+            //print(clouds)
+            //print(rain)
+            if (clouds > 0) {
+                self.additionalInfoLabel1.text = "Clouds: " + String(clouds) + "%"
+                if (rain > 0.0) {
+                    self.additionalInfoLabel2.text = "Rain (3h): " + String(rain) + " mm"
+                }
+            } else {
+                if (rain > 0) {
+                    self.additionalInfoLabel1.text = "Rain (3h): " + String(rain) + " mm"
+                }
+            }
         }
 
         dateFormatter.dateFormat = "EEEE"
         self.dayLabel.text = dateFormatter.string(from: todayDate)
         
         let timezoneOffset =  TimeZone.current.secondsFromGMT()
-        print("timezoneOffset")
-        print(timezoneOffset)
+        //print("timezoneOffset")
+        //print(timezoneOffset)
         
         var time_dt = conditionJSON["dt"].int!
-        print("DT Time")
-        print(self.timezone)
-        print(time_dt)
+        //print("DT Time")
+        //print(self.timezone)
+        //print(time_dt)
         time_dt += self.timezone - timezoneOffset
         
         //self.time1.text = String(self.time1.text!.prefix(5))
@@ -821,15 +855,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         }
         
         iconName = iconName.prefix(2) + dayOrNight
-        print("Selected: ")
-        print(selected)
+        //print("Selected: ")
+        //print(selected)
         if (selected) {
           self.conditionImageView.image = UIImage(named: iconName)
           self.conditionLabel.text = jsonWeather["description"].stringValue
           updateHourFonts(index: index)
         }
         iconName = "s_" + iconName
-        print("Icon Name: " + iconName)
+        //print("Icon Name: " + iconName)
         imgView.image = UIImage(named: iconName)
     }
 }
