@@ -67,6 +67,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     var bannerAdView: FBAdView!
     
     let gradientLayer = CAGradientLayer()
+    let selectedGradientLayer = CAGradientLayer()
     
     let selectedItemFont = UIFont(name: "Arial Rounded MT Bold", size: 28)
     let notSelectedItemFont = UIFont(name: "Avenir", size: 20)
@@ -435,6 +436,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     
     func updateWeather(json: JSON) {
         let jsonResponse = json
+        //print(json)
         let dateFormatter = DateFormatter()
         var todayDate = Date()
         let timezoneOffset =  TimeZone.current.secondsFromGMT()
@@ -453,8 +455,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         var i = 0
         
         var rowsForToday = 0
-        print("today date")
-        print(todayDate.timeIntervalSince1970)
+        //print("today date")
+        //print(todayDate.timeIntervalSince1970)
         todayDate = Date(timeIntervalSince1970: TimeInterval(currentTime))
         for weatherInstance in jsonResponse["list"].array! {
           //print("Iterate jsonResponse")
@@ -467,26 +469,39 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
           }*/
           
           let t1 = dt.intValue + Int(self.timezone) - Int(timezoneOffset)
-          print("timezoneOffset")
-          print(timezoneOffset)
+          //print("timezoneOffset")
+          //print(timezoneOffset)
           var date = NSDate(timeIntervalSince1970: TimeInterval(t1))
           let dayTimePeriodFormatter = DateFormatter()
           dayTimePeriodFormatter.dateFormat = "dd"
             if (dayTimePeriodFormatter.string(from: date as Date) == dayTimePeriodFormatter.string(from: todayDate as Date)) {
-                print("t1")
-                print(t1)
-                print(dayTimePeriodFormatter.string(from: date as Date) + " " + dayTimePeriodFormatter.string(from: todayDate as Date))
+                //print("t1")
+                //print(t1)
+                //print(dayTimePeriodFormatter.string(from: date as Date) + " " + dayTimePeriodFormatter.string(from: todayDate as Date))
                 rowsForToday += 1
             }
         }
         
-        print("Rows For Today")
-        print(rowsForToday)
+        //print("Rows For Today")
+        //print(rowsForToday)
         
         /*let t1 = todayDate.timeIntervalSince1970 + Double(self.timezone) - Double(timezoneOffset)
         todayDate = Date(timeIntervalSince1970: t1)*/
 
         var selectedFound = false
+        
+        self.time1.layer.cornerRadius = 0
+        self.time1.backgroundColor = nil
+        self.time1.clipsToBounds = false
+        
+        self.time2.layer.cornerRadius = 0
+        self.time2.backgroundColor = nil
+        self.time2.clipsToBounds = false
+        
+        self.time3.layer.cornerRadius = 0
+        self.time3.backgroundColor = nil
+        self.time3.clipsToBounds = false
+        
         for weatherInstance in jsonResponse["list"].array! {
             //print("Iterate jsonResponse")
             dt = weatherInstance["dt"]
@@ -548,6 +563,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         gradientLayer.colors = [topColor, bottomColor]
     }
     
+    func setSelectedBackground(imageView: UIImageView) {
+        let topColor = UIColor.init(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 0.15)
+        imageView.layer.cornerRadius = 30
+        imageView.clipsToBounds = true
+        imageView.backgroundColor = topColor
+    }
+    
     func setGrayGraidentBackground() {
         let topColor = UIColor.init(red: 151.0/255.0, green: 151.0/255.0, blue: 151.0/255.0, alpha: 1.0).cgColor
         let bottomColor = UIColor.init(red: 72.0/255.0, green: 72.0/255.0, blue: 72.0/255.0, alpha: 1.0).cgColor
@@ -578,14 +600,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     func updateUserDefaults() {
-        print("Update defaults")
-        print("Updating default temperature unit: \(self.apiUnit)")
+        //print("Update defaults")
+        //print("Updating default temperature unit: \(self.apiUnit)")
         UserDefaults.standard.set(self.apiUnit, forKey: "temperatureUnit")
         UserDefaults.standard.set(self.apiEndpoint, forKey: "endpoint")
     }
     
     @objc func applicationDidBecomeActive(notification: NSNotification) {
-        print("Active")
+        //print("Active")
         
         // default to old view
         citySearchInputText.isHidden = true
@@ -596,12 +618,48 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     func updateDayFonts() {
+      let topColor = UIColor.init(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 0.15)
       self.imperialLabel.font = (self.apiUnit == "metric") ? self.notSelectedItemFont : self.selectedItemFont
+        if (self.apiUnit == "metric") {
+            self.imperialLabel.layer.cornerRadius = 0
+            self.imperialLabel.backgroundColor = nil
+            self.imperialLabel.clipsToBounds = false
+            
+            self.metricLabel.layer.cornerRadius = 10
+            self.metricLabel.backgroundColor = topColor
+            self.metricLabel.clipsToBounds = true
+        } else {
+            self.imperialLabel.layer.cornerRadius = 10
+            self.imperialLabel.backgroundColor = topColor
+            self.imperialLabel.clipsToBounds = true
+            
+            self.metricLabel.layer.cornerRadius = 0
+            self.metricLabel.backgroundColor = nil
+            self.metricLabel.clipsToBounds = false
+        }
       self.metricLabel.font = (self.apiUnit == "metric") ? self.selectedItemFont : self.notSelectedItemFont
       
 
       self.dayLabel.font = (self.apiEndpoint == "forecast") ? self.notSelectedItemFont : self.selectedItemFont
       self.tomorrowLabel.font = (self.apiEndpoint == "forecast") ? self.selectedItemFont : self.notSelectedItemFont
+        
+      if (self.apiEndpoint == "forecast") {
+          self.dayLabel.backgroundColor = nil
+          self.dayLabel.layer.cornerRadius = 0
+          self.dayLabel.clipsToBounds = false
+          
+          self.tomorrowLabel.layer.cornerRadius = 10
+          self.tomorrowLabel.backgroundColor = topColor
+          self.tomorrowLabel.clipsToBounds = true
+      } else {
+          self.dayLabel.layer.cornerRadius = 10
+          self.dayLabel.backgroundColor = topColor
+          self.dayLabel.clipsToBounds = true
+          
+          self.tomorrowLabel.backgroundColor = nil
+          self.tomorrowLabel.layer.cornerRadius = 0
+          self.tomorrowLabel.clipsToBounds = false
+      }
     }
     
     func updateHourFonts(index: Int) {
@@ -615,7 +673,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             // ignore until previous action is not completed
             return
         }
-        print("metricLabelTapped")
+        //print("metricLabelTapped")
         self.apiUnit = "metric"
         updateDayFonts()
         
@@ -629,7 +687,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             // ignore until previous action is not completed
             return
         }
-        print("imperialLabelTapped")
+        //print("imperialLabelTapped")
         self.apiUnit = "imperial"
         updateDayFonts()
         
@@ -639,6 +697,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     @objc func time1LabelTap(_ sender: UITapGestureRecognizer) {
+        self.time1.layer.cornerRadius = 0
+        self.time1.backgroundColor = nil
+        self.time1.clipsToBounds = false
+        
+        self.time2.layer.cornerRadius = 0
+        self.time2.backgroundColor = nil
+        self.time2.clipsToBounds = false
+        
+        self.time3.layer.cornerRadius = 0
+        self.time3.backgroundColor = nil
+        self.time3.clipsToBounds = false
+        
         //print("time1 tap")
         if (self.time1JSON != nil) {
           fillCondition(index: 1, conditionJSON: self.time1JSON!, selected: true)
@@ -652,6 +722,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     @objc func time2LabelTap(_ sender: UITapGestureRecognizer) {
+        self.time1.layer.cornerRadius = 0
+        self.time1.backgroundColor = nil
+        self.time1.clipsToBounds = false
+        
+        self.time2.layer.cornerRadius = 0
+        self.time2.backgroundColor = nil
+        self.time2.clipsToBounds = false
+        
+        self.time3.layer.cornerRadius = 0
+        self.time3.backgroundColor = nil
+        self.time3.clipsToBounds = false
+        
         //print("time2 tap")
         if (self.time1JSON != nil) {
           fillCondition(index: 1, conditionJSON: self.time1JSON!, selected: false)
@@ -665,6 +747,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     @objc func time3LabelTap(_ sender: UITapGestureRecognizer) {
+        self.time1.layer.cornerRadius = 0
+        self.time1.backgroundColor = nil
+        self.time1.clipsToBounds = false
+        
+        self.time2.layer.cornerRadius = 0
+        self.time2.backgroundColor = nil
+        self.time2.clipsToBounds = false
+        
+        self.time3.layer.cornerRadius = 0
+        self.time3.backgroundColor = nil
+        self.time3.clipsToBounds = false
         //print("time3 tap")
         if (self.time1JSON != nil) {
           fillCondition(index: 1, conditionJSON: self.time1JSON!, selected: false)
@@ -750,6 +843,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     func fillCondition(index: Int, conditionJSON: JSON, selected: Bool) {
         var imgView: UIImageView!
         var label: UILabel!
+        
         if (index == 1) {
             self.time1JSON = conditionJSON
             imgView = self.conditionSmall1
@@ -794,6 +888,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             self.pressureLabel.text = "Pressure: " + jsonTemp["pressure"].stringValue + " hPa"
             let clouds = conditionJSON["clouds"]["all"].intValue
             let rain = conditionJSON["rain"]["3h"].doubleValue
+            let snow = conditionJSON["snow"]["3h"].doubleValue
             //print("Clouds")
             //print(clouds)
             //print(rain)
@@ -801,12 +896,24 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
                 self.additionalInfoLabel1.text = "Clouds: " + String(clouds) + "%"
                 if (rain > 0.0) {
                     self.additionalInfoLabel2.text = "Rain (3h): " + String(rain) + " mm"
+                } else if (snow > 0.0) {
+                    self.additionalInfoLabel2.text = "Snow (3h): " + String(snow) + " mm"
                 }
             } else {
                 if (rain > 0) {
                     self.additionalInfoLabel1.text = "Rain (3h): " + String(rain) + " mm"
+                } else if (snow > 0.0) {
+                    self.additionalInfoLabel1.text = "Snow (3h): " + String(snow) + " mm"
                 }
             }
+            setSelectedBackground(imageView: imgView)
+            
+            let topColor = UIColor.init(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 0.15)
+            label.layer.cornerRadius = 10
+            label.backgroundColor = topColor
+            label.clipsToBounds = true
+        } else {
+            imgView.backgroundColor = nil
         }
 
         dateFormatter.dateFormat = "EEEE"
