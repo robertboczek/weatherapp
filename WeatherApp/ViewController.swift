@@ -18,6 +18,7 @@ import FBAudienceNetwork;
 class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet weak var searchButton: UIButton!
+    @IBOutlet weak var searchButtonText: UIButton!
     
     @IBOutlet weak var searchCityLabel: UILabel!
     @IBOutlet weak var searchCitiesTableView: UITableView!
@@ -37,6 +38,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     @IBOutlet weak var conditionSmall2: UIImageView!
     @IBOutlet weak var conditionSmall3: UIImageView!
     
+    
+    @IBOutlet weak var sunriseLabel: UILabel!
+    @IBOutlet weak var sunsetLabel: UILabel!
     
     @IBOutlet weak var windLabel: UILabel!
     @IBOutlet weak var humidityLabel: UILabel!
@@ -185,6 +189,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         let searchButtonTap = UITapGestureRecognizer(target: self, action: #selector(self.searchButtonTapped(_:)))
         self.searchButton.isUserInteractionEnabled = true
         self.searchButton.addGestureRecognizer(searchButtonTap)
+        
+        let searchButtonTextTap = UITapGestureRecognizer(target: self, action: #selector(self.searchButtonTapped(_:)))
+        self.searchButtonText.isUserInteractionEnabled = true
+        self.searchButtonText.addGestureRecognizer(searchButtonTextTap)
         
         let currentLocationButtonTap = UITapGestureRecognizer(target: self, action: #selector(self.currentLocationButtonTapped(_:)))
         self.currentLocationButton.isUserInteractionEnabled = true
@@ -335,12 +343,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.metricLabel.isHidden = isHidden
         self.imperialLabel.isHidden = isHidden
         self.searchButton.isHidden = isHidden
+        self.searchButtonText.isHidden = isHidden
         
         self.windLabel.isHidden = isHidden
         self.pressureLabel.isHidden = isHidden
         self.humidityLabel.isHidden = isHidden
         self.additionalInfoLabel1.isHidden = isHidden
         self.additionalInfoLabel2.isHidden = isHidden
+        
+        self.sunriseLabel.isHidden = isHidden
+        self.sunsetLabel.isHidden = isHidden
         //updateConditionComponents(isHidden: isHidden)
     }
     
@@ -436,11 +448,19 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     
     func updateWeather(json: JSON) {
         let jsonResponse = json
+        
         //print(json)
         let dateFormatter = DateFormatter()
         var todayDate = Date()
         let timezoneOffset =  TimeZone.current.secondsFromGMT()
         let currentTime = Int(todayDate.timeIntervalSince1970)
+        
+        let dayTimePeriodFormatter = DateFormatter()
+        dayTimePeriodFormatter.dateFormat = "hh:ss a"
+        
+        self.sunsetLabel.text = "Sunset: " + dayTimePeriodFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(json["city"]["sunset"].intValue + self.timezone - timezoneOffset)) as Date)
+        self.sunriseLabel.text = "Sunrise: " + dayTimePeriodFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(json["city"]["sunrise"].intValue + self.timezone - timezoneOffset)) as Date)
+        
         updateItemsVisibility(isHidden: false)
         updateConditionComponents(isHidden: true)
         
@@ -472,18 +492,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
           //print("timezoneOffset")
           //print(timezoneOffset)
           var date = NSDate(timeIntervalSince1970: TimeInterval(t1))
-          let dayTimePeriodFormatter = DateFormatter()
+          //print("today's date")
+          //print(dayTimePeriodFormatter.string(from: todayDate as Date))
           dayTimePeriodFormatter.dateFormat = "dd"
-            if (dayTimePeriodFormatter.string(from: date as Date) == dayTimePeriodFormatter.string(from: todayDate as Date)) {
-                //print("t1")
+          //print(t1)
+          //print(dayTimePeriodFormatter.string(from: date as Date))
+          if (dayTimePeriodFormatter.string(from: date as Date) == dayTimePeriodFormatter.string(from: todayDate as Date)) {
                 //print(t1)
                 //print(dayTimePeriodFormatter.string(from: date as Date) + " " + dayTimePeriodFormatter.string(from: todayDate as Date))
-                rowsForToday += 1
-            }
+            rowsForToday += 1
+          }
         }
         
-        //print("Rows For Today")
-        //print(rowsForToday)
+        print("Rows For Today")
+        print(rowsForToday)
         
         /*let t1 = todayDate.timeIntervalSince1970 + Double(self.timezone) - Double(timezoneOffset)
         todayDate = Date(timeIntervalSince1970: t1)*/
@@ -523,25 +545,25 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
                 }
                 i = i + 1
             } else if (self.apiEndpoint == "weather" && /*Calendar.current.isDate(todayDate, inSameDayAs: date)*/ Int(dayTimePeriodFormatter.string(from: date as Date)) == Int(dayTimePeriodFormatter.string(from: todayDate))! &&
-                rowsForToday > 1
+                rowsForToday >= 1
             ) {
                 //print(i)
                 if (rowsForToday > 4) {
                     if (i % 2 == 0) {
-                      fillCondition(index: (i / 2) + 1, conditionJSON: weatherInstance, selected: ((i / 2) + 1 == 2))
+                      fillCondition(index: (i / 2) + 1, conditionJSON: weatherInstance, selected: ((i / 2) + 1 == 1))
                     }
                 } else if (i < rowsForToday) {
-                    fillCondition(index: i + 1, conditionJSON: weatherInstance, selected: (i == 1))
+                    fillCondition(index: i + 1, conditionJSON: weatherInstance, selected: (i == 0))
                 }
                 i = i + 1
-            } else if (self.apiEndpoint == "weather" && rowsForToday <= 1) {
-                dayLabel.isHidden = (rowsForToday <= 1)
+            } else if (self.apiEndpoint == "weather" && rowsForToday < 1) {
+                dayLabel.isHidden = (rowsForToday < 1)
                 tomorrowLabelTapped(UITapGestureRecognizer.init())
                 break
             }
         }
         
-        dayLabel.isHidden = (rowsForToday <= 1)
+        dayLabel.isHidden = (rowsForToday < 1)
             
         // update time
         //dateFormatter.dateFormat = "HH:mm"
@@ -587,7 +609,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     func adViewDidLoad(_ adView: FBAdView) {
-        self.adView.isHidden = false
+        self.adView.isHidden = true//false
     }
      
     func nativeAd(_ nativeAd: FBNativeAd, didFailWithError error: Error) {
