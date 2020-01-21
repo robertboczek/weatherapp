@@ -13,6 +13,8 @@ import FBSDKLoginKit
 import FBSDKShareKit
 import FBSDKCoreKit
 
+//import FacebookCore
+
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -29,6 +31,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         )
         
         return true
+    }
+    
+    func application(
+        _ app: UIApplication,
+        open url: URL,
+        options: [UIApplication.OpenURLOptionsKey : Any] = [:]
+    ) -> Bool {
+        return ApplicationDelegate.shared.application(
+            app,
+            open: url,
+            options: options
+        )
     }
 
     // MARK: UISceneSession Lifecycle
@@ -47,8 +61,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationWillEnterForeground(_ application: UIApplication) {
          print("Reloading the view...")
-
-         //myViewController?.reloadView()
+        
+        AppEvents.activateApp()
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -64,18 +78,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationWillResignActive(_ application: UIApplication) {
         print("Resigning active")
-    }
-
-    func application(
-        _ app: UIApplication,
-        open url: URL,
-        options: [UIApplication.OpenURLOptionsKey : Any] = [:]
-    ) -> Bool {
-        return ApplicationDelegate.shared.application(
-            app,
-            open: url,
-            options: options
-        )
     }
 
 }

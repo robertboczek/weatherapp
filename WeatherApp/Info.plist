@@ -74,16 +74,16 @@
     <key>CFBundleURLTypes</key>
     <array>
       <dict>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <string>fb238958210103121</string>
-        </array>
+      <key>CFBundleURLSchemes</key>
+      <array>
+        <string>fb238958210103121</string>
+      </array>
       </dict>
     </array>
     <key>FacebookAppID</key>
     <string>238958210103121</string>
     <key>FacebookDisplayName</key>
-    <string>Your Weather App</string>
+    <string>Your Best Apps</string>
     <key>LSApplicationQueriesSchemes</key>
     <array>
       <string>fbapi</string>
