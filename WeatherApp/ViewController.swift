@@ -600,7 +600,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     func loadBannerAd() {
-        self.bannerAdView = FBAdView(placementID: "238958210103121_434570523875221", adSize: kFBAdSizeHeight90Banner, rootViewController: self)
+        self.bannerAdView = FBAdView(placementID: "639765523432024_639766196765290", adSize: kFBAdSizeHeight90Banner, rootViewController: self)
         self.bannerAdView.frame = CGRect(x: 0, y: adView.bounds.height - bannerAdView.frame.size.height, width: bannerAdView.frame.size.width, height: bannerAdView.frame.size.height)
         self.bannerAdView.delegate = self
         self.adView.addSubview(self.bannerAdView)
@@ -609,7 +609,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     func adViewDidLoad(_ adView: FBAdView) {
-        self.adView.isHidden = true//false
+        self.adView.isHidden = false
     }
      
     func nativeAd(_ nativeAd: FBNativeAd, didFailWithError error: Error) {
