@@ -937,6 +937,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         imgView.isHidden = conditionJSON == nil
         label.isHidden = conditionJSON == nil
         
+        if (conditionJSON == nil) {
+            return
+        }
+        
         let dateFormatter = DateFormatter()
         let todayDate = Date()
         let tomorrowDate = Calendar.current.date(byAdding: .day, value: 1, to: todayDate)!
