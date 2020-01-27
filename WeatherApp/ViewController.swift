@@ -270,6 +270,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     
     @objc
     func leftSwipe() {
+        resetSmallItems()
         //print("swipe ", self.totalItems)
         self.index = self.index % self.totalItems + 1
         fillCondition(index: 1, conditionJSON: self.time1JSON, selected: self.index == 1)
@@ -281,8 +282,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     
     @objc
     func rightSwipe() {
-        //print("swipe ", self.totalItems)
-        self.index = (self.index + 1) % self.totalItems + 1
+        resetSmallItems()
+        self.index = (self.index - 2) % self.totalItems + 1
+        if (self.index == 0) {
+            self.index = self.totalItems
+        }
+        //print("swipe ", self.totalItems, self.index)
         fillCondition(index: 1, conditionJSON: self.time1JSON, selected: self.index == 1)
         fillCondition(index: 2, conditionJSON: self.time2JSON, selected: self.index == 2)
         fillCondition(index: 3, conditionJSON: self.time3JSON, selected: self.index == 3)
