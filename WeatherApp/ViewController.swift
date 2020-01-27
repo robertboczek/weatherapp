@@ -23,6 +23,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     @IBOutlet weak var searchCityLabel: UILabel!
     @IBOutlet weak var searchCitiesTableView: UITableView!
     
+    @IBOutlet var mainView: UIView!
+    
     @IBOutlet weak var currentLocationButton: UIButton!
     var selectedItem: JSON? = nil
     
@@ -33,10 +35,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     @IBOutlet weak var time1: UILabel!
     @IBOutlet weak var time2: UILabel!
     @IBOutlet weak var time3: UILabel!
+    @IBOutlet weak var time4: UILabel!
+    @IBOutlet weak var time5: UILabel!
     
     @IBOutlet weak var conditionSmall1: UIImageView!
     @IBOutlet weak var conditionSmall2: UIImageView!
     @IBOutlet weak var conditionSmall3: UIImageView!
+    @IBOutlet weak var conditionSmall4: UIImageView!
+    @IBOutlet weak var conditionSmall5: UIImageView!
     
     
     @IBOutlet weak var sunriseLabel: UILabel!
@@ -76,6 +82,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     let selectedItemFont = UIFont(name: "Arial Rounded MT Bold", size: 28)
     let notSelectedItemFont = UIFont(name: "Avenir", size: 20)
     
+    let selectedHourItemFont = UIFont(name: "Arial Rounded MT Bold", size: 22)
+    let notSelectedHourItemFont = UIFont(name: "Avenir", size: 14)
+    
     let apiKey = "d9f9f29395c8b71049a8e921c9e89748"
     var lat = 50.049683
     var lon = 19.944544
@@ -94,7 +103,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     var time1JSON: JSON?
     var time2JSON: JSON?
     var time3JSON: JSON?
-    
+    var time4JSON: JSON?
+    var time5JSON: JSON?
+    var index = 1
+    var totalItems = 1
     
     @IBOutlet weak var additionalInfoLabel1: UILabel!
     @IBOutlet weak var additionalInfoLabel2: UILabel!
@@ -223,12 +235,59 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.conditionSmall3.isUserInteractionEnabled = true
         self.conditionSmall3.addGestureRecognizer(time3LabelT2)
         
+        let time4LabelT = UITapGestureRecognizer(target: self, action: #selector(self.time4LabelTap(_:)))
+        let time4LabelT2 = UITapGestureRecognizer(target: self, action: #selector(self.time4LabelTap(_:)))
+        
+        self.time4.isUserInteractionEnabled = true
+        self.time4.addGestureRecognizer(time4LabelT)
+        self.conditionSmall4.isUserInteractionEnabled = true
+        self.conditionSmall4.addGestureRecognizer(time4LabelT2)
+        
+        let time5LabelT = UITapGestureRecognizer(target: self, action: #selector(self.time5LabelTap(_:)))
+        let time5LabelT2 = UITapGestureRecognizer(target: self, action: #selector(self.time5LabelTap(_:)))
+        
+        self.time5.isUserInteractionEnabled = true
+        self.time5.addGestureRecognizer(time5LabelT)
+        self.conditionSmall5.isUserInteractionEnabled = true
+        self.conditionSmall5.addGestureRecognizer(time5LabelT2)
+        
+        // configure right/left swipe gestures
+        let left = UISwipeGestureRecognizer(target : self, action : #selector(self.leftSwipe))
+        left.direction = .left
+        
+        let right = UISwipeGestureRecognizer(target : self, action : #selector(self.rightSwipe))
+        right.direction = .right
+        self.mainView.addGestureRecognizer(right)
+        self.mainView.addGestureRecognizer(left)
+        
         reloadView()
         
         // Make the native ad view container visible.
         self.adView.isHidden = true
         
         loadBannerAd()
+    }
+    
+    @objc
+    func leftSwipe() {
+        //print("swipe ", self.totalItems)
+        self.index = self.index % self.totalItems + 1
+        fillCondition(index: 1, conditionJSON: self.time1JSON, selected: self.index == 1)
+        fillCondition(index: 2, conditionJSON: self.time2JSON, selected: self.index == 2)
+        fillCondition(index: 3, conditionJSON: self.time3JSON, selected: self.index == 3)
+        fillCondition(index: 4, conditionJSON: self.time4JSON, selected: self.index == 4)
+        fillCondition(index: 5, conditionJSON: self.time5JSON, selected: self.index == 5)
+    }
+    
+    @objc
+    func rightSwipe() {
+        //print("swipe ", self.totalItems)
+        self.index = (self.index + 1) % self.totalItems + 1
+        fillCondition(index: 1, conditionJSON: self.time1JSON, selected: self.index == 1)
+        fillCondition(index: 2, conditionJSON: self.time2JSON, selected: self.index == 2)
+        fillCondition(index: 3, conditionJSON: self.time3JSON, selected: self.index == 3)
+        fillCondition(index: 4, conditionJSON: self.time1JSON, selected: self.index == 4)
+        fillCondition(index: 5, conditionJSON: self.time1JSON, selected: self.index == 5)
     }
     
     @objc func searchRecords(_ textField: UITextField) {
@@ -363,6 +422,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.conditionSmall2.isHidden = isHidden
         self.time3.isHidden = isHidden
         self.conditionSmall3.isHidden = isHidden
+        self.time4.isHidden = isHidden
+        self.conditionSmall4.isHidden = isHidden
+        self.time5.isHidden = isHidden
+        self.conditionSmall5.isHidden = isHidden
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -377,7 +440,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     
     func updateWeather(location: CLLocation?) {
         let endpoint = "forecast" //always query forecast endpoint
-        var jsonResponse: JSON
         
         let geocoder = CLGeocoder()
         
@@ -467,6 +529,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.time1JSON = nil
         self.time2JSON = nil
         self.time3JSON = nil
+        self.time4JSON = nil
+        self.time5JSON = nil
         
         print("UPDATE WEATHER!!")
         
@@ -512,17 +576,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
 
         var selectedFound = false
         
-        self.time1.layer.cornerRadius = 0
-        self.time1.backgroundColor = nil
-        self.time1.clipsToBounds = false
+        resetSmallItems()
         
-        self.time2.layer.cornerRadius = 0
-        self.time2.backgroundColor = nil
-        self.time2.clipsToBounds = false
-        
-        self.time3.layer.cornerRadius = 0
-        self.time3.backgroundColor = nil
-        self.time3.clipsToBounds = false
+        self.totalItems = 0
         
         for weatherInstance in jsonResponse["list"].array! {
             //print("Iterate jsonResponse")
@@ -536,8 +592,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             dayTimePeriodFormatter.dateFormat = "dd"
             
             //print(Int(dateFormatter.string(from: date))!)
-            if (self.apiEndpoint == "forecast" && /*!Calendar.current.isDate(todayDate, inSameDayAs: date)*/ Int(dayTimePeriodFormatter.string(from: date as Date))! > Int(dayTimePeriodFormatter.string(from: todayDate))!) {
-                if (i % 2 == 1 && (i / 2) + 1 <= 3) {
+            if (self.apiEndpoint == "forecast" && /*!Calendar.current.isDate(todayDate, inSameDayAs: date)*/ Int(dayTimePeriodFormatter.string(from: date as Date))! - 1 == Int(dayTimePeriodFormatter.string(from: todayDate))!) {
+                // we allow max 5 items
+                if (i % 2 == 1 && (i / 2) + 1 <= 5) {
                   fillCondition(index: (i / 2) + 1, conditionJSON: weatherInstance, selected: Int(dateFormatter.string(from: date))! >= 10 && !selectedFound)
                   if (Int(dateFormatter.string(from: date))! >= 10) {
                     selectedFound = true
@@ -545,17 +602,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
                 }
                 i = i + 1
             } else if (self.apiEndpoint == "weather" && /*Calendar.current.isDate(todayDate, inSameDayAs: date)*/ Int(dayTimePeriodFormatter.string(from: date as Date)) == Int(dayTimePeriodFormatter.string(from: todayDate))! &&
-                rowsForToday >= 1
+                rowsForToday >= 1 && i < 5
             ) {
-                //print(i)
-                if (rowsForToday > 4) {
-                    if (i % 2 == 0) {
-                      fillCondition(index: (i / 2) + 1, conditionJSON: weatherInstance, selected: ((i / 2) + 1 == 1))
-                    }
-                } else if (i < rowsForToday) {
-                    fillCondition(index: i + 1, conditionJSON: weatherInstance, selected: (i == 0))
+                if (i < 5) {
+                  // we allow max 5 items
+                  fillCondition(index: i + 1, conditionJSON: weatherInstance, selected: (i == 0))
+                  i = i + 1
                 }
-                i = i + 1
             } else if (self.apiEndpoint == "weather" && rowsForToday < 1) {
                 dayLabel.isHidden = (rowsForToday < 1)
                 tomorrowLabelTapped(UITapGestureRecognizer.init())
@@ -563,6 +616,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             }
         }
         
+        if (self.time5JSON != nil) {
+            self.totalItems = 5
+        } else if (self.time4JSON != nil) {
+            self.totalItems = 4
+        } else if (self.time3JSON != nil) {
+            self.totalItems = 3
+        } else if (self.time2JSON != nil) {
+            self.totalItems = 2
+        } else {
+            self.totalItems = 1
+        }
         dayLabel.isHidden = (rowsForToday < 1)
             
         // update time
@@ -685,9 +749,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     func updateHourFonts(index: Int) {
-        self.time1.font = (index == 1) ? self.selectedItemFont : self.notSelectedItemFont
-        self.time2.font = (index == 2) ? self.selectedItemFont : self.notSelectedItemFont
-        self.time3.font = (index == 3) ? self.selectedItemFont : self.notSelectedItemFont
+        self.time1.font = (index == 1) ? self.selectedHourItemFont : self.notSelectedHourItemFont
+        self.time2.font = (index == 2) ? self.selectedHourItemFont : self.notSelectedHourItemFont
+        self.time3.font = (index == 3) ? self.selectedHourItemFont : self.notSelectedHourItemFont
+        self.time4.font = (index == 4) ? self.selectedHourItemFont : self.notSelectedHourItemFont
+        self.time5.font = (index == 5) ? self.selectedHourItemFont : self.notSelectedHourItemFont
     }
     
     @objc func metricLabelTapped(_ sender: UITapGestureRecognizer) {
@@ -718,7 +784,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         reloadView()
     }
     
-    @objc func time1LabelTap(_ sender: UITapGestureRecognizer) {
+    func resetSmallItems() {
         self.time1.layer.cornerRadius = 0
         self.time1.backgroundColor = nil
         self.time1.clipsToBounds = false
@@ -731,65 +797,53 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.time3.backgroundColor = nil
         self.time3.clipsToBounds = false
         
-        //print("time1 tap")
+        self.time4.layer.cornerRadius = 0
+        self.time4.backgroundColor = nil
+        self.time4.clipsToBounds = false
+        
+        self.time5.layer.cornerRadius = 0
+        self.time5.backgroundColor = nil
+        self.time5.clipsToBounds = false
+    }
+    
+    func conditionSmallTapped(index: Int) {
+        resetSmallItems()
         if (self.time1JSON != nil) {
-          fillCondition(index: 1, conditionJSON: self.time1JSON!, selected: true)
+          fillCondition(index: 1, conditionJSON: self.time1JSON!, selected: index == 1)
         }
         if (self.time2JSON != nil) {
-          fillCondition(index: 2, conditionJSON: self.time2JSON!, selected: false)
+          fillCondition(index: 2, conditionJSON: self.time2JSON!, selected: index == 2)
         }
         if (self.time3JSON != nil) {
-          fillCondition(index: 3, conditionJSON: self.time3JSON!, selected: false)
+          fillCondition(index: 3, conditionJSON: self.time3JSON!, selected: index == 3)
         }
+        if (self.time4JSON != nil) {
+          fillCondition(index: 4, conditionJSON: self.time4JSON!, selected: index == 4)
+        }
+        if (self.time5JSON != nil) {
+          fillCondition(index: 5, conditionJSON: self.time5JSON!, selected: index == 5)
+        }
+    }
+    
+    @objc func time1LabelTap(_ sender: UITapGestureRecognizer) {
+        //print("time1 tap")
+        conditionSmallTapped(index: 1)
     }
     
     @objc func time2LabelTap(_ sender: UITapGestureRecognizer) {
-        self.time1.layer.cornerRadius = 0
-        self.time1.backgroundColor = nil
-        self.time1.clipsToBounds = false
-        
-        self.time2.layer.cornerRadius = 0
-        self.time2.backgroundColor = nil
-        self.time2.clipsToBounds = false
-        
-        self.time3.layer.cornerRadius = 0
-        self.time3.backgroundColor = nil
-        self.time3.clipsToBounds = false
-        
-        //print("time2 tap")
-        if (self.time1JSON != nil) {
-          fillCondition(index: 1, conditionJSON: self.time1JSON!, selected: false)
-        }
-        if (self.time2JSON != nil) {
-          fillCondition(index: 2, conditionJSON: self.time2JSON!, selected: true)
-        }
-        if (self.time3JSON != nil) {
-          fillCondition(index: 3, conditionJSON: self.time3JSON!, selected: false)
-        }
+        conditionSmallTapped(index: 2)
     }
     
     @objc func time3LabelTap(_ sender: UITapGestureRecognizer) {
-        self.time1.layer.cornerRadius = 0
-        self.time1.backgroundColor = nil
-        self.time1.clipsToBounds = false
-        
-        self.time2.layer.cornerRadius = 0
-        self.time2.backgroundColor = nil
-        self.time2.clipsToBounds = false
-        
-        self.time3.layer.cornerRadius = 0
-        self.time3.backgroundColor = nil
-        self.time3.clipsToBounds = false
-        //print("time3 tap")
-        if (self.time1JSON != nil) {
-          fillCondition(index: 1, conditionJSON: self.time1JSON!, selected: false)
-        }
-        if (self.time2JSON != nil) {
-          fillCondition(index: 2, conditionJSON: self.time2JSON!, selected: false)
-        }
-        if (self.time3JSON != nil) {
-          fillCondition(index: 3, conditionJSON: self.time3JSON!, selected: true)
-        }
+        conditionSmallTapped(index: 3)
+    }
+    
+    @objc func time4LabelTap(_ sender: UITapGestureRecognizer) {
+        conditionSmallTapped(index: 4)
+    }
+    
+    @objc func time5LabelTap(_ sender: UITapGestureRecognizer) {
+        conditionSmallTapped(index: 5)
     }
     
     @objc func todayLabelTapped(_ sender: UITapGestureRecognizer) {
@@ -862,9 +916,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         cachedWeatherF = nil*/
     }
     
-    func fillCondition(index: Int, conditionJSON: JSON, selected: Bool) {
+    func fillCondition(index: Int, conditionJSON: JSON?, selected: Bool) {
         var imgView: UIImageView!
         var label: UILabel!
+        
+        if (conditionJSON == nil) {
+            return
+        }
         
         if (index == 1) {
             self.time1JSON = conditionJSON
@@ -878,6 +936,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             self.time3JSON = conditionJSON
             imgView = self.conditionSmall3
             label = self.time3
+        } else if (index == 4) {
+            self.time4JSON = conditionJSON
+            imgView = self.conditionSmall4
+            label = self.time4
+        } else if (index == 5) {
+            self.time5JSON = conditionJSON
+            imgView = self.conditionSmall5
+            label = self.time5
         } else {
             return
         }
@@ -892,8 +958,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         dateFormatter.dateFormat = "HH"
         //print(conditionJSON)
         
-        let jsonWeather = conditionJSON["weather"].array![0]
-        let jsonTemp = conditionJSON["main"]
+        let jsonWeather = conditionJSON!["weather"].array![0]
+        let jsonTemp = conditionJSON!["main"]
         var iconName = jsonWeather["icon"].stringValue
             
         //print(conditionJSON["name"].stringValue);
@@ -902,15 +968,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         //print(tmp)
             
         if (selected) {
+            self.index = index
             self.additionalInfoLabel1.text = ""
             self.additionalInfoLabel2.text = ""
             self.temperatureLabel.text = tmp
-            self.windLabel.text = "Wind: " + String(format: "%.2f", conditionJSON["wind"]["speed"].doubleValue) + ((self.apiUnit == "imperial") ? " mph" : " m/s")
+            self.windLabel.text = "Wind: " + String(format: "%.2f", conditionJSON!["wind"]["speed"].doubleValue) + ((self.apiUnit == "imperial") ? " mph" : " m/s")
             self.humidityLabel.text = "Humidity: " + jsonTemp["humidity"].stringValue  + "%"
             self.pressureLabel.text = "Pressure: " + jsonTemp["pressure"].stringValue + " hPa"
-            let clouds = conditionJSON["clouds"]["all"].intValue
-            let rain = conditionJSON["rain"]["3h"].doubleValue
-            let snow = conditionJSON["snow"]["3h"].doubleValue
+            let clouds = conditionJSON!["clouds"]["all"].intValue
+            let rain = conditionJSON!["rain"]["3h"].doubleValue
+            let snow = conditionJSON!["snow"]["3h"].doubleValue
             //print("Clouds")
             //print(clouds)
             //print(rain)
@@ -945,7 +1012,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         //print("timezoneOffset")
         //print(timezoneOffset)
         
-        var time_dt = conditionJSON["dt"].int!
+        var time_dt = conditionJSON!["dt"].int!
         //print("DT Time")
         //print(self.timezone)
         //print(time_dt)
