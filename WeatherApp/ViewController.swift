@@ -286,8 +286,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         fillCondition(index: 1, conditionJSON: self.time1JSON, selected: self.index == 1)
         fillCondition(index: 2, conditionJSON: self.time2JSON, selected: self.index == 2)
         fillCondition(index: 3, conditionJSON: self.time3JSON, selected: self.index == 3)
-        fillCondition(index: 4, conditionJSON: self.time1JSON, selected: self.index == 4)
-        fillCondition(index: 5, conditionJSON: self.time1JSON, selected: self.index == 5)
+        fillCondition(index: 4, conditionJSON: self.time4JSON, selected: self.index == 4)
+        fillCondition(index: 5, conditionJSON: self.time5JSON, selected: self.index == 5)
     }
     
     @objc func searchRecords(_ textField: UITextField) {
@@ -602,7 +602,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
                 }
                 i = i + 1
             } else if (self.apiEndpoint == "weather" && /*Calendar.current.isDate(todayDate, inSameDayAs: date)*/ Int(dayTimePeriodFormatter.string(from: date as Date)) == Int(dayTimePeriodFormatter.string(from: todayDate))! &&
-                rowsForToday >= 1 && i < 5
+                rowsForToday >= 1
             ) {
                 if (i < 5) {
                   // we allow max 5 items
@@ -808,21 +808,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     
     func conditionSmallTapped(index: Int) {
         resetSmallItems()
-        if (self.time1JSON != nil) {
-          fillCondition(index: 1, conditionJSON: self.time1JSON!, selected: index == 1)
-        }
-        if (self.time2JSON != nil) {
-          fillCondition(index: 2, conditionJSON: self.time2JSON!, selected: index == 2)
-        }
-        if (self.time3JSON != nil) {
-          fillCondition(index: 3, conditionJSON: self.time3JSON!, selected: index == 3)
-        }
-        if (self.time4JSON != nil) {
-          fillCondition(index: 4, conditionJSON: self.time4JSON!, selected: index == 4)
-        }
-        if (self.time5JSON != nil) {
-          fillCondition(index: 5, conditionJSON: self.time5JSON!, selected: index == 5)
-        }
+        fillCondition(index: 1, conditionJSON: self.time1JSON, selected: index == 1)
+        fillCondition(index: 2, conditionJSON: self.time2JSON, selected: index == 2)
+        fillCondition(index: 3, conditionJSON: self.time3JSON, selected: index == 3)
+        fillCondition(index: 4, conditionJSON: self.time4JSON, selected: index == 4)
+        fillCondition(index: 5, conditionJSON: self.time5JSON, selected: index == 5)
     }
     
     @objc func time1LabelTap(_ sender: UITapGestureRecognizer) {
@@ -920,10 +910,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         var imgView: UIImageView!
         var label: UILabel!
         
-        if (conditionJSON == nil) {
-            return
-        }
-        
         if (index == 1) {
             self.time1JSON = conditionJSON
             imgView = self.conditionSmall1
@@ -948,8 +934,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             return
         }
         
-        imgView.isHidden = false
-        label.isHidden = false
+        imgView.isHidden = conditionJSON == nil
+        label.isHidden = conditionJSON == nil
         
         let dateFormatter = DateFormatter()
         let todayDate = Date()
