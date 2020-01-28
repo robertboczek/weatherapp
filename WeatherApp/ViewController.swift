@@ -656,7 +656,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     
     func setSelectedBackground(imageView: UIImageView) {
         let topColor = UIColor.init(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 0.15)
-        imageView.layer.cornerRadius = 30
+        imageView.layer.cornerRadius = 20
         imageView.clipsToBounds = true
         imageView.backgroundColor = topColor
     }
