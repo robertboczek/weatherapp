@@ -437,8 +437,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
       let location = locations[0]
       lat = location.coordinate.latitude
       lon = location.coordinate.longitude
-      print("lat: \(lat)")
-      print("lat: \(lon)")
+      //print("lat: \(lat)")
+      //print("lat: \(lon)")
       updateWeather(location: location)
     }
     
@@ -537,7 +537,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.time4JSON = nil
         self.time5JSON = nil
         
-        print("UPDATE WEATHER!!")
+        print("UPDATE WEATHER!")
         
         var dt : JSON!
         dateFormatter.dateFormat = "HH"
@@ -573,8 +573,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
           }
         }
         
-        print("Rows For Today")
-        print(rowsForToday)
+        //print("Rows For Today")
+        //print(rowsForToday)
         
         /*let t1 = todayDate.timeIntervalSince1970 + Double(self.timezone) - Double(timezoneOffset)
         todayDate = Date(timeIntervalSince1970: t1)*/
