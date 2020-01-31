@@ -1,0 +1,66 @@
+
+/* Class = "UILabel"; text = "Sunny"; ObjectID = "3eC-42-mgh"; */
+"3eC-42-mgh.text" = "Słonecznie";
+
+/* Class = "UILabel"; text = "Sunday"; ObjectID = "4ga-xH-al6"; */
+"4ga-xH-al6.text" = "Niedziela";
+
+/* Class = "UILabel"; text = "Air Pressure: "; ObjectID = "9yg-c8-mCy"; */
+"9yg-c8-mCy.text" = "Ciśnienie powietrza: ";
+
+/* Class = "UILabel"; text = "Sunny"; ObjectID = "F9b-Vp-D59"; */
+"F9b-Vp-D59.text" = "Sunny";
+
+/* Class = "UILabel"; text = "Sunny"; ObjectID = "PJO-Cy-v6d"; */
+"PJO-Cy-v6d.text" = "Słonecznie";
+
+/* Class = "UILabel"; text = "Sunday"; ObjectID = "Q4L-Vk-15I"; */
+"Q4L-Vk-15I.text" = "Niedziela";
+
+/* Class = "UILabel"; text = "Wind: "; ObjectID = "Ysd-cz-5Jk"; */
+"Ysd-cz-5Jk.text" = "Wiatr: ";
+
+/* Class = "UIButton"; normalTitle = "Search"; ObjectID = "b0z-HS-QCA"; */
+"b0z-HS-QCA.normalTitle" = "Szukaj";
+
+/* Class = "UILabel"; text = "°C"; ObjectID = "b84-5x-NLj"; */
+"b84-5x-NLj.text" = "°C";
+
+/* Class = "UIButton"; normalTitle = "Check Current Location"; ObjectID = "c2k-d6-OEn"; */
+"c2k-d6-OEn.normalTitle" = "Twoja lokalizacja";
+
+/* Class = "UILabel"; text = "Sunny"; ObjectID = "dlc-Ns-m3t"; */
+"dlc-Ns-m3t.text" = "Słonecznie";
+
+/* Class = "UILabel"; text = "Wind: "; ObjectID = "fkV-2Z-tyv"; */
+"fkV-2Z-tyv.text" = "Wiat: ";
+
+/* Class = "UILabel"; text = "Sunny"; ObjectID = "nzT-Gq-noQ"; */
+"nzT-Gq-noQ.text" = "Słonecznie";
+
+/* Class = "UILabel"; text = "24"; ObjectID = "pcp-Ut-36g"; */
+"pcp-Ut-36g.text" = "24";
+
+/* Class = "UILabel"; text = "Humidity: "; ObjectID = "qOY-FC-OO0"; */
+"qOY-FC-OO0.text" = "Wilgotność: ";
+
+/* Class = "UILabel"; text = "Type city you are looking for:"; ObjectID = "sbo-IS-sDb"; */
+"sbo-IS-sDb.text" = "Podaj miasto którego szukasz:";
+
+/* Class = "UILabel"; text = " "; ObjectID = "teh-nJ-Dju"; */
+"teh-nJ-Dju.text" = " ";
+
+/* Class = "UILabel"; text = "Sunny"; ObjectID = "ubb-dJ-qfw"; */
+"ubb-dJ-qfw.text" = "Słonecznie";
+
+/* Class = "UILabel"; text = "°F"; ObjectID = "wNb-8D-fUj"; */
+"wNb-8D-fUj.text" = "°F";
+
+/* Class = "UILabel"; text = "Wind: "; ObjectID = "yyy-wh-zMF"; */
+"yyy-wh-zMF.text" = "Wiatr: ";
+
+"Sunset" = "Zachód: ";
+
+"Sunrise" = "Wschód: ";
+
+

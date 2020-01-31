@@ -26,6 +26,7 @@
 		D10B37A223CFF1C50048FB58 /* s_13n.png in Resources */ = {isa = PBXBuildFile; fileRef = D10B379023CFF1C50048FB58 /* s_13n.png */; };
 		D10B37A323CFF1C50048FB58 /* s_04n.png in Resources */ = {isa = PBXBuildFile; fileRef = D10B379123CFF1C50048FB58 /* s_04n.png */; };
 		D10B37A423CFF1C50048FB58 /* s_03n.png in Resources */ = {isa = PBXBuildFile; fileRef = D10B379223CFF1C50048FB58 /* s_03n.png */; };
+		D12AB72323E44A8800EA1B1D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D12AB72123E44A8700EA1B1D /* Localizable.strings */; };
 		D1B256C8238396C200142068 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B256C7238396C200142068 /* AppDelegate.swift */; };
 		D1B256CA238396C200142068 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B256C9238396C200142068 /* SceneDelegate.swift */; };
 		D1B256CC238396C200142068 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B256CB238396C200142068 /* ViewController.swift */; };
@@ -77,6 +78,9 @@
 		D10B379023CFF1C50048FB58 /* s_13n.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = s_13n.png; sourceTree = "<group>"; };
 		D10B379123CFF1C50048FB58 /* s_04n.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = s_04n.png; sourceTree = "<group>"; };
 		D10B379223CFF1C50048FB58 /* s_03n.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = s_03n.png; sourceTree = "<group>"; };
+		D12AB72023E4439D00EA1B1D /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/Main.strings; sourceTree = "<group>"; };
+		D12AB72223E44A8700EA1B1D /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/Localizable.strings; sourceTree = "<group>"; };
+		D12AB72423E44B5000EA1B1D /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D1B256C4238396C200142068 /* WeatherApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1B256C7238396C200142068 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D1B256C9238396C200142068 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -182,6 +186,7 @@
 				D1B256C9238396C200142068 /* SceneDelegate.swift */,
 				D1B256CB238396C200142068 /* ViewController.swift */,
 				D1B256CD238396C200142068 /* Main.storyboard */,
+				D12AB72123E44A8700EA1B1D /* Localizable.strings */,
 				D1B256D0238396C500142068 /* Assets.xcassets */,
 				D1F28495238B05590023521F /* 03d.png */,
 				D1F28497238B05590023521F /* 04d.png */,
@@ -252,6 +257,7 @@
 			knownRegions = (
 				en,
 				Base,
+				pl,
 			);
 			mainGroup = D1B256BB238396C200142068;
 			productRefGroup = D1B256C5238396C200142068 /* Products */;
@@ -280,6 +286,7 @@
 				D1F2849A238B05590023521F /* 04n.png in Resources */,
 				D1EA8CCA239C66D3000E260E /* search-icon.png in Resources */,
 				D1F2849B238B05590023521F /* 04d.png in Resources */,
+				D12AB72323E44A8800EA1B1D /* Localizable.strings in Resources */,
 				D1B256D4238396C500142068 /* LaunchScreen.storyboard in Resources */,
 				D1B256D1238396C500142068 /* Assets.xcassets in Resources */,
 				D10B37A423CFF1C50048FB58 /* s_03n.png in Resources */,
@@ -371,10 +378,20 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		D12AB72123E44A8700EA1B1D /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D12AB72223E44A8700EA1B1D /* pl */,
+				D12AB72423E44B5000EA1B1D /* Base */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		D1B256CD238396C200142068 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				D1B256CE238396C200142068 /* Base */,
+				D12AB72023E4439D00EA1B1D /* pl */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -394,6 +411,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -456,6 +474,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -514,7 +533,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 21;
 				DEVELOPMENT_TEAM = LBZQ6A27C3;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -525,7 +544,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.boczek.WeatherApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -539,7 +558,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 21;
 				DEVELOPMENT_TEAM = LBZQ6A27C3;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -550,7 +569,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				"MTL_ENABLE_DEBUG_INFO[arch=*]" = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.boczek.WeatherApp;

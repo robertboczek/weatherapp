@@ -1,0 +1,46 @@
+/* 
+  Localizable.strings
+  WeatherApp
+
+  Created by Robert Boczek on 1/31/20.
+  Copyright © 2020 Robert Boczek. All rights reserved.
+*/
+"sunset" = "Sunset: ";
+
+"sunrise" = "Sunrise: ";
+
+"wind" = "Wind: ";
+
+"humidity" = "Humidity: ";
+
+"pressure" = "Air Pressure: ";
+
+"clouds" = "Cluds: ";
+
+"rain" = "Rain: ";
+
+"snow" = "Snow: ";
+
+"hour" = "h";
+
+"scattered clouds" = "scattered clouds";
+
+"few clouds" = "few clouds";
+
+"overcast clouds" = "overcast clouds";
+
+"light rain" = "light rain";
+
+"light snow" = "light snow";
+
+"broken clouds" = "broken clouds";
+
+"clear sky" = "clear sky";
+
+"moderate rain" = "moderate rain";
+
+"heavy intensity rain" = "heavy intensity rain";
+
+"moderate snow" = "moderate snow";
+
+"heavy intensity snow" = "heavy intensity snow";

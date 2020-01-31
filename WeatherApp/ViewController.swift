@@ -525,8 +525,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         let dayTimePeriodFormatter = DateFormatter()
         dayTimePeriodFormatter.dateFormat = "hh:ss a"
         
-        self.sunsetLabel.text = "Sunset: " + dayTimePeriodFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(json["city"]["sunset"].intValue + self.timezone - timezoneOffset)) as Date)
-        self.sunriseLabel.text = "Sunrise: " + dayTimePeriodFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(json["city"]["sunrise"].intValue + self.timezone - timezoneOffset)) as Date)
+        let sunsetFormatString = NSLocalizedString("sunset", comment: "Sunset")
+        self.sunsetLabel.text = sunsetFormatString + dayTimePeriodFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(json["city"]["sunset"].intValue + self.timezone - timezoneOffset)) as Date)
+        let sunriseFormatString = NSLocalizedString("sunrise", comment: "Sunrise")
+        self.sunriseLabel.text = sunriseFormatString + dayTimePeriodFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(json["city"]["sunrise"].intValue + self.timezone - timezoneOffset)) as Date)
         
         updateItemsVisibility(isHidden: false)
         updateConditionComponents(isHidden: true)
@@ -968,27 +970,37 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             self.additionalInfoLabel1.text = ""
             self.additionalInfoLabel2.text = ""
             self.temperatureLabel.text = tmp
-            self.windLabel.text = "Wind: " + String(format: "%.2f", conditionJSON!["wind"]["speed"].doubleValue) + ((self.apiUnit == "imperial") ? " mph" : " m/s")
-            self.humidityLabel.text = "Humidity: " + jsonTemp["humidity"].stringValue  + "%"
-            self.pressureLabel.text = "Pressure: " + jsonTemp["pressure"].stringValue + " hPa"
+            let windFormatString = NSLocalizedString("wind", comment: "Wind")
+            self.windLabel.text = windFormatString + String(format: "%.2f", conditionJSON!["wind"]["speed"].doubleValue) + ((self.apiUnit == "imperial") ? " mph" : " m/s")
+            
+            let humidityFormatString = NSLocalizedString("humidity", comment: "Humidity")
+            self.humidityLabel.text = humidityFormatString + jsonTemp["humidity"].stringValue  + "%"
+            
+            let pressureFormatString = NSLocalizedString("pressure", comment: "Pressure")
+            self.pressureLabel.text = pressureFormatString + jsonTemp["pressure"].stringValue + " hPa"
+            
             let clouds = conditionJSON!["clouds"]["all"].intValue
             let rain = conditionJSON!["rain"]["3h"].doubleValue
             let snow = conditionJSON!["snow"]["3h"].doubleValue
             //print("Clouds")
             //print(clouds)
             //print(rain)
+            let cloudsFormatString = NSLocalizedString("clouds", comment: "Clouds")
+            let rainFormatString = NSLocalizedString("rain", comment: "Rain")
+            let snowFormatString = NSLocalizedString("snow", comment: "Snow")
+            let hourFormatString = NSLocalizedString("hour", comment: "Hour")
             if (clouds > 0) {
-                self.additionalInfoLabel1.text = "Clouds: " + String(clouds) + "%"
+                self.additionalInfoLabel1.text = cloudsFormatString + String(clouds) + "%"
                 if (rain > 0.0) {
-                    self.additionalInfoLabel2.text = "Rain (3h): " + String(rain) + " mm"
+                    self.additionalInfoLabel2.text = rainFormatString + "(3" + hourFormatString + "): " + String(rain) + " mm"
                 } else if (snow > 0.0) {
-                    self.additionalInfoLabel2.text = "Snow (3h): " + String(snow) + " mm"
+                    self.additionalInfoLabel2.text = snowFormatString + "(3" + hourFormatString + "): " + String(snow) + " mm"
                 }
             } else {
                 if (rain > 0) {
-                    self.additionalInfoLabel1.text = "Rain (3h): " + String(rain) + " mm"
+                    self.additionalInfoLabel2.text = rainFormatString + "(3" + hourFormatString + "): " + String(rain) + " mm"
                 } else if (snow > 0.0) {
-                    self.additionalInfoLabel1.text = "Snow (3h): " + String(snow) + " mm"
+                    self.additionalInfoLabel2.text = snowFormatString + "(3" + hourFormatString + "): " + String(snow) + " mm"
                 }
             }
             setSelectedBackground(imageView: imgView)
@@ -1051,7 +1063,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         //print(selected)
         if (selected) {
           self.conditionImageView.image = UIImage(named: iconName)
-          self.conditionLabel.text = jsonWeather["description"].stringValue
+          let conditionEnum = jsonWeather["description"].stringValue;
+          self.conditionLabel.text = NSLocalizedString(conditionEnum, comment: "Condition")
           updateHourFonts(index: index)
         }
         iconName = "s_" + iconName

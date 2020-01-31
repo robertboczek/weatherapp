@@ -1,0 +1,39 @@
+"sunset" = "Zachód: ";
+
+"sunrise" = "Wschód: ";
+
+"wind" = "Wiatr: ";
+
+"humidity" = "Wilgotność: ";
+
+"pressure" = "Ciśn pow: ";
+
+"clouds" = "Chumry: ";
+
+"rain" = "Deszcz ";
+
+"snow" = "Śnieg ";
+
+"hour" = "godz";
+
+"scattered clouds" = "rozproszone chmury";
+
+"few clouds" = "lekkie zachmurzenie";
+
+"overcast clouds" = "zachmurzenie";
+
+"light rain" = "lekkie opdady";
+
+"light snow" = "lekkie opdady śniegu";
+
+"broken clouds" = "pochmurnie";
+
+"clear sky" = "bezchmurnie";
+
+"moderate rain" = "średnie opdady deszczu";
+
+"moderate snow" = "średnie opdady śniegu";
+
+"heavy intensity rain" = "duże opady deszczu";
+
+"heavy intensity snow" = "duże opady śniegu";
