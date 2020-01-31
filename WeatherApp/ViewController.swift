@@ -596,8 +596,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             let dayTimePeriodFormatter = DateFormatter()
             dayTimePeriodFormatter.dateFormat = "dd"
             
-            //print(Int(dateFormatter.string(from: date))!)
-            if (self.apiEndpoint == "forecast" && /*!Calendar.current.isDate(todayDate, inSameDayAs: date)*/ Int(dayTimePeriodFormatter.string(from: date as Date))! - 1 == Int(dayTimePeriodFormatter.string(from: todayDate))!) {
+            //print("X", Int(dayTimePeriodFormatter.string(from: date))!)
+            if (self.apiEndpoint == "forecast" && /*!Calendar.current.isDate(todayDate, inSameDayAs: date)*/ ((Int(dayTimePeriodFormatter.string(from: date as Date))! - 1 == Int(dayTimePeriodFormatter.string(from: todayDate))!) || (Int(dayTimePeriodFormatter.string(from: date as Date))! == 1 && date.timeIntervalSince1970 - todayDate.timeIntervalSince1970 < (86400 * 2) && Int(dayTimePeriodFormatter.string(from: todayDate))! != 1))) {
+                //print("YAY")
                 // we allow max 5 items
                 if (i % 2 == 1 && (i / 2) + 1 <= 5) {
                   fillCondition(index: (i / 2) + 1, conditionJSON: weatherInstance, selected: Int(dateFormatter.string(from: date))! >= 10 && !selectedFound)
@@ -705,7 +706,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         searchCityLabel.isHidden = true
         currentLocationButton.isHidden = true
         
-        self.reloadView()
+        //self.reloadView()
     }
     
     func updateDayFonts() {
