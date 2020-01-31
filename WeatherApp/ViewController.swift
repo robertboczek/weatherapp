@@ -185,7 +185,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.conditionLabel.adjustsFontSizeToFitWidth = true
         self.conditionLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
         self.conditionLabel.numberOfLines = 0
-        self.conditionLabel.font = UILabel().font.withSize(28)
         
         let metricLabelTap = UITapGestureRecognizer(target: self, action: #selector(self.metricLabelTapped(_:)))
         self.metricLabel.isUserInteractionEnabled = true
@@ -1070,6 +1069,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
           self.conditionImageView.image = UIImage(named: iconName)
           let conditionEnum = jsonWeather["description"].stringValue;
           self.conditionLabel.text = NSLocalizedString(conditionEnum, comment: "Condition")
+          if (self.conditionLabel.text!.count > 14) {
+            self.conditionLabel.font = UILabel().font.withSize(20)
+          } else {
+            self.conditionLabel.font = UILabel().font.withSize(28)
+          }
           updateHourFonts(index: index)
         }
         iconName = "s_" + iconName
