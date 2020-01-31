@@ -182,6 +182,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         
         updateItemsVisibility(isHidden: true)
         
+        self.conditionLabel.adjustsFontSizeToFitWidth = true
+        self.conditionLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
+        self.conditionLabel.numberOfLines = 0
+        self.conditionLabel.font = UILabel().font.withSize(28)
+        
         let metricLabelTap = UITapGestureRecognizer(target: self, action: #selector(self.metricLabelTapped(_:)))
         self.metricLabel.isUserInteractionEnabled = true
         self.metricLabel.addGestureRecognizer(metricLabelTap)
