@@ -38,6 +38,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     @IBOutlet weak var time4: UILabel!
     @IBOutlet weak var time5: UILabel!
     
+    @IBOutlet weak var twelve: UILabel!
+    @IBOutlet weak var twentyFour: UILabel!
+    
     @IBOutlet weak var conditionSmall1: UIImageView!
     @IBOutlet weak var conditionSmall2: UIImageView!
     @IBOutlet weak var conditionSmall3: UIImageView!
@@ -74,6 +77,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     
     var apiUnit: String
     var apiEndpoint: String
+    var hourFormat: String
     var bannerAdView: FBAdView!
     
     let gradientLayer = CAGradientLayer()
@@ -124,6 +128,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         let savedEndpoint = UserDefaults.standard.string(forKey: "endpoint") ?? "weather"
         print("Loaded default endpoint: \(savedEndpoint)")
         apiEndpoint = savedEndpoint
+        let savedHourFormat = UserDefaults.standard.string(forKey: "hourFormat") ?? "12"
+        hourFormat = savedHourFormat
+        print("Loaded default hour format: \(savedHourFormat)")
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
@@ -136,6 +143,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         let savedEndpoint = UserDefaults.standard.string(forKey: "endpoint") ?? "weather"
         print("Loaded default endpoint: \(savedEndpoint)")
         apiEndpoint = savedEndpoint
+        let savedHourFormat = UserDefaults.standard.string(forKey: "hourFormat") ?? "12"
+        hourFormat = savedHourFormat
+        print("Loaded default hour format: \(savedHourFormat)")
         super.init(coder: aDecoder)
     }
     
@@ -202,6 +212,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.tomorrowLabel.isUserInteractionEnabled = true
         self.tomorrowLabel.addGestureRecognizer(tomorrowLabelTap)
         
+        let twentyFourLabelTap = UITapGestureRecognizer(target: self, action: #selector(self.twentyFourLabelTapped(_:)))
+        self.twentyFour.isUserInteractionEnabled = true
+        self.twentyFour.addGestureRecognizer(twentyFourLabelTap)
+        
+        let twelveLabelTap = UITapGestureRecognizer(target: self, action: #selector(self.twelveLabelTapped(_:)))
+        self.twelve.isUserInteractionEnabled = true
+        self.twelve.addGestureRecognizer(twelveLabelTap)
+        
         let searchButtonTap = UITapGestureRecognizer(target: self, action: #selector(self.searchButtonTapped(_:)))
         self.searchButton.isUserInteractionEnabled = true
         self.searchButton.addGestureRecognizer(searchButtonTap)
@@ -263,6 +281,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         right.direction = .right
         self.mainView.addGestureRecognizer(right)
         self.mainView.addGestureRecognizer(left)
+        
+        updatePreferredHourFormat()
         
         reloadView()
         
@@ -422,6 +442,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.sunriseLabel.isHidden = isHidden
         self.sunsetLabel.isHidden = isHidden
         //updateConditionComponents(isHidden: isHidden)
+        
+        self.twelve.isHidden = isHidden
+        self.twentyFour.isHidden = isHidden
     }
     
     func updateConditionComponents(isHidden: Bool) {
@@ -702,6 +725,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         //print("Updating default temperature unit: \(self.apiUnit)")
         UserDefaults.standard.set(self.apiUnit, forKey: "temperatureUnit")
         UserDefaults.standard.set(self.apiEndpoint, forKey: "endpoint")
+        UserDefaults.standard.set(self.hourFormat, forKey: "hourFormat")
     }
     
     @objc func applicationDidBecomeActive(notification: NSNotification) {
@@ -768,6 +792,28 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.time5.font = (index == 5) ? self.selectedHourItemFont : self.notSelectedHourItemFont
     }
     
+    func updatePreferredHourFormat() {
+        self.twelve.layer.cornerRadius = 0
+        self.twelve.backgroundColor = nil
+        self.twelve.clipsToBounds = false
+        
+        self.twentyFour.layer.cornerRadius = 0
+        self.twentyFour.backgroundColor = nil
+        self.twentyFour.clipsToBounds = false
+        
+        self.twelve.font = (self.hourFormat == "12") ? self.selectedItemFont : self.notSelectedItemFont
+        self.twentyFour.font = (self.hourFormat == "24") ? self.selectedItemFont : self.notSelectedItemFont
+        
+        let topColor = UIColor.init(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 0.15)
+        let hourLabel = (self.hourFormat == "12") ? self.twelve : self.twentyFour
+        hourLabel!.layer.cornerRadius = 10
+        hourLabel!.backgroundColor = topColor
+        hourLabel!.clipsToBounds = true
+        
+        updateUserDefaults()
+        reloadView()
+    }
+    
     @objc func metricLabelTapped(_ sender: UITapGestureRecognizer) {
         if (self.activityIndicator.isAnimating) {
             // ignore until previous action is not completed
@@ -780,6 +826,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         updateUserDefaults()
         
         reloadView()
+    }
+    
+    @objc func twelveLabelTapped(_ sender: UITapGestureRecognizer) {
+        self.hourFormat = "12"
+        updatePreferredHourFormat()
+    }
+    
+    @objc func twentyFourLabelTapped(_ sender: UITapGestureRecognizer) {
+        self.hourFormat = "24"
+        updatePreferredHourFormat()
     }
     
     @objc func imperialLabelTapped(_ sender: UITapGestureRecognizer) {
@@ -1033,7 +1089,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         //self.time1.text = String(self.time1.text!.prefix(5))
         let date = NSDate(timeIntervalSince1970: TimeInterval(time_dt))
         let dayTimePeriodFormatter = DateFormatter()
-        dayTimePeriodFormatter.dateFormat = "hh a"
+        dayTimePeriodFormatter.dateFormat = self.hourFormat == "12" ? "hh a" : "HH:mm"
         
         let dateString = dayTimePeriodFormatter.string(from: date as Date)
         label.text = dateString

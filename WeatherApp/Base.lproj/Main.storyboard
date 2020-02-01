@@ -130,6 +130,18 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="12h" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0ON-kJ-168" userLabel="Twelve">
+                                <rect key="frame" x="183" y="352" width="47" height="32"/>
+                                <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="28"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="24h" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xD0-wi-BqF" userLabel="TwentyFour">
+                                <rect key="frame" x="183" y="352" width="47" height="32"/>
+                                <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="28"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Wind: " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yyy-wh-zMF" userLabel="windLabel">
                                 <rect key="frame" x="192" y="352" width="28.333333333333343" height="31"/>
                                 <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="15"/>
@@ -213,7 +225,9 @@
                             <constraint firstItem="2EL-bi-2ui" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="100" id="6rh-O9-R5S"/>
                             <constraint firstItem="OHN-TZ-gKZ" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="7lj-An-QGA"/>
                             <constraint firstItem="11m-8d-Jb3" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="15" id="9Nk-aR-Ust"/>
+                            <constraint firstItem="xD0-wi-BqF" firstAttribute="leading" secondItem="0ON-kJ-168" secondAttribute="trailing" constant="10" id="9TI-gj-djr"/>
                             <constraint firstItem="dlc-Ns-m3t" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" constant="-70" id="9Tf-do-Vi9"/>
+                            <constraint firstItem="xD0-wi-BqF" firstAttribute="bottom" secondItem="LOG-QK-lh1" secondAttribute="bottom" constant="-50" id="BY7-bH-fh0"/>
                             <constraint firstItem="PJO-Cy-v6d" firstAttribute="top" secondItem="dPk-BG-6Sl" secondAttribute="bottom" constant="5" id="C91-qZ-mVh"/>
                             <constraint firstItem="uzK-Lp-UpC" firstAttribute="top" secondItem="11m-8d-Jb3" secondAttribute="top" id="DMU-O9-F2v"/>
                             <constraint firstItem="9yg-c8-mCy" firstAttribute="top" secondItem="qOY-FC-OO0" secondAttribute="bottom" constant="5" id="Fvt-5b-34a"/>
@@ -264,7 +278,9 @@
                             <constraint firstItem="T9o-co-wyM" firstAttribute="leading" secondItem="cK7-h7-TgK" secondAttribute="trailing" constant="10" id="k7I-Gl-4Fj"/>
                             <constraint firstItem="ubb-dJ-qfw" firstAttribute="leading" secondItem="0nB-ZM-CZJ" secondAttribute="leading" constant="3" id="mJb-1z-us1"/>
                             <constraint firstItem="LOG-QK-lh1" firstAttribute="top" secondItem="3eC-42-mgh" secondAttribute="bottom" constant="80" id="n3M-qG-Jgq"/>
+                            <constraint firstItem="0ON-kJ-168" firstAttribute="leading" secondItem="LOG-QK-lh1" secondAttribute="leading" constant="10" id="nKe-gM-dvU"/>
                             <constraint firstItem="c2k-d6-OEn" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="oVS-I3-SdP"/>
+                            <constraint firstItem="0ON-kJ-168" firstAttribute="bottom" secondItem="LOG-QK-lh1" secondAttribute="bottom" constant="-50" id="pSa-Jh-1Kl"/>
                             <constraint firstItem="Ysd-cz-5Jk" firstAttribute="leading" secondItem="9yg-c8-mCy" secondAttribute="leading" id="pgA-Rk-phl"/>
                             <constraint firstItem="uzK-Lp-UpC" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" constant="-20" id="q23-yi-ygW"/>
                             <constraint firstItem="b0z-HS-QCA" firstAttribute="leading" secondItem="uzK-Lp-UpC" secondAttribute="leading" constant="-5" id="ro6-LW-0lz"/>
@@ -315,6 +331,8 @@
                         <outlet property="time4" destination="nzT-Gq-noQ" id="q3j-95-vBy"/>
                         <outlet property="time5" destination="F9b-Vp-D59" id="AFA-Q1-95W"/>
                         <outlet property="tomorrowLabel" destination="Q4L-Vk-15I" id="nEC-1Q-94M"/>
+                        <outlet property="twelve" destination="0ON-kJ-168" id="mHH-HW-qcv"/>
+                        <outlet property="twentyFour" destination="xD0-wi-BqF" id="uTV-tO-svQ"/>
                         <outlet property="windLabel" destination="yyy-wh-zMF" id="XCY-Q5-oge"/>
                     </connections>
                 </viewController>
