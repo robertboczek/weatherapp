@@ -915,6 +915,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         
         updateUserDefaults()
         
+        loadBannerAd()
+        
         reloadView()
     }
     
@@ -928,6 +930,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         updateDayFonts()
         
         updateUserDefaults()
+        
+        loadBannerAd()
         
         reloadView()
     }
