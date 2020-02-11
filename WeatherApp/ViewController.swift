@@ -282,6 +282,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.mainView.addGestureRecognizer(right)
         self.mainView.addGestureRecognizer(left)
         
+        let down = UISwipeGestureRecognizer(target : self, action : #selector(self.reloadView))
+        down.direction = .down
+        self.mainView.addGestureRecognizer(down)
+        
         updatePreferredHourFormat()
         
         reloadView()
@@ -404,6 +408,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         return readStringProject
     }
     
+    @objc
     func reloadView() {
         print("Reload the view.")
         updateItemsVisibility(isHidden: true)
@@ -461,14 +466,21 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-      let location = locations[0]
-      lat = location.coordinate.latitude
-      lon = location.coordinate.longitude
-      //print("lat: \(lat)")
-      //print("lat: \(lon)")
-      updateWeather(location: location)
+      print("Location update..")
+      if let location = locations.first {
+        lat = location.coordinate.latitude
+        lon = location.coordinate.longitude
+        updateWeather(location: location)
+      }
+      self.activityIndicator.stopAnimating()
     }
     
+    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+        self.locationManager.stopUpdatingLocation()
+        self.activityIndicator.stopAnimating()
+        let errorFormatString = NSLocalizedString("location lookup failure", comment: "Error")
+        self.locationLabel.text = errorFormatString
+    }
     
     func updateWeather(location: CLLocation?) {
         let endpoint = "forecast" //always query forecast endpoint
@@ -476,15 +488,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         let geocoder = CLGeocoder()
         
         if (location != nil) {
-        // Look up the location and pass it to the completion handler
-        geocoder.reverseGeocodeLocation(location!,
+          // Look up the location and pass it to the completion handler
+          geocoder.reverseGeocodeLocation(location!,
                     completionHandler: { (placemarks, error) in
             if error == nil {
                 self.locationLabel.text = placemarks?[0].locality
                 //self.locationLabel.text = "New York"
             } else {
                 print("Failed to get location placemarks")
-                self.locationLabel.text = "Failed to get location placemark"
+                let errorFormatString = NSLocalizedString("location lookup failure", comment: "Error")
+                self.locationLabel.text = errorFormatString
             }
             self.locationLabel.isHidden = false
         })
@@ -512,6 +525,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         }*/
     Alamofire.request("http://api.openweathermap.org/data/2.5/\(endpoint)?lat=\(lat)&lon=\(lon)&appid=\(apiKey)&units=\(apiUnit)").responseJSON {
           response in
+          switch response.result {
+            case .failure(let error):
+              let errorFormatString = NSLocalizedString("api error msg", comment: "Error")
+              self.time2.text = errorFormatString
+              self.time2.isHidden = false
+              //self.conditionLabel.font = self.notSelectedItemFont
+              self.locationManager.stopUpdatingLocation()
+              self.activityIndicator.stopAnimating()
+            default:
+            print("Success result from Weather API")
+          }
         if let responseStr = response.result.value {
             print("Calling weather service")
             let jsonResponse = JSON(responseStr)
@@ -671,10 +695,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
 
         locationManager.stopUpdatingLocation()
         self.activityIndicator.stopAnimating()
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print(error.localizedDescription)
     }
     
     func setBlueGradientBackground() {

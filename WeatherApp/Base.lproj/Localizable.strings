@@ -44,3 +44,7 @@
 "moderate snow" = "moderate snow";
 
 "heavy intensity snow" = "heavy intensity snow";
+
+"location lookup failure" = "Failed getting location...";
+
+"api error msg" = "Scroll down to reload";
