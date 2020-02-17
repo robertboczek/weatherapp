@@ -20,8 +20,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     @IBOutlet weak var searchButton: UIButton!
     @IBOutlet weak var searchButtonText: UIButton!
     
+    @IBOutlet weak var favoritesButton: UIButton!
+    @IBOutlet weak var favoritesListButton: UIButton!
+    
     @IBOutlet weak var searchCityLabel: UILabel!
     @IBOutlet weak var searchCitiesTableView: UITableView!
+    
+    @IBOutlet weak var favoritiesView: UITableView!
     
     @IBOutlet var mainView: UIView!
     
@@ -73,7 +78,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     var citiesDict = [[String]]()
     var matchingCitiesDict = [[String]]()
     var matchingCities: [String] = Array()
-    //var possibleMatches: [JSON] = []
+    
+    // locations added to favorities
+    var favoritiesDict = [[String]]()
     
     var apiUnit: String
     var apiEndpoint: String
@@ -132,6 +139,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         hourFormat = savedHourFormat
         print("Loaded default hour format: \(savedHourFormat)")
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        
+        self.loadFavoritiesConfig()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -146,7 +155,35 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         let savedHourFormat = UserDefaults.standard.string(forKey: "hourFormat") ?? "12"
         hourFormat = savedHourFormat
         print("Loaded default hour format: \(savedHourFormat)")
+        
         super.init(coder: aDecoder)
+    }
+    
+    func loadFavoritiesConfig() {
+        // load favorities
+        self.favoritiesDict = [[String]]()
+        let savedLocations = UserDefaults.standard.string(forKey: "favoritiesLocations")
+        if (savedLocations == nil) {
+            return
+        }
+        let savedLocationsArray = savedLocations!.components(separatedBy: "|")
+        var i = 0
+        for location in savedLocationsArray {
+          if (location != "") {
+            let locationDetailsArray = location.components(separatedBy: ";")
+            self.favoritiesDict[i] = [locationDetailsArray[0], locationDetailsArray[1], locationDetailsArray[2]]
+            i += 1
+          }
+        }
+    }
+    
+    func savedFavorities() {
+        var configString = ""
+        for favorities in favoritiesDict {
+            configString += favorities[0] + ";" + favorities[1] + ";" + favorities[2] + "|"
+        }
+        print("Saving config:", configString)
+        UserDefaults.standard.set(configString, forKey: "favoritiesLocations")
     }
     
     override func viewDidLoad() {
@@ -167,10 +204,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         searchCitiesTableView.delegate = self
         searchCitiesTableView.dataSource = self
         
+        favoritiesView.delegate = self
+        favoritiesView.dataSource = self
+        
         citySearchInputText.isHidden = true
         searchCityLabel.isHidden = true
         currentLocationButton.isHidden = true
         searchCitiesTableView.isHidden = true
+        
+        favoritiesView.isHidden = true
         
         updateDayFonts()
         
@@ -195,6 +237,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.conditionLabel.adjustsFontSizeToFitWidth = true
         self.conditionLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
         self.conditionLabel.numberOfLines = 0
+        
+        let favoriteButtonTap = UITapGestureRecognizer(target: self, action: #selector(self.favoriteButtonTapped(_:)))
+        self.favoritesButton.isUserInteractionEnabled = true
+        self.favoritesButton.addGestureRecognizer(favoriteButtonTap)
+        
+        let favoriteTap = UITapGestureRecognizer(target: self, action: #selector(self.favoriteTapped(_:)))
+        self.favoritesListButton.isUserInteractionEnabled = true
+        self.favoritesListButton.addGestureRecognizer(favoriteTap)
         
         let metricLabelTap = UITapGestureRecognizer(target: self, action: #selector(self.metricLabelTapped(_:)))
         self.metricLabel.isUserInteractionEnabled = true
@@ -286,6 +336,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         down.direction = .down
         self.mainView.addGestureRecognizer(down)
         
+        let favoritesListLabel = NSLocalizedString("favorites list", comment: "Favorites List")
+        self.favoritesListButton.setTitle(favoritesListLabel, for: .normal)
+        
         updatePreferredHourFormat()
         
         reloadView()
@@ -354,10 +407,30 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if (tableView == self.favoritiesView) {
+            print("Favorites View")
+            
+            return self.favoritiesDict.count
+        }
+        
         return matchingCities.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if (tableView == self.favoritiesView) {
+            print("Favorites View2")
+            
+            var cell = tableView.dequeueReusableCell(withIdentifier: "City")
+            if cell == nil {
+                cell = UITableViewCell(style: .default, reuseIdentifier: "City")
+            }
+            
+            let location = self.favoritiesDict[indexPath.row]
+            
+            print("Location: ", location[0])
+            cell?.textLabel?.text = location[0]
+            return cell!
+        }
         var cell = tableView.dequeueReusableCell(withIdentifier: "City")
         if cell == nil {
             cell = UITableViewCell(style: .default, reuseIdentifier: "City")
@@ -368,6 +441,23 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        if (tableView == self.favoritiesView) {
+            print("Favorites View3")
+            
+            updateItemsVisibility(isHidden: true)
+            
+            self.favoritiesView.isHidden = true
+            
+            let location = self.favoritiesDict[indexPath.row]
+            self.locationLabel.text = location[0]
+            self.lon = Double(location[1])!
+            self.lat = Double(location[2])!
+            
+            self.shouldCheckLocation = false
+            reloadView()
+            return
+        }
         
         print("Selected Row: \(indexPath.row)")
         
@@ -428,6 +518,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     
     func updateItemsVisibility(isHidden: Bool) {
         self.conditionImageView.isHidden = isHidden
+        self.nowLabel.isHidden = isHidden
+        self.dayLabel.isHidden = isHidden
         self.tomorrowLabel.isHidden = isHidden
         self.temperatureLabel.isHidden = isHidden
         self.locationLabel.isHidden = isHidden
@@ -437,12 +529,26 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.imperialLabel.isHidden = isHidden
         self.searchButton.isHidden = isHidden
         self.searchButtonText.isHidden = isHidden
+        self.favoritesListButton.isHidden = isHidden
+        self.favoritesButton.isHidden = isHidden
         
         self.windLabel.isHidden = isHidden
         self.pressureLabel.isHidden = isHidden
         self.humidityLabel.isHidden = isHidden
         self.additionalInfoLabel1.isHidden = isHidden
         self.additionalInfoLabel2.isHidden = isHidden
+        
+        self.time1.isHidden = isHidden
+        self.time2.isHidden = isHidden
+        self.time3.isHidden = isHidden
+        self.time4.isHidden = isHidden
+        self.time5.isHidden = isHidden
+        
+        self.conditionSmall1.isHidden = isHidden
+        self.conditionSmall2.isHidden = isHidden
+        self.conditionSmall3.isHidden = isHidden
+        self.conditionSmall4.isHidden = isHidden
+        self.conditionSmall5.isHidden = isHidden
         
         self.sunriseLabel.isHidden = isHidden
         self.sunsetLabel.isHidden = isHidden
@@ -493,7 +599,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
                     completionHandler: { (placemarks, error) in
             if error == nil {
                 self.locationLabel.text = placemarks?[0].locality
-                //self.locationLabel.text = "New York"
             } else {
                 print("Failed to get location placemarks")
                 let errorFormatString = NSLocalizedString("location lookup failure", comment: "Error")
@@ -502,6 +607,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             self.locationLabel.isHidden = false
         })
         }
+        self.updateStarImage()
         
         //let todayDate = Date()
         //let nowTimestamp = Int(todayDate.timeIntervalSince1970)
@@ -832,6 +938,55 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         
         updateUserDefaults()
         reloadView()
+    }
+    
+    @objc func favoriteTapped(_ sender: UITapGestureRecognizer) {
+        updateItemsVisibility(isHidden: true)
+        self.shouldCheckLocation = false
+        self.favoritiesView.reloadData()
+        self.favoritiesView.isHidden = false
+    }
+    
+    @objc func favoriteButtonTapped(_ sender: UITapGestureRecognizer) {
+        let location = self.locationLabel.text!
+        var locationFavorited = false
+        var index = 0
+        var i = 0
+        for loc in self.favoritiesDict {
+            if (loc[0] == location) {
+              locationFavorited = true
+              index = i
+            }
+            i += 1
+        }
+        if (locationFavorited) {
+          self.favoritiesDict.remove(at: index)
+          savedFavorities()
+          
+        } else {
+          self.favoritiesDict.append([location, String(self.lat), String(self.lon)])
+          savedFavorities()
+        }
+        updateStarImage()
+    }
+    
+    @objc func updateStarImage() {
+        let location = self.locationLabel.text!
+        var locationFavorited = false
+        var i = 0
+        for loc in self.favoritiesDict {
+            if (loc[0] == location) {
+              locationFavorited = true
+            }
+            i += 1
+        }
+        if (locationFavorited) {
+          self.favoritesButton.setImage(UIImage(systemName: "star.fill"), for: .normal)
+        } else {
+          self.favoritesButton.setImage(UIImage(systemName: "star"), for: .normal)
+        }
+        
+        self.favoritesListButton.isHidden = self.favoritiesDict.count > 0
     }
     
     @objc func metricLabelTapped(_ sender: UITapGestureRecognizer) {
