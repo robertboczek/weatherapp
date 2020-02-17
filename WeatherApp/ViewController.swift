@@ -332,7 +332,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.mainView.addGestureRecognizer(right)
         self.mainView.addGestureRecognizer(left)
         
-        let down = UISwipeGestureRecognizer(target : self, action : #selector(self.reloadView))
+        let down = UISwipeGestureRecognizer(target : self, action : #selector(self.reloadViewConditonal))
         down.direction = .down
         self.mainView.addGestureRecognizer(down)
         
@@ -502,6 +502,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     @objc
+    func reloadViewConditonal() {
+        // reload weather view only if main view is visible
+        if (self.conditionImageView.isHidden == false) {
+          reloadView()
+        }
+    }
+    
+    @objc
     func reloadView() {
         print("Reload the view.")
         updateItemsVisibility(isHidden: true)
@@ -517,8 +525,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             
             locationManager.startUpdatingLocation()
         }
-        
-        self.favoritesListButton.isHidden = (self.favoritiesDict.count == 0)
     }
     
     func updateItemsVisibility(isHidden: Bool) {
@@ -864,9 +870,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         //print("Active")
         
         // default to old view
-        citySearchInputText.isHidden = true
-        searchCityLabel.isHidden = true
-        currentLocationButton.isHidden = true
+        //citySearchInputText.isHidden = true
+        //searchCityLabel.isHidden = true
+        //currentLocationButton.isHidden = true
         
         //self.reloadView()
     }

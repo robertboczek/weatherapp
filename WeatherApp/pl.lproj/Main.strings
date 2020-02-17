@@ -27,7 +27,7 @@
 "b84-5x-NLj.text" = "°C";
 
 /* Class = "UIButton"; normalTitle = "Check Current Location"; ObjectID = "c2k-d6-OEn"; */
-"c2k-d6-OEn.normalTitle" = "Twoja lokalizacja";
+"c2k-d6-OEn.normalTitle" = " Twoja lokalizacja";
 
 /* Class = "UILabel"; text = "Sunny"; ObjectID = "dlc-Ns-m3t"; */
 "dlc-Ns-m3t.text" = "Słonecznie";
