@@ -208,9 +208,9 @@
                                 <state key="normal" title="Search"/>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c2k-d6-OEn">
-                                <rect key="frame" x="68" y="144" width="278.33333333333331" height="27"/>
+                                <rect key="frame" x="77.666666666666686" y="144" width="259" height="39"/>
                                 <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="24"/>
-                                <state key="normal" title=" Check Current Location" image="flag" catalog="system"/>
+                                <state key="normal" title=" Check Current Location"/>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="6oi-tt-dgs" userLabel="citiesListTableView">
                                 <rect key="frame" x="0.0" y="169" width="614" height="500"/>
@@ -220,7 +220,7 @@
                                 </constraints>
                             </tableView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="SFz-Lm-U3d" userLabel="favoritesListTableView">
-                                <rect key="frame" x="25" y="181" width="364" height="555"/>
+                                <rect key="frame" x="25" y="193" width="364" height="543"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                             </tableView>
                         </subviews>
@@ -365,7 +365,6 @@
     </scenes>
     <resources>
         <image name="01d.png" width="500" height="500"/>
-        <image name="flag" catalog="system" width="64" height="60"/>
         <image name="s_01n.png" width="70" height="70"/>
         <image name="s_10d.png" width="70" height="70"/>
         <image name="s_13d.png" width="70" height="67"/>

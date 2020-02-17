@@ -960,6 +960,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.searchButton.isHidden = false
         self.searchButtonText.isHidden = false
         currentLocationButton.isHidden = false
+        
+        loadBannerAd()
     }
     
     @objc func favoriteButtonTapped(_ sender: UITapGestureRecognizer) {
@@ -1139,6 +1141,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         
         citySearchInputText.text = ""
         searchRecords(citySearchInputText)
+        
+        loadBannerAd()
     }
     
     @objc func currentLocationButtonTapped(_ sender: UITapGestureRecognizer) {
