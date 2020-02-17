@@ -169,12 +169,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             return
         }
         let savedLocationsArray = savedLocations!.components(separatedBy: "|")
-        var i = 0
         for location in savedLocationsArray {
           if (location != "") {
             let locationDetailsArray = location.components(separatedBy: ";")
-            self.favoritiesDict[i] = [locationDetailsArray[0], locationDetailsArray[1], locationDetailsArray[2]]
-            i += 1
+            self.favoritiesDict.append([locationDetailsArray[0], locationDetailsArray[1], locationDetailsArray[2]])
           }
         }
     }
@@ -953,6 +951,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.shouldCheckLocation = false
         self.favoritiesView.reloadData()
         self.favoritiesView.isHidden = false
+        self.searchButton.isHidden = false
+        self.searchButtonText.isHidden = false
         currentLocationButton.isHidden = false
     }
     
@@ -1129,6 +1129,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         citySearchInputText.isHidden = false
         searchCityLabel.isHidden = false
         searchCitiesTableView.isHidden = false
+        favoritiesView.isHidden = true
         
         citySearchInputText.text = ""
         searchRecords(citySearchInputText)
