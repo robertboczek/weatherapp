@@ -683,6 +683,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     func updateWeather(json: JSON) {
+        // update weather only if in the meantime user did not open other views
+        if (self.favoritiesView.isHidden == false || self.searchCitiesTableView.isHidden == false) {
+            return
+        }
         let jsonResponse = json
         
         //print(json)
