@@ -157,6 +157,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         print("Loaded default hour format: \(savedHourFormat)")
         
         super.init(coder: aDecoder)
+        
+        loadFavoritiesConfig()
     }
     
     func loadFavoritiesConfig() {
@@ -447,14 +449,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             
             updateItemsVisibility(isHidden: true)
             
+            currentLocationButton.isHidden = true
             self.favoritiesView.isHidden = true
             
             let location = self.favoritiesDict[indexPath.row]
+            print(location)
             self.locationLabel.text = location[0]
-            self.lon = Double(location[1])!
-            self.lat = Double(location[2])!
+            self.lat = Double(location[1])!
+            self.lon = Double(location[2])!
             
             self.shouldCheckLocation = false
+            clearCache()
             reloadView()
             return
         }
@@ -514,6 +519,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             
             locationManager.startUpdatingLocation()
         }
+        
+        self.favoritesListButton.isHidden = (self.favoritiesDict.count == 0)
     }
     
     func updateItemsVisibility(isHidden: Bool) {
@@ -529,7 +536,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.imperialLabel.isHidden = isHidden
         self.searchButton.isHidden = isHidden
         self.searchButtonText.isHidden = isHidden
-        self.favoritesListButton.isHidden = isHidden
+        self.favoritesListButton.isHidden = isHidden || (self.favoritiesDict.count == 0)
         self.favoritesButton.isHidden = isHidden
         
         self.windLabel.isHidden = isHidden
@@ -629,7 +636,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             //self.updateWeather(json: jsonResponse)
             //return
         }*/
-    Alamofire.request("http://api.openweathermap.org/data/2.5/\(endpoint)?lat=\(lat)&lon=\(lon)&appid=\(apiKey)&units=\(apiUnit)").responseJSON {
+        print("Lat: ", lat, lon)
+        Alamofire.request("http://api.openweathermap.org/data/2.5/\(endpoint)?lat=\(lat)&lon=\(lon)&appid=\(apiKey)&units=\(apiUnit)").responseJSON {
           response in
           switch response.result {
             case .failure(let error):
@@ -945,6 +953,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.shouldCheckLocation = false
         self.favoritiesView.reloadData()
         self.favoritiesView.isHidden = false
+        currentLocationButton.isHidden = false
     }
     
     @objc func favoriteButtonTapped(_ sender: UITapGestureRecognizer) {
@@ -986,7 +995,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
           self.favoritesButton.setImage(UIImage(systemName: "star"), for: .normal)
         }
         
-        self.favoritesListButton.isHidden = self.favoritiesDict.count > 0
+        self.favoritesListButton.isHidden = (self.favoritiesDict.count == 0)
     }
     
     @objc func metricLabelTapped(_ sender: UITapGestureRecognizer) {
@@ -1132,6 +1141,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         searchCityLabel.isHidden = true
         searchCitiesTableView.isHidden = true
         currentLocationButton.isHidden = true
+        favoritiesView.isHidden = true
         citySearchInputText.endEditing(true)
         updateItemsVisibility(isHidden: false)
         citySearchInputText.endEditing(true)
