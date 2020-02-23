@@ -603,6 +603,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
                     completionHandler: { (placemarks, error) in
             if error == nil {
                 self.locationLabel.text = placemarks?[0].locality
+                self.updateStarImage()
             } else {
                 print("Failed to get location placemarks")
                 let errorFormatString = NSLocalizedString("location lookup failure", comment: "Error")
@@ -611,7 +612,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             self.locationLabel.isHidden = false
         })
         }
-        self.updateStarImage()
         Alamofire.request("http://api.openweathermap.org/data/2.5/\(endpoint)?lat=\(lat)&lon=\(lon)&appid=\(apiKey)&units=\(apiUnit)").responseJSON {
           response in
           switch response.result {
@@ -629,25 +629,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             print("Calling weather service")
             let jsonResponse = JSON(responseStr)
             self.timezone = jsonResponse["city"]["timezone"].int!
-            // cache result to reduce number of service calls
-            /*if (self.apiEndpoint == "forecast") {
-                if (self.apiUnit == "imperial") {
-                    self.cachedForecastF = jsonResponse
-                    self.lastForecastCallTimestampF = nowTimestamp
-                } else {
-                    self.cachedForecastC = jsonResponse
-                    self.lastForecastCallTimestampC = nowTimestamp
-                }
-            } else {
-                if (self.apiUnit == "imperial") {
-                    self.cachedWeatherF = jsonResponse
-                    self.lastWeatherCallTimestampF = nowTimestamp
-                } else {
-                    self.cachedWeatherC = jsonResponse
-                    self.lastWeatherCallTimestampC = nowTimestamp
-                }
-            }*/
-            
             self.updateWeather(json: jsonResponse)
         }
         }
@@ -938,6 +919,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         var locationFavorited = false
         var i = 0
         
+        print("Update favorites!!", location)
         print(self.favoritiesDict)
         for loc in self.favoritiesDict {
             if (loc[0] == location) {
