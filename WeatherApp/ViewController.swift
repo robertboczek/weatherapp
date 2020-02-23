@@ -408,8 +408,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if (tableView == self.favoritiesView) {
-            print("Favorites View")
-            
             return self.favoritiesDict.count
         }
         
@@ -418,8 +416,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if (tableView == self.favoritiesView) {
-            print("Favorites View2")
-            
             var cell = tableView.dequeueReusableCell(withIdentifier: "City")
             if cell == nil {
                 cell = UITableViewCell(style: .default, reuseIdentifier: "City")
@@ -427,7 +423,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             
             let location = self.favoritiesDict[indexPath.row]
             
-            print("Location: ", location[0])
+            //print("Location: ", location[0])
             cell?.textLabel?.text = location[0]
             return cell!
         }
@@ -443,8 +439,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         tableView.deselectRow(at: indexPath, animated: true)
         
         if (tableView == self.favoritiesView) {
-            print("Favorites View3")
-            
             updateItemsVisibility(isHidden: true)
             
             currentLocationButton.isHidden = true
@@ -583,7 +577,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-      print("Location update..")
       if let location = locations.first {
         lat = location.coordinate.latitude
         lon = location.coordinate.longitude
@@ -619,28 +612,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         })
         }
         self.updateStarImage()
-        
-        //let todayDate = Date()
-        //let nowTimestamp = Int(todayDate.timeIntervalSince1970)
-        
-        /*if (shouldCheckLocation && (self.apiUnit == "imperial" && self.apiEndpoint == "forecast" && cachedForecastF != nil && nowTimestamp - lastForecastCallTimestampF <  3600) ||
-            (self.apiUnit == "metric" && self.apiEndpoint == "forecast" && cachedForecastC != nil && nowTimestamp - lastForecastCallTimestampC <  3600) ||
-            (self.apiUnit == "imperial" && self.apiEndpoint == "weather" && cachedWeatherF != nil &&
-            nowTimestamp - lastWeatherCallTimestampF < 3600) ||
-            (self.apiUnit == "metric" && self.apiEndpoint == "weather" && cachedWeatherC != nil &&
-                nowTimestamp - lastWeatherCallTimestampC < 3600)) {
-            if (self.apiUnit == "imperial") {
-                jsonResponse = (self.apiEndpoint == "forecast") ? cachedForecastF! : cachedWeatherF!
-            } else {
-                jsonResponse = (self.apiEndpoint == "forecast") ? cachedForecastC! : cachedWeatherC!
-            }
-            print("Using cached value")
-            
-            // disable cache for now!!
-            //self.updateWeather(json: jsonResponse)
-            //return
-        }*/
-        print("Lat: ", lat, lon)
         Alamofire.request("http://api.openweathermap.org/data/2.5/\(endpoint)?lat=\(lat)&lon=\(lon)&appid=\(apiKey)&units=\(apiUnit)").responseJSON {
           response in
           switch response.result {
@@ -688,8 +659,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             return
         }
         let jsonResponse = json
-        
-        //print(json)
+
         let dateFormatter = DateFormatter()
         var todayDate = Date()
         let timezoneOffset =  TimeZone.current.secondsFromGMT()
@@ -719,40 +689,21 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         var i = 0
         
         var rowsForToday = 0
-        //print("today date")
-        //print(todayDate.timeIntervalSince1970)
+        
         todayDate = Date(timeIntervalSince1970: TimeInterval(currentTime))
         for weatherInstance in jsonResponse["list"].array! {
-          //print("Iterate jsonResponse")
           dt = weatherInstance["dt"]
-          /*let t1 = dt.int32Value + Int32(self.timezone) - Int32(timezoneOffset)
-          let date = Date(timeIntervalSince1970: TimeInterval(t1))
-          let currentDate = Date(timeIntervalSince1970: TimeInterval(todayDate.timeIntervalSince1970 - Double(timezoneOffset)))
-          if (Calendar.current.isDate(currentDate, inSameDayAs: date)) {
-            rowsForToday += 1
-          }*/
           
           let t1 = dt.intValue + Int(self.timezone) - Int(timezoneOffset)
-          //print("timezoneOffset")
-          //print(timezoneOffset)
-          var date = NSDate(timeIntervalSince1970: TimeInterval(t1))
-          //print("today's date")
-          //print(dayTimePeriodFormatter.string(from: todayDate as Date))
+          let date = NSDate(timeIntervalSince1970: TimeInterval(t1))
+
           dayTimePeriodFormatter.dateFormat = "dd"
-          //print(t1)
-          //print(dayTimePeriodFormatter.string(from: date as Date))
+            
           if (dayTimePeriodFormatter.string(from: date as Date) == dayTimePeriodFormatter.string(from: todayDate as Date)) {
-                //print(t1)
-                //print(dayTimePeriodFormatter.string(from: date as Date) + " " + dayTimePeriodFormatter.string(from: todayDate as Date))
             rowsForToday += 1
           }
         }
-        
-        //print("Rows For Today")
-        //print(rowsForToday)
-        
-        /*let t1 = todayDate.timeIntervalSince1970 + Double(self.timezone) - Double(timezoneOffset)
-        todayDate = Date(timeIntervalSince1970: t1)*/
+        print("rowsForToday", rowsForToday)
 
         var selectedFound = false
         
@@ -761,19 +712,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.totalItems = 0
         
         for weatherInstance in jsonResponse["list"].array! {
-            //print("Iterate jsonResponse")
             dt = weatherInstance["dt"]
-            //print(weatherInstance)
             
-            let t1 = dt.int32Value + Int32(self.timezone)
+            let t1 = dt.intValue + Int(self.timezone) - Int(timezoneOffset)
             let date = Date(timeIntervalSince1970: TimeInterval(t1))
             
             let dayTimePeriodFormatter = DateFormatter()
             dayTimePeriodFormatter.dateFormat = "dd"
             
             //print("X", Int(dayTimePeriodFormatter.string(from: date))!)
-            if (self.apiEndpoint == "forecast" && /*!Calendar.current.isDate(todayDate, inSameDayAs: date)*/ ((Int(dayTimePeriodFormatter.string(from: date as Date))! - 1 == Int(dayTimePeriodFormatter.string(from: todayDate))!) || (Int(dayTimePeriodFormatter.string(from: date as Date))! == 1 && date.timeIntervalSince1970 - todayDate.timeIntervalSince1970 < (86400 * 2) && Int(dayTimePeriodFormatter.string(from: todayDate))! != 1))) {
-                //print("YAY")
+            if (self.apiEndpoint == "forecast" && ((Int(dayTimePeriodFormatter.string(from: date as Date))! - 1 == Int(dayTimePeriodFormatter.string(from: todayDate))!) || (Int(dayTimePeriodFormatter.string(from: date as Date))! == 1 && date.timeIntervalSince1970 - todayDate.timeIntervalSince1970 < (86400 * 2) && Int(dayTimePeriodFormatter.string(from: todayDate))! != 1))) {
                 // we allow max 5 items
                 if (i % 2 == 0 && (i / 2) + 1 <= 5) {
                   fillCondition(index: (i / 2) + 1, conditionJSON: weatherInstance, selected: Int(dateFormatter.string(from: date))! >= 10 && !selectedFound)
@@ -782,14 +730,22 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
                   }
                 }
                 i = i + 1
-            } else if (self.apiEndpoint == "weather" && /*Calendar.current.isDate(todayDate, inSameDayAs: date)*/ Int(dayTimePeriodFormatter.string(from: date as Date)) == Int(dayTimePeriodFormatter.string(from: todayDate))! &&
-                rowsForToday >= 1
+            } else if (self.apiEndpoint == "weather" &&  Int(dayTimePeriodFormatter.string(from: date as Date)) == Int(dayTimePeriodFormatter.string(from: todayDate))! &&
+                rowsForToday > 1
             ) {
                 if (i < 5) {
                   // we allow max 5 items
                   fillCondition(index: i + 1, conditionJSON: weatherInstance, selected: (i == 0))
                   i = i + 1
                 }
+            } else if (
+                self.apiEndpoint == "weather" &&
+                i < 3 &&
+                rowsForToday == 1
+            ) {
+                // we allow max 5 items
+                fillCondition(index: i + 1, conditionJSON: weatherInstance, selected: (i == 0))
+                i = i + 1
             } else if (self.apiEndpoint == "weather" && rowsForToday < 1) {
                 dayLabel.isHidden = (rowsForToday < 1)
                 tomorrowLabelTapped(UITapGestureRecognizer.init())
@@ -809,14 +765,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             self.totalItems = 1
         }
         dayLabel.isHidden = (rowsForToday < 1)
-            
-        // update time
-        //dateFormatter.dateFormat = "HH:mm"
-        //let returnedDate = Date(timeIntervalSince1970: TimeInterval(dt.int32Value))
-        //self.nowLabel.text = dateFormatter.string(from: returnedDate)
 
         locationManager.stopUpdatingLocation()
         self.activityIndicator.stopAnimating()
+        updateStarImage()
     }
     
     func setBlueGradientBackground() {
@@ -863,22 +815,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     func updateUserDefaults() {
-        //print("Update defaults")
-        //print("Updating default temperature unit: \(self.apiUnit)")
         UserDefaults.standard.set(self.apiUnit, forKey: "temperatureUnit")
         UserDefaults.standard.set(self.apiEndpoint, forKey: "endpoint")
         UserDefaults.standard.set(self.hourFormat, forKey: "hourFormat")
     }
     
     @objc func applicationDidBecomeActive(notification: NSNotification) {
-        //print("Active")
-        
-        // default to old view
-        //citySearchInputText.isHidden = true
-        //searchCityLabel.isHidden = true
-        //currentLocationButton.isHidden = true
-        
-        //self.reloadView()
     }
     
     func updateDayFonts() {
@@ -995,6 +937,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         let location = self.locationLabel.text!
         var locationFavorited = false
         var i = 0
+        
+        print(self.favoritiesDict)
         for loc in self.favoritiesDict {
             if (loc[0] == location) {
               locationFavorited = true
