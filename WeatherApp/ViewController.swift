@@ -36,6 +36,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var dayLabel: UILabel!
     @IBOutlet weak var tomorrowLabel: UILabel!
+    @IBOutlet weak var dayAfterTomorrowLabel: UILabel!
     
     @IBOutlet weak var time1: UILabel!
     @IBOutlet weak var time2: UILabel!
@@ -101,15 +102,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     var lon = 19.944544
     var activityIndicator: NVActivityIndicatorView!
     let locationManager = CLLocationManager()
-    
-    /*var cachedForecastC : JSON? = nil
-    var lastForecastCallTimestampC = 0
-    var cachedForecastF : JSON? = nil
-    var lastForecastCallTimestampF = 0
-    var cachedWeatherC : JSON? = nil
-    var lastWeatherCallTimestampC = 0
-    var cachedWeatherF : JSON? = nil
-    var lastWeatherCallTimestampF = 0*/
     
     var time1JSON: JSON?
     var time2JSON: JSON?
@@ -190,12 +182,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         super.viewDidLoad()
         
         let fileContent = readDataFromFile(file: "worldcities")
-        //print(fileContent)
         
         //let content = "eddy,chung,loves,swift\nsecond,line,of, text" //string with CSV file content
         let parsedCSV: [[String]] = fileContent!.components(separatedBy: "\n").map{ $0.components(separatedBy: ",") }
-
-        print(parsedCSV[5][1])
         citiesDict = parsedCSV
         
         citySearchInputText.delegate = self
@@ -261,6 +250,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         let tomorrowLabelTap = UITapGestureRecognizer(target: self, action: #selector(self.tomorrowLabelTapped(_:)))
         self.tomorrowLabel.isUserInteractionEnabled = true
         self.tomorrowLabel.addGestureRecognizer(tomorrowLabelTap)
+        
+        let dayAfterTomorrowLabelTap = UITapGestureRecognizer(target: self, action: #selector(self.dayAfterTomorrowLabelTapped(_:)))
+        self.dayAfterTomorrowLabel.isUserInteractionEnabled = true
+        self.dayAfterTomorrowLabel.addGestureRecognizer(dayAfterTomorrowLabelTap)
         
         let twentyFourLabelTap = UITapGestureRecognizer(target: self, action: #selector(self.twentyFourLabelTapped(_:)))
         self.twentyFour.isUserInteractionEnabled = true
@@ -352,7 +345,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     @objc
     func leftSwipe() {
         resetSmallItems()
-        //print("swipe ", self.totalItems)
         self.index = self.index % self.totalItems + 1
         fillCondition(index: 1, conditionJSON: self.time1JSON, selected: self.index == 1)
         fillCondition(index: 2, conditionJSON: self.time2JSON, selected: self.index == 2)
@@ -368,7 +360,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         if (self.index == 0) {
             self.index = self.totalItems
         }
-        //print("swipe ", self.totalItems, self.index)
         fillCondition(index: 1, conditionJSON: self.time1JSON, selected: self.index == 1)
         fillCondition(index: 2, conditionJSON: self.time2JSON, selected: self.index == 2)
         fillCondition(index: 3, conditionJSON: self.time3JSON, selected: self.index == 3)
@@ -423,7 +414,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             
             let location = self.favoritiesDict[indexPath.row]
             
-            //print("Location: ", location[0])
             cell?.textLabel?.text = location[0]
             return cell!
         }
@@ -445,14 +435,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             self.favoritiesView.isHidden = true
             
             let location = self.favoritiesDict[indexPath.row]
-            print(location)
             self.locationLabel.text = location[0]
             self.lat = Double(location[1])!
             self.lon = Double(location[2])!
             
             self.shouldCheckLocation = false
-            clearCache()
-            reloadView()
+            updateWeather(location: nil)
             return
         }
         
@@ -463,7 +451,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         searchCityLabel.isHidden = true
         currentLocationButton.isHidden = true
         updateItemsVisibility(isHidden: false)
-        clearCache()
         
         let selectedRow = matchingCitiesDict[indexPath.row]
         
@@ -526,6 +513,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.nowLabel.isHidden = isHidden
         self.dayLabel.isHidden = isHidden
         self.tomorrowLabel.isHidden = isHidden
+        self.dayAfterTomorrowLabel.isHidden = isHidden
         self.temperatureLabel.isHidden = isHidden
         self.locationLabel.isHidden = isHidden
         self.conditionLabel.isHidden = isHidden
@@ -619,7 +607,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
               let errorFormatString = NSLocalizedString("api error msg", comment: "Error")
               self.time2.text = errorFormatString
               self.time2.isHidden = false
-              //self.conditionLabel.font = self.notSelectedItemFont
               self.locationManager.stopUpdatingLocation()
               self.activityIndicator.stopAnimating()
             default:
@@ -672,6 +659,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         var rowsForToday = 0
         
         todayDate = Date(timeIntervalSince1970: TimeInterval(currentTime))
+        var tomorrowDayOfMonth = 0;
         for weatherInstance in jsonResponse["list"].array! {
           dt = weatherInstance["dt"]
           
@@ -703,6 +691,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             
             //print("X", Int(dayTimePeriodFormatter.string(from: date))!)
             if (self.apiEndpoint == "forecast" && ((Int(dayTimePeriodFormatter.string(from: date as Date))! - 1 == Int(dayTimePeriodFormatter.string(from: todayDate))!) || (Int(dayTimePeriodFormatter.string(from: date as Date))! == 1 && date.timeIntervalSince1970 - todayDate.timeIntervalSince1970 < (86400 * 2) && Int(dayTimePeriodFormatter.string(from: todayDate))! != 1))) {
+                // we allow max 5 items
+                if (i % 2 == 0 && (i / 2) + 1 <= 5) {
+                  fillCondition(index: (i / 2) + 1, conditionJSON: weatherInstance, selected: Int(dateFormatter.string(from: date))! >= 10 && !selectedFound)
+                  if (Int(dateFormatter.string(from: date))! >= 10) {
+                    selectedFound = true
+                  }
+                }
+                if (tomorrowDayOfMonth == 0) {
+                  tomorrowDayOfMonth = Int(dayTimePeriodFormatter.string(from: date as Date))!
+                }
+                i = i + 1
+            } else if (self.apiEndpoint == "forecast2" && ((Int(dayTimePeriodFormatter.string(from: date as Date))! - 2 == Int(dayTimePeriodFormatter.string(from: todayDate))!) || (Int(dayTimePeriodFormatter.string(from: date as Date))! == 2 && tomorrowDayOfMonth == 1) || (Int(dayTimePeriodFormatter.string(from: date as Date))! == 1 && tomorrowDayOfMonth >= 28))) {
                 // we allow max 5 items
                 if (i % 2 == 0 && (i / 2) + 1 <= 5) {
                   fillCondition(index: (i / 2) + 1, conditionJSON: weatherInstance, selected: Int(dateFormatter.string(from: date))! >= 10 && !selectedFound)
@@ -827,26 +827,31 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
       self.metricLabel.font = (self.apiUnit == "metric") ? self.selectedItemFont : self.notSelectedItemFont
       
 
-      self.dayLabel.font = (self.apiEndpoint == "forecast") ? self.notSelectedItemFont : self.selectedItemFont
+      self.dayLabel.font = (self.apiEndpoint == "weather") ? self.selectedItemFont : self.notSelectedItemFont
       self.tomorrowLabel.font = (self.apiEndpoint == "forecast") ? self.selectedItemFont : self.notSelectedItemFont
+      self.dayAfterTomorrowLabel.font = (self.apiEndpoint == "forecast2") ? self.selectedItemFont : self.notSelectedItemFont
+    
+      self.dayLabel.backgroundColor = nil
+      self.dayLabel.layer.cornerRadius = 0
+      self.dayLabel.clipsToBounds = false
+    
+      self.tomorrowLabel.backgroundColor = nil
+      self.tomorrowLabel.layer.cornerRadius = 0
+      self.tomorrowLabel.clipsToBounds = false
         
+      self.dayAfterTomorrowLabel.backgroundColor = nil
+      self.dayAfterTomorrowLabel.layer.cornerRadius = 0
+      self.dayAfterTomorrowLabel.clipsToBounds = false
+
+      var selectedLabel = self.dayAfterTomorrowLabel
       if (self.apiEndpoint == "forecast") {
-          self.dayLabel.backgroundColor = nil
-          self.dayLabel.layer.cornerRadius = 0
-          self.dayLabel.clipsToBounds = false
-          
-          self.tomorrowLabel.layer.cornerRadius = 10
-          self.tomorrowLabel.backgroundColor = topColor
-          self.tomorrowLabel.clipsToBounds = true
-      } else {
-          self.dayLabel.layer.cornerRadius = 10
-          self.dayLabel.backgroundColor = topColor
-          self.dayLabel.clipsToBounds = true
-          
-          self.tomorrowLabel.backgroundColor = nil
-          self.tomorrowLabel.layer.cornerRadius = 0
-          self.tomorrowLabel.clipsToBounds = false
+        selectedLabel = self.tomorrowLabel
+      } else if (self.apiEndpoint == "weather") {
+        selectedLabel = self.dayLabel
       }
+      selectedLabel!.layer.cornerRadius = 10
+      selectedLabel!.backgroundColor = topColor
+      selectedLabel!.clipsToBounds = true
     }
     
     func updateHourFonts(index: Int) {
@@ -920,7 +925,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         var i = 0
         
         print("Update favorites!!", location)
-        print(self.favoritiesDict)
         for loc in self.favoritiesDict {
             if (loc[0] == location) {
               locationFavorited = true
@@ -941,7 +945,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             // ignore until previous action is not completed
             return
         }
-        //print("metricLabelTapped")
         self.apiUnit = "metric"
         updateDayFonts()
         
@@ -965,7 +968,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             // ignore until previous action is not completed
             return
         }
-        //print("imperialLabelTapped")
         self.apiUnit = "imperial"
         updateDayFonts()
         
@@ -1006,7 +1008,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     @objc func time1LabelTap(_ sender: UITapGestureRecognizer) {
-        //print("time1 tap")
         conditionSmallTapped(index: 1)
     }
     
@@ -1031,7 +1032,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             // ignore until previous action is not completed
             return
         }
-        //print("todayLabelTapped")
         self.apiEndpoint = "weather"
         updateDayFonts()
         
@@ -1047,8 +1047,22 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             // ignore until previous action is not completed
             return
         }
-        //print("tomorrowLabelTapped")
         self.apiEndpoint = "forecast"
+        updateDayFonts()
+        
+        updateUserDefaults()
+        
+        loadBannerAd()
+        
+        reloadView()
+    }
+    
+    @objc func dayAfterTomorrowLabelTapped(_ sender: UITapGestureRecognizer) {
+        if (self.activityIndicator.isAnimating) {
+            // ignore until previous action is not completed
+            return
+        }
+        self.apiEndpoint = "forecast2"
         updateDayFonts()
         
         updateUserDefaults()
@@ -1086,7 +1100,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         citySearchInputText.endEditing(true)
         updateItemsVisibility(isHidden: false)
         citySearchInputText.endEditing(true)
-        clearCache()
         
         shouldCheckLocation = true
         reloadView()
@@ -1095,13 +1108,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
         return true
-    }
-    
-    func clearCache() {
-        /*cachedForecastC = nil
-        cachedForecastF = nil
-        cachedWeatherC = nil
-        cachedWeatherF = nil*/
     }
     
     func fillCondition(index: Int, conditionJSON: JSON?, selected: Bool) {
@@ -1142,6 +1148,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         let dateFormatter = DateFormatter()
         let todayDate = Date()
         let tomorrowDate = Calendar.current.date(byAdding: .day, value: 1, to: todayDate)!
+        let dayAfterTomorrowDate = Calendar.current.date(byAdding: .day, value: 2, to: todayDate)!
         
         dateFormatter.dateFormat = "HH"
         //print(conditionJSON)
@@ -1232,6 +1239,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         let timeOfTheDayString = dayTimePeriodFormatter.string(from: date as Date)
         
         self.tomorrowLabel.text = dateFormatter.string(from: tomorrowDate)
+        self.dayAfterTomorrowLabel.text = dateFormatter.string(from: dayAfterTomorrowDate)
 
         //let suffix = iconName.suffix(1)
         // show night or day background depending on the local time in the place
