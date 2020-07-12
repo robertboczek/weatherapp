@@ -38,6 +38,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     @IBOutlet weak var tomorrowLabel: UILabel!
     @IBOutlet weak var dayAfterTomorrowLabel: UILabel!
     
+    @IBOutlet weak var goBack: UIButton!
+    
     @IBOutlet weak var time1: UILabel!
     @IBOutlet weak var time2: UILabel!
     @IBOutlet weak var time3: UILabel!
@@ -201,6 +203,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         currentLocationButton.isHidden = true
         searchCitiesTableView.isHidden = true
         
+        goBack.isHidden = true
+        
         favoritiesView.isHidden = true
         
         updateDayFonts()
@@ -234,6 +238,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         let favoriteTap = UITapGestureRecognizer(target: self, action: #selector(self.favoriteTapped(_:)))
         self.favoritesListButton.isUserInteractionEnabled = true
         self.favoritesListButton.addGestureRecognizer(favoriteTap)
+        
+        let goBackTap = UITapGestureRecognizer(target: self, action: #selector(self.goBackTapped(_:)))
+        self.goBack.isUserInteractionEnabled = true
+        self.goBack.addGestureRecognizer(goBackTap)
         
         let metricLabelTap = UITapGestureRecognizer(target: self, action: #selector(self.metricLabelTapped(_:)))
         self.metricLabel.isUserInteractionEnabled = true
@@ -493,8 +501,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     @objc
     func reloadView() {
         print("Reload the view.")
+        updateSearchScreenItemsVisibility(isHidden: true)
+        updateFavoritesScreenItemsVisibility(isHidden: true)
         updateItemsVisibility(isHidden: true)
-        updateConditionComponents(isHidden: true)
         self.dayLabel.isHidden = true
         
         self.activityIndicator.startAnimating()
@@ -508,7 +517,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         }
     }
     
-    func updateItemsVisibility(isHidden: Bool) {
+    func updateMainScreenItemsVisibility(isHidden: Bool) {
         self.conditionImageView.isHidden = isHidden
         self.nowLabel.isHidden = isHidden
         self.dayLabel.isHidden = isHidden
@@ -522,7 +531,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.imperialLabel.isHidden = isHidden
         self.searchButton.isHidden = isHidden
         self.searchButtonText.isHidden = isHidden
-        self.favoritesListButton.isHidden = isHidden || (self.favoritiesDict.count == 0)
         self.favoritesButton.isHidden = isHidden
         
         self.windLabel.isHidden = isHidden
@@ -545,10 +553,33 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         
         self.sunriseLabel.isHidden = isHidden
         self.sunsetLabel.isHidden = isHidden
+        self.goBack.isHidden = !isHidden
         //updateConditionComponents(isHidden: isHidden)
         
         self.twelve.isHidden = isHidden
         self.twentyFour.isHidden = isHidden
+    }
+    
+    func updateSearchScreenItemsVisibility(isHidden: Bool) {
+        self.currentLocationButton.isHidden = isHidden
+        self.citySearchInputText.isHidden = isHidden
+        self.searchCityLabel.isHidden = isHidden
+        self.searchCitiesTableView.isHidden = isHidden
+        self.goBack.isHidden = isHidden
+    }
+    
+    func updateFavoritesScreenItemsVisibility(isHidden: Bool) {
+        self.favoritiesView.isHidden = isHidden
+        self.searchButton.isHidden = isHidden
+        self.searchButtonText.isHidden = isHidden
+        self.goBack.isHidden = isHidden
+        self.currentLocationButton.isHidden = isHidden
+    }
+    
+    func updateItemsVisibility(isHidden: Bool) {
+        updateMainScreenItemsVisibility(isHidden: isHidden)
+        
+        self.favoritesListButton.isHidden = isHidden || (self.favoritiesDict.count == 0)
     }
     
     func updateConditionComponents(isHidden: Bool) {
@@ -885,15 +916,21 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     @objc func favoriteTapped(_ sender: UITapGestureRecognizer) {
-        updateItemsVisibility(isHidden: true)
         self.shouldCheckLocation = false
         self.favoritiesView.reloadData()
-        self.favoritiesView.isHidden = false
-        self.searchButton.isHidden = false
-        self.searchButtonText.isHidden = false
-        currentLocationButton.isHidden = false
+        self.updateItemsVisibility(isHidden: true)
+        self.updateSearchScreenItemsVisibility(isHidden: true)
+        
+        self.updateFavoritesScreenItemsVisibility(isHidden: false)
         
         loadBannerAd()
+    }
+    
+    @objc func goBackTapped(_ sender: UITapGestureRecognizer) {
+        self.updateSearchScreenItemsVisibility(isHidden: true)
+        self.updateFavoritesScreenItemsVisibility(isHidden: true)
+        
+        self.updateItemsVisibility(isHidden: false)
     }
     
     @objc func favoriteButtonTapped(_ sender: UITapGestureRecognizer) {
@@ -1073,15 +1110,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     @objc func searchButtonTapped(_ sender: UITapGestureRecognizer) {
-        updateItemsVisibility(isHidden: true)
-        updateConditionComponents(isHidden: true)
-        self.dayLabel.isHidden = true
         selectedItem = nil
-        currentLocationButton.isHidden = false
-        citySearchInputText.isHidden = false
-        searchCityLabel.isHidden = false
-        searchCitiesTableView.isHidden = false
-        favoritiesView.isHidden = true
+        self.updateItemsVisibility(isHidden: true)
+        self.updateFavoritesScreenItemsVisibility(isHidden: true)
+        
+        self.updateSearchScreenItemsVisibility(isHidden: false)
         
         citySearchInputText.text = ""
         searchRecords(citySearchInputText)
