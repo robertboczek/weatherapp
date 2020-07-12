@@ -503,7 +503,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         print("Reload the view.")
         updateSearchScreenItemsVisibility(isHidden: true)
         updateFavoritesScreenItemsVisibility(isHidden: true)
+        
         updateItemsVisibility(isHidden: true)
+        self.goBack.isHidden = true
         self.dayLabel.isHidden = true
         
         self.activityIndicator.startAnimating()
@@ -553,7 +555,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         
         self.sunriseLabel.isHidden = isHidden
         self.sunsetLabel.isHidden = isHidden
-        self.goBack.isHidden = !isHidden
         //updateConditionComponents(isHidden: isHidden)
         
         self.twelve.isHidden = isHidden
@@ -580,6 +581,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         updateMainScreenItemsVisibility(isHidden: isHidden)
         
         self.favoritesListButton.isHidden = isHidden || (self.favoritiesDict.count == 0)
+        self.goBack.isHidden = !isHidden
     }
     
     func updateConditionComponents(isHidden: Bool) {
