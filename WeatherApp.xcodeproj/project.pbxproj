@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		BBA3B245776737ABEB3E78B1 /* Pods_WeatherApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69AED9BF1F2ECE014036DC75 /* Pods_WeatherApp.framework */; };
+		D101C56A2585C9C6005BC6EE /* map icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D101C5692585C9C6005BC6EE /* map icon.png */; };
 		D10B379323CFF1C50048FB58 /* s_02d.png in Resources */ = {isa = PBXBuildFile; fileRef = D10B378123CFF1C40048FB58 /* s_02d.png */; };
 		D10B379423CFF1C50048FB58 /* s_13d.png in Resources */ = {isa = PBXBuildFile; fileRef = D10B378223CFF1C40048FB58 /* s_13d.png */; };
 		D10B379523CFF1C50048FB58 /* s_11n.png in Resources */ = {isa = PBXBuildFile; fileRef = D10B378323CFF1C40048FB58 /* s_11n.png */; };
@@ -57,9 +58,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5DFE5A56BCF433B6B48A81A7 /* Pods-WeatherApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WeatherApp.release.xcconfig"; path = "Target Support Files/Pods-WeatherApp/Pods-WeatherApp.release.xcconfig"; sourceTree = "<group>"; };
+		3C2B31F282C60BCF5A8DBD33 /* Pods-WeatherApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WeatherApp.debug.xcconfig"; path = "Target Support Files/Pods-WeatherApp/Pods-WeatherApp.debug.xcconfig"; sourceTree = "<group>"; };
 		69AED9BF1F2ECE014036DC75 /* Pods_WeatherApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WeatherApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		73087D04C3A663527713BF04 /* Pods-WeatherApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WeatherApp.debug.xcconfig"; path = "Target Support Files/Pods-WeatherApp/Pods-WeatherApp.debug.xcconfig"; sourceTree = "<group>"; };
+		7E63C5BE56B29C444A52D173 /* Pods-WeatherApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WeatherApp.release.xcconfig"; path = "Target Support Files/Pods-WeatherApp/Pods-WeatherApp.release.xcconfig"; sourceTree = "<group>"; };
+		D101C5692585C9C6005BC6EE /* map icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "map icon.png"; sourceTree = "<group>"; };
 		D10B378123CFF1C40048FB58 /* s_02d.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = s_02d.png; sourceTree = "<group>"; };
 		D10B378223CFF1C40048FB58 /* s_13d.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = s_13d.png; sourceTree = "<group>"; };
 		D10B378323CFF1C40048FB58 /* s_11n.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = s_11n.png; sourceTree = "<group>"; };
@@ -124,15 +126,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0954D1904BDFC628D81D72A5 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				73087D04C3A663527713BF04 /* Pods-WeatherApp.debug.xcconfig */,
-				5DFE5A56BCF433B6B48A81A7 /* Pods-WeatherApp.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 		6DB46AC12C6D23628CCEBF54 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -141,13 +134,22 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		6E7B5ACF6F56FE2F46627692 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				3C2B31F282C60BCF5A8DBD33 /* Pods-WeatherApp.debug.xcconfig */,
+				7E63C5BE56B29C444A52D173 /* Pods-WeatherApp.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		D1B256BB238396C200142068 = {
 			isa = PBXGroup;
 			children = (
 				D1B256C6238396C200142068 /* WeatherApp */,
 				D1B256C5238396C200142068 /* Products */,
-				0954D1904BDFC628D81D72A5 /* Pods */,
 				6DB46AC12C6D23628CCEBF54 /* Frameworks */,
+				6E7B5ACF6F56FE2F46627692 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -162,6 +164,7 @@
 		D1B256C6238396C200142068 /* WeatherApp */ = {
 			isa = PBXGroup;
 			children = (
+				D101C5692585C9C6005BC6EE /* map icon.png */,
 				D10B378623CFF1C40048FB58 /* s_01d.png */,
 				D10B378C23CFF1C50048FB58 /* s_01n.png */,
 				D10B378123CFF1C40048FB58 /* s_02d.png */,
@@ -296,6 +299,7 @@
 				D1F28499238B05590023521F /* 03d.png in Resources */,
 				D1F284B3238B077F0023521F /* 02d.png in Resources */,
 				D10B379823CFF1C50048FB58 /* s_01d.png in Resources */,
+				D101C56A2585C9C6005BC6EE /* map icon.png in Resources */,
 				D10B37A023CFF1C50048FB58 /* s_50d.png in Resources */,
 				D10B379E23CFF1C50048FB58 /* s_01n.png in Resources */,
 				D10B379F23CFF1C50048FB58 /* s_50n.png in Resources */,
@@ -529,11 +533,11 @@
 		};
 		D1B256D9238396C500142068 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 73087D04C3A663527713BF04 /* Pods-WeatherApp.debug.xcconfig */;
+			baseConfigurationReference = 3C2B31F282C60BCF5A8DBD33 /* Pods-WeatherApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 37;
+				CURRENT_PROJECT_VERSION = 38;
 				DEVELOPMENT_TEAM = LBZQ6A27C3;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -544,7 +548,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.9;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.boczek.WeatherApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -554,11 +558,11 @@
 		};
 		D1B256DA238396C500142068 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5DFE5A56BCF433B6B48A81A7 /* Pods-WeatherApp.release.xcconfig */;
+			baseConfigurationReference = 7E63C5BE56B29C444A52D173 /* Pods-WeatherApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 37;
+				CURRENT_PROJECT_VERSION = 38;
 				DEVELOPMENT_TEAM = LBZQ6A27C3;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -569,7 +573,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.9;
+				MARKETING_VERSION = 2.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				"MTL_ENABLE_DEBUG_INFO[arch=*]" = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.boczek.WeatherApp;

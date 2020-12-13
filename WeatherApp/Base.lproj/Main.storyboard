@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina5_5" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -205,9 +207,13 @@
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gGl-vW-0B0" userLabel="Favorites">
                                 <rect key="frame" x="196" y="357" width="21" height="22"/>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k29-61-bWL" userLabel="Favorites Button">
-                                <rect key="frame" x="158" y="348" width="97" height="40"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="t9x-GT-CLj" userLabel="Favorites Button">
+                                <rect key="frame" x="193" y="15" width="22" height="22"/>
                                 <state key="normal" image="star" catalog="system"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k29-61-bWL" userLabel="Map Button">
+                                <rect key="frame" x="216" y="15" width="20" height="31"/>
+                                <state key="normal" backgroundImage="map icon.png"/>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b0z-HS-QCA" userLabel="Search Button Text">
                                 <rect key="frame" x="158" y="348" width="97" height="40"/>
@@ -220,20 +226,21 @@
                                 <state key="normal" title="Back" image="gobackward" catalog="system"/>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c2k-d6-OEn">
-                                <rect key="frame" x="115" y="20" width="184" height="25"/>
+                                <rect key="frame" x="115.66666666666669" y="20" width="183" height="25"/>
                                 <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="22"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Current Location" image="location" catalog="system"/>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="6oi-tt-dgs" userLabel="citiesListTableView">
                                 <rect key="frame" x="0.0" y="127" width="614" height="519"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="SFz-Lm-U3d" userLabel="favoritesListTableView">
                                 <rect key="frame" x="25" y="60" width="364" height="586"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" red="0.29411764709999999" green="0.46274509800000002" blue="0.6705882353" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="0nB-ZM-CZJ" firstAttribute="leading" secondItem="cba-EJ-5FF" secondAttribute="trailing" constant="5" id="0kT-KN-tK9"/>
@@ -256,7 +263,6 @@
                             <constraint firstItem="uzK-Lp-UpC" firstAttribute="top" secondItem="11m-8d-Jb3" secondAttribute="top" constant="-20" id="DMU-O9-F2v"/>
                             <constraint firstItem="9yg-c8-mCy" firstAttribute="top" secondItem="qOY-FC-OO0" secondAttribute="bottom" constant="5" id="Fvt-5b-34a"/>
                             <constraint firstItem="6oi-tt-dgs" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" constant="200" id="Gpt-nH-uZT"/>
-                            <constraint firstItem="k29-61-bWL" firstAttribute="leading" secondItem="11m-8d-Jb3" secondAttribute="trailing" constant="3" id="HON-OR-YYY"/>
                             <constraint firstItem="nzT-Gq-noQ" firstAttribute="leading" secondItem="cK7-h7-TgK" secondAttribute="leading" constant="3" id="IZg-5t-p6F"/>
                             <constraint firstItem="sQP-8e-Urv" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="Ixz-F8-sMZ"/>
                             <constraint firstItem="2EL-bi-2ui" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="K5O-zF-YSz"/>
@@ -276,6 +282,7 @@
                             <constraint firstAttribute="bottom" secondItem="OHN-TZ-gKZ" secondAttribute="bottom" id="QWY-gA-93J"/>
                             <constraint firstItem="Djw-pg-HP4" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" constant="-50" id="RJU-9N-Sw2"/>
                             <constraint firstItem="cba-EJ-5FF" firstAttribute="top" secondItem="PJO-Cy-v6d" secondAttribute="bottom" id="RMJ-Z5-IO7"/>
+                            <constraint firstItem="k29-61-bWL" firstAttribute="top" secondItem="t9x-GT-CLj" secondAttribute="top" id="RaO-4m-VX8"/>
                             <constraint firstItem="sbo-IS-sDb" firstAttribute="top" secondItem="c2k-d6-OEn" secondAttribute="bottom" constant="10" id="Rl5-ht-DZb"/>
                             <constraint firstItem="PJO-Cy-v6d" firstAttribute="leading" secondItem="cba-EJ-5FF" secondAttribute="leading" constant="3" id="Rxf-ux-pvE"/>
                             <constraint firstItem="qOY-FC-OO0" firstAttribute="leading" secondItem="yyy-wh-zMF" secondAttribute="leading" id="T36-sV-RAM"/>
@@ -290,7 +297,7 @@
                             <constraint firstItem="11m-8d-Jb3" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" constant="-15" id="Wzw-Xn-8H5"/>
                             <constraint firstItem="wNb-8D-fUj" firstAttribute="leading" secondItem="b84-5x-NLj" secondAttribute="trailing" constant="5" id="XVt-le-yPN" userLabel="Metric Label.leading = Temperature Label.trailing"/>
                             <constraint firstItem="LOG-QK-lh1" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="8" id="Xaf-rG-dx7"/>
-                            <constraint firstItem="k29-61-bWL" firstAttribute="top" secondItem="11m-8d-Jb3" secondAttribute="top" constant="5" id="YkC-FC-SuO"/>
+                            <constraint firstItem="t9x-GT-CLj" firstAttribute="leading" secondItem="11m-8d-Jb3" secondAttribute="trailing" constant="1" id="a0M-ee-eUL"/>
                             <constraint firstItem="ubb-dJ-qfw" firstAttribute="top" secondItem="3eC-42-mgh" secondAttribute="top" id="adi-7z-EjO"/>
                             <constraint firstItem="nzT-Gq-noQ" firstAttribute="top" secondItem="3eC-42-mgh" secondAttribute="top" id="bCN-Qj-eus"/>
                             <constraint firstItem="4ga-xH-al6" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="centerX" constant="-40" id="bWN-jB-o9m"/>
@@ -307,10 +314,12 @@
                             <constraint firstItem="F9b-Vp-D59" firstAttribute="leading" secondItem="T9o-co-wyM" secondAttribute="leading" constant="3" id="jMY-QG-Ylt"/>
                             <constraint firstItem="Ysd-cz-5Jk" firstAttribute="top" secondItem="9yg-c8-mCy" secondAttribute="bottom" constant="5" id="jac-QU-P80"/>
                             <constraint firstItem="T9o-co-wyM" firstAttribute="leading" secondItem="cK7-h7-TgK" secondAttribute="trailing" constant="10" id="k7I-Gl-4Fj"/>
+                            <constraint firstItem="t9x-GT-CLj" firstAttribute="top" secondItem="11m-8d-Jb3" secondAttribute="top" id="l64-ft-9ll"/>
                             <constraint firstItem="gGl-vW-0B0" firstAttribute="top" secondItem="uzK-Lp-UpC" secondAttribute="top" constant="20" id="m8l-Hd-Jju"/>
                             <constraint firstItem="ubb-dJ-qfw" firstAttribute="leading" secondItem="0nB-ZM-CZJ" secondAttribute="leading" constant="3" id="mJb-1z-us1"/>
                             <constraint firstItem="LOG-QK-lh1" firstAttribute="top" secondItem="3eC-42-mgh" secondAttribute="bottom" constant="80" id="n3M-qG-Jgq"/>
                             <constraint firstItem="0ON-kJ-168" firstAttribute="leading" secondItem="LOG-QK-lh1" secondAttribute="leading" constant="10" id="nKe-gM-dvU"/>
+                            <constraint firstItem="k29-61-bWL" firstAttribute="leading" secondItem="t9x-GT-CLj" secondAttribute="trailing" constant="1" id="nRV-A3-g6C"/>
                             <constraint firstItem="c2k-d6-OEn" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="oVS-I3-SdP"/>
                             <constraint firstItem="6oi-tt-dgs" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" constant="-90" id="p2W-og-Yej"/>
                             <constraint firstItem="0ON-kJ-168" firstAttribute="top" secondItem="LOG-QK-lh1" secondAttribute="top" constant="5" id="pSa-Jh-1Kl"/>
@@ -328,7 +337,6 @@
                             <constraint firstItem="qOY-FC-OO0" firstAttribute="top" secondItem="yyy-wh-zMF" secondAttribute="bottom" constant="5" id="zeD-aE-lUL"/>
                             <constraint firstItem="pcp-Ut-36g" firstAttribute="centerX" secondItem="LOG-QK-lh1" secondAttribute="centerX" constant="-75" id="zly-eH-UwX"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
                         <outlet property="adView" destination="sQP-8e-Urv" id="qh0-jr-rGk"/>
@@ -346,7 +354,7 @@
                         <outlet property="currentLocationButton" destination="c2k-d6-OEn" id="ocO-nC-s0u"/>
                         <outlet property="dayAfterTomorrowLabel" destination="KLN-7d-VQc" id="KR3-kh-7V0"/>
                         <outlet property="dayLabel" destination="4ga-xH-al6" id="ZNW-qX-XHA"/>
-                        <outlet property="favoritesButton" destination="k29-61-bWL" id="Ddc-om-1aE"/>
+                        <outlet property="favoritesButton" destination="t9x-GT-CLj" id="oTO-oi-vFz"/>
                         <outlet property="favoritesListButton" destination="gGl-vW-0B0" id="23F-R3-dKr"/>
                         <outlet property="favoritiesView" destination="SFz-Lm-U3d" id="U3U-oY-F21"/>
                         <outlet property="goBack" destination="Q1g-Lb-I4k" id="CfN-bc-LzX"/>
@@ -354,6 +362,7 @@
                         <outlet property="imperialLabel" destination="wNb-8D-fUj" id="jdT-9D-us3"/>
                         <outlet property="locationLabel" destination="11m-8d-Jb3" id="9fd-ad-adv"/>
                         <outlet property="mainView" destination="8bC-Xf-vdC" id="VcP-cb-jnB"/>
+                        <outlet property="mapButton" destination="k29-61-bWL" id="Vzg-yz-Hgd"/>
                         <outlet property="metricLabel" destination="b84-5x-NLj" id="NIW-8K-6fv"/>
                         <outlet property="nowLabel" destination="Djw-pg-HP4" id="u6C-O4-K13"/>
                         <outlet property="pressureLabel" destination="9yg-c8-mCy" id="kfb-iI-ekh"/>
@@ -383,11 +392,15 @@
     <resources>
         <image name="01d.png" width="500" height="500"/>
         <image name="gobackward" catalog="system" width="121" height="128"/>
-        <image name="location" catalog="system" width="128" height="115"/>
+        <image name="location" catalog="system" width="128" height="121"/>
+        <image name="map icon.png" width="20" height="31"/>
         <image name="s_01n.png" width="70" height="70"/>
         <image name="s_10d.png" width="70" height="70"/>
         <image name="s_13d.png" width="70" height="67"/>
         <image name="search-icon.png" width="40" height="40"/>
         <image name="star" catalog="system" width="128" height="116"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

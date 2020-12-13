@@ -20,6 +20,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     @IBOutlet weak var searchButton: UIButton!
     @IBOutlet weak var searchButtonText: UIButton!
     
+    @IBOutlet weak var mapButton: UIButton!
     @IBOutlet weak var favoritesButton: UIButton!
     @IBOutlet weak var favoritesListButton: UIButton!
     
@@ -34,6 +35,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     var selectedItem: JSON? = nil
     
     @IBOutlet weak var locationLabel: UILabel!
+    var location: String = ""
     @IBOutlet weak var dayLabel: UILabel!
     @IBOutlet weak var tomorrowLabel: UILabel!
     @IBOutlet weak var dayAfterTomorrowLabel: UILabel!
@@ -234,6 +236,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         let favoriteButtonTap = UITapGestureRecognizer(target: self, action: #selector(self.favoriteButtonTapped(_:)))
         self.favoritesButton.isUserInteractionEnabled = true
         self.favoritesButton.addGestureRecognizer(favoriteButtonTap)
+        
+        let mapButtonTap = UITapGestureRecognizer(target: self, action: #selector(self.mapButtonTapped(_:)))
+        self.mapButton.isUserInteractionEnabled = true
+        self.mapButton.addGestureRecognizer(mapButtonTap)
         
         let favoriteTap = UITapGestureRecognizer(target: self, action: #selector(self.favoriteTapped(_:)))
         self.favoritesListButton.isUserInteractionEnabled = true
@@ -443,7 +449,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             self.favoritiesView.isHidden = true
             
             let location = self.favoritiesDict[indexPath.row]
-            self.locationLabel.text = location[0]
+            self.location = location[0]
+            updateLocationLabel()
             self.lat = Double(location[1])!
             self.lon = Double(location[2])!
             
@@ -466,7 +473,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.lon = Double.init(String(selectedRow[3]))!
         
         shouldCheckLocation = false
-        locationLabel.text = selectedRow[1]
+        self.location = selectedRow[1]
+        updateLocationLabel()
         updateWeather(location: nil)
         
         citySearchInputText.endEditing(true)
@@ -534,6 +542,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.searchButton.isHidden = isHidden
         self.searchButtonText.isHidden = isHidden
         self.favoritesButton.isHidden = isHidden
+        self.mapButton.isHidden = isHidden
         
         self.windLabel.isHidden = isHidden
         self.pressureLabel.isHidden = isHidden
@@ -613,6 +622,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.locationLabel.text = errorFormatString
     }
     
+    func updateLocationLabel() {
+        var location = self.location
+        if (location.count > 13) {
+            location = location.prefix(12) + ".."
+        }
+        self.locationLabel.text = location
+    }
+    
     func updateWeather(location: CLLocation?) {
         let endpoint = "forecast" //always query forecast endpoint
         
@@ -622,8 +639,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
           // Look up the location and pass it to the completion handler
           geocoder.reverseGeocodeLocation(location!,
                     completionHandler: { (placemarks, error) in
-            if error == nil {
-                self.locationLabel.text = placemarks?[0].locality
+            if error == nil && placemarks != nil {
+                self.location = placemarks?[0].locality ?? ""
+                self.updateLocationLabel()
                 self.updateStarImage()
             } else {
                 print("Failed to get location placemarks")
@@ -935,8 +953,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.updateItemsVisibility(isHidden: false)
     }
     
+    @objc func mapButtonTapped(_ sender: UITapGestureRecognizer) {
+        let latLon = String(self.lat)+","+String(self.lon)
+        let urlString = "https://maps.google.com/?ll="+latLon+"&q="+latLon+"&z=8"
+        print(urlString)
+        let url = URL(string: urlString)!
+        UIApplication.shared.open(url, options: [:])
+    }
+    
     @objc func favoriteButtonTapped(_ sender: UITapGestureRecognizer) {
-        let location = self.locationLabel.text!
         var locationFavorited = false
         var index = 0
         var i = 0
@@ -959,7 +984,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     @objc func updateStarImage() {
-        let location = self.locationLabel.text!
+        let location = self.location
         var locationFavorited = false
         var i = 0
         
