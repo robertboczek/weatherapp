@@ -225,8 +225,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         activityIndicator.backgroundColor = UIColor.black
         view.addSubview(activityIndicator)
         
-        locationManager.requestWhenInUseAuthorization()
-        
         updateItemsVisibility(isHidden: true)
         
         self.conditionLabel.adjustsFontSizeToFitWidth = true
@@ -348,12 +346,42 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         
         updatePreferredHourFormat()
         
+        checkAuthorizationStatus()
         reloadView()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
+            if self.activityIndicator.isAnimating && self.location == "" {
+              self.activityIndicator.stopAnimating()
+              // if can't check for location, open search view by default
+              self.searchButtonTapped(UITapGestureRecognizer())
+            }
+        }
         
         // Make the native ad view container visible.
         self.adView.isHidden = true
         
         loadBannerAd()
+    }
+    
+    func checkAuthorizationStatus() {
+        let status = CLLocationManager.authorizationStatus()
+        print(status.rawValue)
+        switch status {
+          // 1
+          case .notDetermined:
+            if (shouldCheckLocation) {
+              locationManager.requestWhenInUseAuthorization()
+            }
+          break
+          // 2
+        case .restricted, .denied:
+            self.activityIndicator.stopAnimating()
+            // if can't check for location, open search view by default
+            searchButtonTapped(UITapGestureRecognizer())
+            return
+          default:
+          break
+        }
     }
     
     @objc
@@ -509,21 +537,31 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     @objc
     func reloadView() {
         print("Reload the view.")
+        
         updateSearchScreenItemsVisibility(isHidden: true)
         updateFavoritesScreenItemsVisibility(isHidden: true)
         
         updateItemsVisibility(isHidden: true)
         self.goBack.isHidden = true
         self.dayLabel.isHidden = true
-        
-        self.activityIndicator.startAnimating()
+
         if (!shouldCheckLocation) {
+          self.activityIndicator.startAnimating()
           updateWeather(location: nil)
         } else if (shouldCheckLocation && CLLocationManager.locationServicesEnabled()) {
-            locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            print("Requesting location!")
+            let status = CLLocationManager.authorizationStatus()
+            if status == .denied || status == .restricted {
+              // if can't check for location, open search view by default
+              searchButtonTapped(UITapGestureRecognizer())
+            } else {
+              self.activityIndicator.startAnimating()
+              locationManager.delegate = self
+              locationManager.desiredAccuracy = kCLLocationAccuracyBest
             
-            locationManager.startUpdatingLocation()
+              locationManager.pausesLocationUpdatesAutomatically = false
+              locationManager.startUpdatingLocation()
+            }
         }
     }
     
@@ -571,17 +609,19 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     func updateSearchScreenItemsVisibility(isHidden: Bool) {
-        self.currentLocationButton.isHidden = isHidden
+        let status = CLLocationManager.authorizationStatus()
+        self.currentLocationButton.isHidden = isHidden || status == .denied
         self.citySearchInputText.isHidden = isHidden
         self.searchCityLabel.isHidden = isHidden
         self.searchCitiesTableView.isHidden = isHidden
-        self.goBack.isHidden = isHidden
+        self.goBack.isHidden = isHidden || location == ""
     }
     
     func updateFavoritesScreenItemsVisibility(isHidden: Bool) {
+        let status = CLLocationManager.authorizationStatus()
         self.favoritiesView.isHidden = isHidden
-        self.searchButton.isHidden = isHidden
-        self.searchButtonText.isHidden = isHidden
+        self.searchButton.isHidden = isHidden || status == .denied
+        self.searchButtonText.isHidden = isHidden || status == .denied
         self.goBack.isHidden = isHidden
         self.currentLocationButton.isHidden = isHidden
     }
@@ -607,6 +647,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+      print("location update");
       if let location = locations.first {
         lat = location.coordinate.latitude
         lon = location.coordinate.longitude
@@ -615,11 +656,26 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
       self.activityIndicator.stopAnimating()
     }
     
+    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        if (status == CLAuthorizationStatus.authorizedAlways) || (status == CLAuthorizationStatus.authorizedWhenInUse) {
+            locationManager.startUpdatingLocation()
+        } else {
+            self.activityIndicator.stopAnimating()
+            // if can't check for location, open search view by default
+            searchButtonTapped(UITapGestureRecognizer())
+        }
+    }
+    
     func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
         self.locationManager.stopUpdatingLocation()
         self.activityIndicator.stopAnimating()
         let errorFormatString = NSLocalizedString("location lookup failure", comment: "Error")
         self.locationLabel.text = errorFormatString
+        
+        let seconds = 4.0
+        DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
+            self.searchButtonTapped(UITapGestureRecognizer())
+        }
     }
     
     func updateLocationLabel() {
@@ -1162,6 +1218,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         citySearchInputText.endEditing(true)
         
         shouldCheckLocation = true
+        checkAuthorizationStatus()
         reloadView()
     }
     
