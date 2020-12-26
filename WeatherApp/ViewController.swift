@@ -727,6 +727,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         
         self.favoritesListButton.isHidden = isHidden || (self.favoritiesDict.count == 0)
         self.goBack.isHidden = !isHidden
+        // hide keyboard if was typing before
+        citySearchInputText.endEditing(true)
     }
     
     func updateConditionComponents(isHidden: Bool) {
@@ -752,7 +754,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
       self.activityIndicator.stopAnimating()
     }
     
-    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if (status == CLAuthorizationStatus.authorizedAlways) || (status == CLAuthorizationStatus.authorizedWhenInUse) {
             locationManager.startUpdatingLocation()
         } else {
@@ -762,13 +764,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         }
     }
     
-    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: NSError) {
         self.locationManager.stopUpdatingLocation()
         self.activityIndicator.stopAnimating()
         let errorFormatString = NSLocalizedString("location lookup failure", comment: "Error")
         self.locationLabel.text = errorFormatString
         
-        let seconds = 4.0
+        let seconds = 5.0
         DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
             self.searchButtonTapped(UITapGestureRecognizer())
         }
@@ -806,7 +808,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         Alamofire.request("http://api.openweathermap.org/data/2.5/\(endpoint)?lat=\(lat)&lon=\(lon)&appid=\(apiKey)&units=\(apiUnit)").responseJSON {
           response in
           switch response.result {
-            case .failure(let error):
+            case .failure(let _):
               let errorFormatString = NSLocalizedString("api error msg", comment: "Error")
               self.time2.text = errorFormatString
               self.time2.isHidden = false
@@ -837,7 +839,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         let currentTime = Int(todayDate.timeIntervalSince1970)
         
         let dayTimePeriodFormatter = DateFormatter()
-        dayTimePeriodFormatter.dateFormat = "hh:ss a"
+        dayTimePeriodFormatter.dateFormat = self.hourFormat == "12" ? "hh:mm a" : "HH:mm"
         
         let sunsetFormatString = NSLocalizedString("sunset", comment: "Sunset")
         self.sunsetLabel.text = sunsetFormatString + dayTimePeriodFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(json["city"]["sunset"].intValue + self.timezone - timezoneOffset)) as Date)
@@ -1094,6 +1096,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.updateSearchScreenItemsVisibility(isHidden: true)
         
         self.updateFavoritesScreenItemsVisibility(isHidden: false)
+        self.location = ""
         
         loadBannerAd()
     }
@@ -1315,6 +1318,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         
         shouldCheckLocation = true
         checkAuthorizationStatus()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
+          if self.activityIndicator.isAnimating && self.location == "" {
+              self.activityIndicator.stopAnimating()
+              // if can't check for location, open search view by default
+              self.searchButtonTapped(UITapGestureRecognizer())
+          }
+        }
+        
         reloadView()
     }
     
