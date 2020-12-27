@@ -111,8 +111,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     let awsEndpointURL = "https://dynamodb.us-east-1.amazonaws.com"
     var uid = ""
 
-    var lat = 50.049683
-    var lon = 19.944544
+    var lat = -1.0
+    var lon = -1.0
     var activityIndicator: NVActivityIndicatorView!
     let locationManager = CLLocationManager()
     
@@ -130,6 +130,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     var timezone = 0
     
     var shouldCheckLocation = true
+    var isErrorState = false
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?)   {
         print("init")
@@ -269,6 +270,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     
     func saveFavorities() {
         var configString = ""
+        self.favoritiesDict = favoritiesDict.sorted { (first, second) -> Bool in
+            return first[0] < second[0]
+        }
         for favorities in favoritiesDict {
             configString += favorities[0] + ";" + favorities[1] + ";" + favorities[2] + "|"
         }
@@ -447,9 +451,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
             if self.activityIndicator.isAnimating && self.location == "" {
-              self.activityIndicator.stopAnimating()
-              // if can't check for location, open search view by default
-              self.searchButtonTapped(UITapGestureRecognizer())
+                self.handleLocationLookupError()
             }
         }
         
@@ -471,9 +473,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
           break
           // 2
         case .restricted, .denied:
-            self.activityIndicator.stopAnimating()
-            // if can't check for location, open search view by default
-            searchButtonTapped(UITapGestureRecognizer())
+            handleLocationLookupError()
             return
           default:
           break
@@ -648,8 +648,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             print("Requesting location!")
             let status = CLLocationManager.authorizationStatus()
             if status == .denied || status == .restricted {
-              // if can't check for location, open search view by default
-              searchButtonTapped(UITapGestureRecognizer())
+              handleLocationLookupError()
             } else {
               self.activityIndicator.startAnimating()
               locationManager.delegate = self
@@ -706,20 +705,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     
     func updateSearchScreenItemsVisibility(isHidden: Bool) {
         let status = CLLocationManager.authorizationStatus()
-        self.currentLocationButton.isHidden = isHidden || status == .denied
         self.citySearchInputText.isHidden = isHidden
         self.searchCityLabel.isHidden = isHidden
         self.searchCitiesTableView.isHidden = isHidden
-        self.goBack.isHidden = isHidden || location == ""
+        self.goBack.isHidden = isHidden || location == "" || self.isErrorState
+        self.currentLocationButton.isHidden = isHidden || status == .denied
     }
     
     func updateFavoritesScreenItemsVisibility(isHidden: Bool) {
         let status = CLLocationManager.authorizationStatus()
         self.favoritiesView.isHidden = isHidden
-        self.searchButton.isHidden = isHidden || status == .denied
-        self.searchButtonText.isHidden = isHidden || status == .denied
-        self.goBack.isHidden = isHidden
-        self.currentLocationButton.isHidden = isHidden
+        self.searchButton.isHidden = isHidden
+        self.searchButtonText.isHidden = isHidden
+        self.goBack.isHidden = isHidden || location == "" || self.isErrorState
+        self.currentLocationButton.isHidden = isHidden || status == .denied
     }
     
     func updateItemsVisibility(isHidden: Bool) {
@@ -758,9 +757,19 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         if (status == CLAuthorizationStatus.authorizedAlways) || (status == CLAuthorizationStatus.authorizedWhenInUse) {
             locationManager.startUpdatingLocation()
         } else {
-            self.activityIndicator.stopAnimating()
-            // if can't check for location, open search view by default
-            searchButtonTapped(UITapGestureRecognizer())
+            self.handleLocationLookupError()
+        }
+    }
+    
+    func handleLocationLookupError() {
+        self.activityIndicator.stopAnimating()
+        if (favoritiesDict.count == 0) {
+          print("OPTION1")
+          // if can't check for location, open search view by default
+          searchButtonTapped(UITapGestureRecognizer())
+        } else {
+            print("OPTION2")
+          favoriteTapped(UITapGestureRecognizer())
         }
     }
     
@@ -772,7 +781,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         
         let seconds = 5.0
         DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
-            self.searchButtonTapped(UITapGestureRecognizer())
+            self.handleLocationLookupError()
         }
     }
     
@@ -795,40 +804,64 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
                     completionHandler: { (placemarks, error) in
             if error == nil && placemarks != nil {
                 self.location = placemarks?[0].locality ?? ""
+                print("Got location: " + self.location)
                 self.updateLocationLabel()
                 self.updateStarImage()
+                self.isErrorState = false
             } else {
                 print("Failed to get location placemarks")
                 let errorFormatString = NSLocalizedString("location lookup failure", comment: "Error")
+                self.updateItemsVisibility(isHidden: true)
+                self.updateFavoritesScreenItemsVisibility(isHidden: true)
+                self.updateSearchScreenItemsVisibility(isHidden: true)
+                self.locationLabel.isHidden = false
+                self.searchButton.isHidden = false
+                self.searchButtonText.isHidden = false
                 self.locationLabel.text = errorFormatString
+                self.isErrorState = true
             }
             self.locationLabel.isHidden = false
         })
         }
+        
         Alamofire.request("http://api.openweathermap.org/data/2.5/\(endpoint)?lat=\(lat)&lon=\(lon)&appid=\(apiKey)&units=\(apiUnit)").responseJSON {
           response in
           switch response.result {
             case .failure(let _):
+              print("Lookup weather failure")
               let errorFormatString = NSLocalizedString("api error msg", comment: "Error")
-              self.time2.text = errorFormatString
-              self.time2.isHidden = false
+              self.updateItemsVisibility(isHidden: true)
+              self.updateFavoritesScreenItemsVisibility(isHidden: true)
+              self.updateSearchScreenItemsVisibility(isHidden: true)
+              self.locationLabel.isHidden = false
+              self.searchButton.isHidden = false
+              self.searchButtonText.isHidden = false
               self.locationManager.stopUpdatingLocation()
               self.activityIndicator.stopAnimating()
+              self.time2.text = errorFormatString
+              self.time2.isHidden = false
+              self.time2.font = self.selectedHourItemFont
+              self.isErrorState = true
             default:
-            print("Success result from Weather API")
+              print("Success result from Weather API")
+                self.isErrorState = false
           }
-        if let responseStr = response.result.value {
-            print("Calling weather service")
+          if let responseStr = response.result.value {
+            print("Updating weather service")
             let jsonResponse = JSON(responseStr)
             self.timezone = jsonResponse["city"]["timezone"].int!
             self.updateWeather(json: jsonResponse)
-        }
+          }
         }
     }
     
     func updateWeather(json: JSON) {
         // update weather only if in the meantime user did not open other views
-        if (self.favoritiesView.isHidden == false || self.searchCitiesTableView.isHidden == false) {
+        if (
+            self.favoritiesView.isHidden == false ||
+                self.searchCitiesTableView.isHidden == false ||
+                (self.lat == -1.0 && self.lon == -1.0)
+        ) {
             return
         }
         let jsonResponse = json
@@ -1321,9 +1354,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
           if self.activityIndicator.isAnimating && self.location == "" {
-              self.activityIndicator.stopAnimating()
-              // if can't check for location, open search view by default
-              self.searchButtonTapped(UITapGestureRecognizer())
+              self.handleLocationLookupError()
           }
         }
         

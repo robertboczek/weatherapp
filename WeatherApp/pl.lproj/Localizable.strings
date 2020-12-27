@@ -38,8 +38,8 @@
 
 "heavy intensity snow" = "opady śniegu";
 
-"location lookup failure" = "Błąd odczytu pozycji";
+"location lookup failure" = "Błąd odczytu lokalizacji..";
 
-"api error msg" = "Odśwież przeciągając na dół";
+"api error msg" = "Błąd odczytu pogody z serweru";
 
 "favorites list" = "Ulubione";
