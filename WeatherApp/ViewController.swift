@@ -764,11 +764,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     func handleLocationLookupError() {
         self.activityIndicator.stopAnimating()
         if (favoritiesDict.count == 0) {
-          print("OPTION1")
           // if can't check for location, open search view by default
           searchButtonTapped(UITapGestureRecognizer())
         } else {
-            print("OPTION2")
           favoriteTapped(UITapGestureRecognizer())
         }
     }
@@ -808,6 +806,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
                 self.updateLocationLabel()
                 self.updateStarImage()
                 self.isErrorState = false
+                self.updateFavoritesScreenItemsVisibility(isHidden: true)
+                self.updateSearchScreenItemsVisibility(isHidden: true)
             } else {
                 print("Failed to get location placemarks")
                 let errorFormatString = NSLocalizedString("location lookup failure", comment: "Error")
@@ -818,6 +818,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
                 self.searchButton.isHidden = false
                 self.searchButtonText.isHidden = false
                 self.locationLabel.text = errorFormatString
+                self.resetSmallItems()
                 self.isErrorState = true
             }
             self.locationLabel.isHidden = false
@@ -841,6 +842,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
               self.time2.text = errorFormatString
               self.time2.isHidden = false
               self.time2.font = self.selectedHourItemFont
+              self.resetSmallItems()
               self.isErrorState = true
             default:
               print("Success result from Weather API")
@@ -1264,7 +1266,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     @objc func time2LabelTap(_ sender: UITapGestureRecognizer) {
-        conditionSmallTapped(index: 2)
+        // time2 label is also used for showing error message, then ignore tapping
+        if !self.isErrorState {
+            conditionSmallTapped(index: 2)
+        }
     }
     
     @objc func time3LabelTap(_ sender: UITapGestureRecognizer) {
