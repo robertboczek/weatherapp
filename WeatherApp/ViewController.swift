@@ -123,6 +123,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     var time5JSON: JSON?
     var index = 1
     var totalItems = 1
+    var shouldShowTodaysLabel = true
     
     @IBOutlet weak var additionalInfoLabel1: UILabel!
     @IBOutlet weak var additionalInfoLabel2: UILabel!
@@ -1127,6 +1128,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     @objc func favoriteTapped(_ sender: UITapGestureRecognizer) {
         self.shouldCheckLocation = false
         self.favoritiesView.reloadData()
+
+        // remember if todays label was visible (to be used in the backButton functionality)
+        self.shouldShowTodaysLabel = !self.nowLabel.isHidden
+        
         self.updateItemsVisibility(isHidden: true)
         self.updateSearchScreenItemsVisibility(isHidden: true)
         
@@ -1141,6 +1146,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.updateFavoritesScreenItemsVisibility(isHidden: true)
         
         self.updateItemsVisibility(isHidden: false)
+        // show label only if was shown before navigating to search/favorite screens
+        self.nowLabel.isHidden = !self.shouldShowTodaysLabel
     }
     
     @objc func mapButtonTapped(_ sender: UITapGestureRecognizer) {
@@ -1331,6 +1338,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     
     @objc func searchButtonTapped(_ sender: UITapGestureRecognizer) {
         selectedItem = nil
+        // remember if todays label was visible (to be used in the backButton functionality)
+        self.shouldShowTodaysLabel = !self.nowLabel.isHidden
         self.updateItemsVisibility(isHidden: true)
         self.updateFavoritesScreenItemsVisibility(isHidden: true)
         
