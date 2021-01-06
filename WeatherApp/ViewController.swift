@@ -123,7 +123,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     var time5JSON: JSON?
     var index = 1
     var totalItems = 1
-    var shouldShowTodaysLabel = true
     
     @IBOutlet weak var additionalInfoLabel1: UILabel!
     @IBOutlet weak var additionalInfoLabel2: UILabel!
@@ -332,9 +331,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.conditionLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
         self.conditionLabel.numberOfLines = 0
         
-        let favoriteButtonTap = UITapGestureRecognizer(target: self, action: #selector(self.favoriteButtonTapped(_:)))
+        let addRemoveFavoriteLocationButtonTap = UITapGestureRecognizer(target: self, action: #selector(self.addRemoveFavoriteLocationTap(_:)))
         self.favoritesButton.isUserInteractionEnabled = true
-        self.favoritesButton.addGestureRecognizer(favoriteButtonTap)
+        self.favoritesButton.addGestureRecognizer(addRemoveFavoriteLocationButtonTap)
         
         let mapButtonTap = UITapGestureRecognizer(target: self, action: #selector(self.mapButtonTapped(_:)))
         self.mapButton.isUserInteractionEnabled = true
@@ -641,7 +640,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         updateItemsVisibility(isHidden: true)
         self.goBack.isHidden = true
         self.dayLabel.isHidden = true
-
+        
+        reloadWeatherDetails()
+    }
+    
+    func reloadWeatherDetails() {
         if (!shouldCheckLocation) {
           self.activityIndicator.startAnimating()
           updateWeather(location: nil)
@@ -1128,15 +1131,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     @objc func favoriteTapped(_ sender: UITapGestureRecognizer) {
         self.shouldCheckLocation = false
         self.favoritiesView.reloadData()
-
-        // remember if todays label was visible (to be used in the backButton functionality)
-        self.shouldShowTodaysLabel = !self.nowLabel.isHidden
         
         self.updateItemsVisibility(isHidden: true)
         self.updateSearchScreenItemsVisibility(isHidden: true)
         
         self.updateFavoritesScreenItemsVisibility(isHidden: false)
-        self.location = ""
         
         loadBannerAd()
     }
@@ -1145,9 +1144,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.updateSearchScreenItemsVisibility(isHidden: true)
         self.updateFavoritesScreenItemsVisibility(isHidden: true)
         
-        self.updateItemsVisibility(isHidden: false)
-        // show label only if was shown before navigating to search/favorite screens
-        self.nowLabel.isHidden = !self.shouldShowTodaysLabel
+        self.updateItemsVisibility(isHidden: true)
+        
+        reloadWeatherDetails()
+        updateStarImage()
     }
     
     @objc func mapButtonTapped(_ sender: UITapGestureRecognizer) {
@@ -1158,7 +1158,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         UIApplication.shared.open(url, options: [:])
     }
     
-    @objc func favoriteButtonTapped(_ sender: UITapGestureRecognizer) {
+    @objc func addRemoveFavoriteLocationTap(_ sender: UITapGestureRecognizer) {
         var locationFavorited = false
         var index = 0
         var i = 0
@@ -1169,11 +1169,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             }
             i += 1
         }
-        if (locationFavorited) {
+        if locationFavorited {
           self.favoritiesDict.remove(at: index)
           saveFavorities()
-          
-        } else {
+        } else if location != "" {
           self.favoritiesDict.append([location, String(self.lat), String(self.lon)])
           saveFavorities()
         }
@@ -1338,8 +1337,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     
     @objc func searchButtonTapped(_ sender: UITapGestureRecognizer) {
         selectedItem = nil
-        // remember if todays label was visible (to be used in the backButton functionality)
-        self.shouldShowTodaysLabel = !self.nowLabel.isHidden
         self.updateItemsVisibility(isHidden: true)
         self.updateFavoritesScreenItemsVisibility(isHidden: true)
         
