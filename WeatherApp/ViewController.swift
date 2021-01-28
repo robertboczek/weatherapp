@@ -566,6 +566,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
+        goBack.isHidden = true
         if (tableView == self.favoritiesView) {
             updateItemsVisibility(isHidden: true)
             
@@ -719,8 +720,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     func updateFavoritesScreenItemsVisibility(isHidden: Bool) {
         let status = CLLocationManager.authorizationStatus()
         self.favoritiesView.isHidden = isHidden
-        self.searchButton.isHidden = isHidden
-        self.searchButtonText.isHidden = isHidden
         self.goBack.isHidden = isHidden || location == "" || self.isErrorState
         self.currentLocationButton.isHidden = isHidden || status == .denied
     }
@@ -729,7 +728,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         updateMainScreenItemsVisibility(isHidden: isHidden)
         
         self.favoritesListButton.isHidden = isHidden || (self.favoritiesDict.count == 0)
-        self.goBack.isHidden = !isHidden
         // hide keyboard if was typing before
         citySearchInputText.endEditing(true)
     }
@@ -1136,6 +1134,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         self.updateSearchScreenItemsVisibility(isHidden: true)
         
         self.updateFavoritesScreenItemsVisibility(isHidden: false)
+        self.searchButton.isHidden = false
+        self.searchButtonText.isHidden = false
         
         loadBannerAd()
     }
@@ -1355,6 +1355,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         searchCityLabel.isHidden = true
         searchCitiesTableView.isHidden = true
         currentLocationButton.isHidden = true
+        goBack.isHidden = true
         favoritiesView.isHidden = true
         citySearchInputText.endEditing(true)
         updateItemsVisibility(isHidden: false)
