@@ -16,14 +16,25 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
+#import "TargetConditionals.h"
+
+#if !TARGET_OS_TV
+
+ #import <Foundation/Foundation.h>
+
+@protocol FBSDKModelManagerDelegate;
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(SuggestedEventsIndexer)
 @interface FBSDKSuggestedEventsIndexer : NSObject
 
-+ (void)enable;
+@property (class, nonatomic, strong, readonly) FBSDKSuggestedEventsIndexer *shared;
+
+- (void)enable;
 
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif

@@ -20,21 +20,24 @@
 
 #if !TARGET_OS_TV
 
-#import "FBSDKShareButton.h"
+ #import "FBSDKShareButton.h"
 
-#ifdef FBSDKCOCOAPODS
-#import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
-#else
-#import "FBSDKCoreKit+Internal.h"
-#endif
-#import "FBSDKShareDialog.h"
+ #ifdef FBSDKCOCOAPODS
+  #import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
+ #else
+  #import "FBSDKCoreKit+Internal.h"
+ #endif
+ #import "FBSDKShareDialog.h"
+
+FBSDKAppEventName FBSDKAppEventNameFBSDKShareButtonImpression = @"fb_share_button_impression";
+FBSDKAppEventName FBSDKAppEventNameFBSDKShareButtonDidTap = @"fb_share_button_did_tap";
 
 @implementation FBSDKShareButton
 {
   FBSDKShareDialog *_dialog;
 }
 
-#pragma mark - Properties
+ #pragma mark - Properties
 
 - (id<FBSDKSharingContent>)shareContent
 {
@@ -47,7 +50,7 @@
   [self checkImplicitlyDisabled];
 }
 
-#pragma mark - FBSDKButtonImpressionTracking
+ #pragma mark - FBSDKButtonImpressionTracking
 
 - (NSDictionary *)analyticsParameters
 {
@@ -64,14 +67,18 @@
   return @"share";
 }
 
-#pragma mark - FBSDKButton
+ #pragma mark - FBSDKButton
 
 - (void)configureButton
 {
   NSString *title =
-  NSLocalizedStringWithDefaultValue(@"ShareButton.Share", @"FacebookSDK", [FBSDKInternalUtility bundleForStrings],
-                                    @"Share",
-                                    @"The label for FBSDKShareButton");
+  NSLocalizedStringWithDefaultValue(
+    @"ShareButton.Share",
+    @"FacebookSDK",
+    [FBSDKInternalUtility bundleForStrings],
+    @"Share",
+    @"The label for FBSDKShareButton"
+  );
 
   [self configureWithIcon:nil
                     title:title
@@ -79,7 +86,7 @@
          highlightedColor:nil];
 
   [self addTarget:self action:@selector(_share:) forControlEvents:UIControlEventTouchUpInside];
-  _dialog = [[FBSDKShareDialog alloc] init];
+  _dialog = [FBSDKShareDialog new];
 }
 
 - (BOOL)isImplicitlyDisabled
@@ -87,7 +94,7 @@
   return ![_dialog canShow] || ![_dialog validateWithError:NULL];
 }
 
-#pragma mark - Helper Methods
+ #pragma mark - Helper Methods
 
 - (void)_share:(id)sender
 {

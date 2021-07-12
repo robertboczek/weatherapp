@@ -20,14 +20,14 @@
 
 #if !TARGET_OS_TV
 
-#import "FBSDKLikeBoxView.h"
+ #import "FBSDKLikeBoxView.h"
 
-#ifdef FBSDKCOCOAPODS
-#import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
-#else
-#import "FBSDKCoreKit+Internal.h"
-#endif
-#import "FBSDKLikeBoxBorderView.h"
+ #ifdef FBSDKCOCOAPODS
+  #import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
+ #else
+  #import "FBSDKCoreKit+Internal.h"
+ #endif
+ #import "FBSDKLikeBoxBorderView.h"
 
 @implementation FBSDKLikeBoxView
 {
@@ -35,7 +35,7 @@
   UILabel *_likeCountLabel;
 }
 
-#pragma mark - Object Lifecycle
+ #pragma mark - Object Lifecycle
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
@@ -53,7 +53,7 @@
   return self;
 }
 
-#pragma mark - Properties
+ #pragma mark - Properties
 
 - (void)setCaretPosition:(FBSDKLikeBoxCaretPosition)caretPosition
 {
@@ -79,7 +79,7 @@
   }
 }
 
-#pragma mark - Layout
+ #pragma mark - Layout
 
 - (CGSize)intrinsicContentSize
 {
@@ -99,7 +99,7 @@
   return [_borderView sizeThatFits:size];
 }
 
-#pragma mark - Helper Methods
+ #pragma mark - Helper Methods
 
 - (void)_initializeContent
 {
@@ -109,7 +109,10 @@
   _likeCountLabel = [[UILabel alloc] initWithFrame:CGRectZero];
   _likeCountLabel.font = [UIFont systemFontOfSize:11.0];
   _likeCountLabel.textAlignment = NSTextAlignmentCenter;
-  _likeCountLabel.textColor = FBSDKUIColorWithRGB(0x6A, 0x71, 0x80);
+  _likeCountLabel.textColor = [UIColor colorWithRed:(0x6A / 255.0)
+                                              green:(0x71 / 255.0)
+                                               blue:(0x80 / 255.0)
+                                              alpha:1.0];
   _borderView.contentView = _likeCountLabel;
 }
 

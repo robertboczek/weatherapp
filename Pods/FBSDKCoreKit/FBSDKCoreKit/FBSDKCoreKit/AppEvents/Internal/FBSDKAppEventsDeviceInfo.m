@@ -22,24 +22,25 @@
 #import <sys/utsname.h>
 
 #if !TARGET_OS_TV
-#import <CoreTelephony/CTCarrier.h>
-#import <CoreTelephony/CTTelephonyNetworkInfo.h>
+ #import <CoreTelephony/CTCarrier.h>
+ #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #endif
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-#import "FBSDKAppEvents+Internal.h"
+#import "FBSDKAppEventsUtility.h"
+#import "FBSDKCoreKitBasicsImport.h"
 #import "FBSDKDynamicFrameworkLoader.h"
 #import "FBSDKInternalUtility.h"
-#import "FBSDKUtility.h"
+#import "FBSDKSettings+Internal.h"
 
 #define FB_ARRAY_COUNT(x) sizeof(x) / sizeof(x[0])
 
-static const u_int FB_GROUP1_RECHECK_DURATION    = 30 * 60;  // seconds
+static const u_int FB_GROUP1_RECHECK_DURATION = 30 * 60; // seconds
 
 // Apple reports storage in binary gigabytes (1024^3) in their About menus, etc.
-static const u_int FB_GIGABYTE = 1024 * 1024 * 1024;  // bytes
+static const u_int FB_GIGABYTE = 1024 * 1024 * 1024; // bytes
 
 @implementation FBSDKAppEventsDeviceInfo
 {
@@ -75,7 +76,7 @@ static const u_int FB_GIGABYTE = 1024 * 1024 * 1024;  // bytes
 
 + (void)extendDictionaryWithDeviceInfo:(NSMutableDictionary *)dictionary
 {
-  dictionary[@"extinfo"] = [[self sharedDeviceInfo] encodedDeviceInfo];
+  [FBSDKTypeUtility dictionary:dictionary setObject:[[self sharedDeviceInfo] encodedDeviceInfo] forKey:@"extinfo"];
 }
 
 #pragma mark - Internal Methods
@@ -91,7 +92,7 @@ static const u_int FB_GIGABYTE = 1024 * 1024 * 1024;  // bytes
 {
   static FBSDKAppEventsDeviceInfo *_sharedDeviceInfo = nil;
   if (_sharedDeviceInfo == nil) {
-    _sharedDeviceInfo = [[FBSDKAppEventsDeviceInfo alloc] init];
+    _sharedDeviceInfo = [FBSDKAppEventsDeviceInfo new];
   }
   return _sharedDeviceInfo;
 }
@@ -106,10 +107,9 @@ static const u_int FB_GIGABYTE = 1024 * 1024 * 1024;  // bytes
 
 - (NSString *)encodedDeviceInfo
 {
-  @synchronized (self) {
-
+  @synchronized(self) {
     BOOL isGroup1Expired = [self _isGroup1Expired];
-    BOOL isEncodingExpired = isGroup1Expired;  // Can || other groups in if we add them
+    BOOL isEncodingExpired = isGroup1Expired; // Can || other groups in if we add them
 
     // As long as group1 hasn't expired, we can just return the last generated value
     if (_encodedDeviceInfo && !isEncodingExpired) {
@@ -131,7 +131,7 @@ static const u_int FB_GIGABYTE = 1024 * 1024 * 1024;  // bytes
 
 - (void)setEncodedDeviceInfo:(NSString *)encodedDeviceInfo
 {
-  @synchronized (self) {
+  @synchronized(self) {
     if (![_encodedDeviceInfo isEqualToString:encodedDeviceInfo]) {
       _encodedDeviceInfo = [encodedDeviceInfo copy];
     }
@@ -172,26 +172,30 @@ static const u_int FB_GIGABYTE = 1024 * 1024 * 1024;  // bytes
 
 - (BOOL)_isGroup1Expired
 {
-  return ([FBSDKAppEventsUtility unixTimeNow] - _lastGroup1CheckTime) > FB_GROUP1_RECHECK_DURATION;
+  return ([self unixTimeNow] - _lastGroup1CheckTime) > FB_GROUP1_RECHECK_DURATION;
 }
 
 // This data is collected only once every GROUP1_RECHECK_DURATION.
 - (void)_collectGroup1Data
 {
-  // Carrier
-  NSString *newCarrierName = [FBSDKAppEventsDeviceInfo _getCarrier];
-  if (![newCarrierName isEqualToString:_carrierName]) {
-    _carrierName = newCarrierName;
-    _isEncodingDirty = YES;
+  const BOOL shouldUseCachedValues = [FBSDKSettings shouldUseCachedValuesForExpensiveMetadata];
+
+  if (!_carrierName || !shouldUseCachedValues) {
+    NSString *newCarrierName = [FBSDKAppEventsDeviceInfo _getCarrier];
+    if (!_carrierName || ![newCarrierName isEqualToString:_carrierName]) {
+      _carrierName = newCarrierName;
+      _isEncodingDirty = YES;
+    }
   }
 
-  // Time zone
-  NSTimeZone *timeZone = [NSTimeZone systemTimeZone];
-  NSString *timeZoneName = timeZone.name;
-  if (![timeZoneName isEqualToString:_timeZoneName]) {
-    _timeZoneName = timeZoneName;
-    _timeZoneAbbrev = timeZone.abbreviation;
-    _isEncodingDirty = YES;
+  if (!_timeZoneName || !_timeZoneAbbrev || !shouldUseCachedValues) {
+    NSTimeZone *timeZone = [NSTimeZone systemTimeZone];
+    NSString *timeZoneName = timeZone.name;
+    if (!_timeZoneName || ![timeZoneName isEqualToString:_timeZoneName]) {
+      _timeZoneName = timeZoneName;
+      _timeZoneAbbrev = timeZone.abbreviation;
+      _isEncodingDirty = YES;
+    }
   }
 
   // Remaining disk space
@@ -202,7 +206,7 @@ static const u_int FB_GIGABYTE = 1024 * 1024 * 1024;  // bytes
     _isEncodingDirty = YES;
   }
 
-  _lastGroup1CheckTime = [FBSDKAppEventsUtility unixTimeNow];
+  _lastGroup1CheckTime = [self unixTimeNow];
 }
 
 - (NSString *)_generateEncoding
@@ -211,40 +215,45 @@ static const u_int FB_GIGABYTE = 1024 * 1024 * 1024;  // bytes
   NSString *densityString = _density ? [NSString stringWithFormat:@"%.02f", _density] : @"";
 
   NSArray *arr = @[
-                   @"i2", // version - starts with 'i' for iOS, we'll use 'a' for Android
-                   _bundleIdentifier ?: @"",
-                   _longVersion ?: @"",
-                   _shortVersion ?: @"",
-                   _sysVersion ?: @"",
-                   _machine ?: @"",
-                   _language ?: @"",
-                   _timeZoneAbbrev ?: @"",
-                   _carrierName ?: @"",
-                   _width ? @((unsigned long)_width) : @"",
-                   _height ? @((unsigned long)_height) : @"",
-                   densityString,
-                   @(_coreCount) ?: @"",
-                   @(_totalDiskSpaceGB) ?: @"",
-                   @(_remainingDiskSpaceGB) ?: @"",
-                   _timeZoneName ?: @""
-                   ];
+    @"i2", // version - starts with 'i' for iOS, we'll use 'a' for Android
+    _bundleIdentifier ?: @"",
+    _longVersion ?: @"",
+    _shortVersion ?: @"",
+    _sysVersion ?: @"",
+    _machine ?: @"",
+    _language ?: @"",
+    _timeZoneAbbrev ?: @"",
+    _carrierName ?: @"",
+    _width ? @((unsigned long)_width) : @"",
+    _height ? @((unsigned long)_height) : @"",
+    densityString,
+    @(_coreCount) ?: @"",
+    @(_totalDiskSpaceGB) ?: @"",
+    @(_remainingDiskSpaceGB) ?: @"",
+    _timeZoneName ?: @""
+  ];
 
   return [FBSDKBasicUtility JSONStringForObject:arr error:NULL invalidObjectHandler:NULL];
 }
 
 #pragma mark - Helper Methods
 
+- (NSTimeInterval)unixTimeNow
+{
+  return round([NSDate date].timeIntervalSince1970);
+}
+
 + (NSNumber *)_getTotalDiskSpace
 {
-  NSDictionary *attrs = [[[NSFileManager alloc] init] attributesOfFileSystemForPath:NSHomeDirectory()
-                                                                              error:nil];
+  NSDictionary *attrs = [[NSFileManager new] attributesOfFileSystemForPath:NSHomeDirectory()
+                                                                     error:nil];
   return attrs[NSFileSystemSize];
 }
 
 + (NSNumber *)_getRemainingDiskSpace
 {
-  NSDictionary *attrs = [[[NSFileManager alloc] init] attributesOfFileSystemForPath:NSHomeDirectory()
-                                                                              error:nil];
+  NSDictionary *attrs = [[NSFileManager new] attributesOfFileSystemForPath:NSHomeDirectory()
+                                                                     error:nil];
   return attrs[NSFileSystemFreeSize];
 }
 
@@ -264,9 +273,11 @@ static const u_int FB_GIGABYTE = 1024 * 1024 * 1024;  // bytes
   return value;
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 + (NSString *)_getCarrier
 {
-#if TARGET_OS_TV || TARGET_IPHONE_SIMULATOR
+#if TARGET_OS_TV || TARGET_OS_SIMULATOR
   return @"NoCarrier";
 #else
   // Dynamically load class for this so calling app doesn't need to link framework in.
@@ -275,5 +286,7 @@ static const u_int FB_GIGABYTE = 1024 * 1024 * 1024;  // bytes
   return carrier.carrierName ?: @"NoCarrier";
 #endif
 }
+
+#pragma clang diagnostic pop
 
 @end

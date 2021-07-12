@@ -16,23 +16,24 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import "FBSDKBridgeAPIProtocolWebV1.h"
+#import "TargetConditionals.h"
 
-#import <UIKit/UIKit.h>
+#if !TARGET_OS_TV
 
-#import "FBSDKBase64.h"
-#import "FBSDKBridgeAPIRequest.h"
-#import "FBSDKError.h"
-#import "FBSDKInternalUtility.h"
-#import "FBSDKSettings.h"
-#import "FBSDKTypeUtility.h"
+ #import "FBSDKBridgeAPIProtocolWebV1.h"
 
-#define FBSDK_BRIDGE_API_PROTOCOL_WEB_V1_ACTION_ID_KEY @"action_id"
-#define FBSDK_BRIDGE_API_PROTOCOL_WEB_V1_BRIDGE_ARGS_KEY @"bridge_args"
+ #import <UIKit/UIKit.h>
+
+ #import "FBSDKCoreKitBasicsImport.h"
+ #import "FBSDKError.h"
+ #import "FBSDKInternalUtility.h"
+
+ #define FBSDK_BRIDGE_API_PROTOCOL_WEB_V1_ACTION_ID_KEY @"action_id"
+ #define FBSDK_BRIDGE_API_PROTOCOL_WEB_V1_BRIDGE_ARGS_KEY @"bridge_args"
 
 @implementation FBSDKBridgeAPIProtocolWebV1
 
-#pragma mark - FBSDKBridgeAPIProtocol
+ #pragma mark - FBSDKBridgeAPIProtocol
 
 - (NSURL *)requestURLWithActionID:(NSString *)actionID
                            scheme:(NSString *)scheme
@@ -41,17 +42,20 @@
                        parameters:(NSDictionary *)parameters
                             error:(NSError *__autoreleasing *)errorRef
 {
+  if (![FBSDKTypeUtility coercedToStringValue:actionID] || ![FBSDKTypeUtility coercedToStringValue:methodName]) {
+    return nil;
+  }
   NSMutableDictionary *queryParameters = [[NSMutableDictionary alloc] initWithDictionary:parameters];
-  queryParameters[@"display"] = @"touch";
-  NSString *bridgeArgs = [FBSDKBasicUtility JSONStringForObject:@{ FBSDK_BRIDGE_API_PROTOCOL_WEB_V1_ACTION_ID_KEY: actionID }
+  [FBSDKTypeUtility dictionary:queryParameters setObject:@"touch" forKey:@"display"];
+  NSString *bridgeArgs = [FBSDKBasicUtility JSONStringForObject:@{ FBSDK_BRIDGE_API_PROTOCOL_WEB_V1_ACTION_ID_KEY : actionID }
                                                           error:NULL
                                            invalidObjectHandler:NULL];
-  NSDictionary *redirectQueryParameters = @{ FBSDK_BRIDGE_API_PROTOCOL_WEB_V1_BRIDGE_ARGS_KEY: bridgeArgs };
+  NSDictionary *redirectQueryParameters = @{ FBSDK_BRIDGE_API_PROTOCOL_WEB_V1_BRIDGE_ARGS_KEY : bridgeArgs };
   NSURL *redirectURL = [FBSDKInternalUtility appURLWithHost:@"bridge"
                                                        path:methodName
                                             queryParameters:redirectQueryParameters
                                                       error:NULL];
-  [FBSDKBasicUtility dictionary:queryParameters setObject:redirectURL forKey:@"redirect_uri"];
+  [FBSDKTypeUtility dictionary:queryParameters setObject:redirectURL forKey:@"redirect_uri"];
   [queryParameters addEntriesFromDictionary:parameters];
   return [FBSDKInternalUtility facebookURLWithHostPrefix:@"m"
                                                     path:[@"/dialog/" stringByAppendingString:methodName]
@@ -69,28 +73,26 @@
   }
   NSInteger errorCode = [FBSDKTypeUtility integerValue:queryParameters[@"error_code"]];
   switch (errorCode) {
-    case 0:{
+    case 0: {
       // good to go, handle the other codes and bail
       break;
     }
-    case 4201:{
+    case 4201: {
       return @{
-               @"completionGesture": @"cancel",
-               };
-      break;
+        @"completionGesture" : @"cancel",
+      };
     }
-    default:{
+    default: {
       if (errorRef != NULL) {
         *errorRef = [FBSDKError errorWithCode:errorCode
-                                      message:[FBSDKTypeUtility stringValue:queryParameters[@"error_message"]]];
+                                      message:[FBSDKTypeUtility coercedToStringValue:queryParameters[@"error_message"]]];
       }
       return nil;
-      break;
     }
   }
 
   NSError *error;
-  NSString *bridgeParametersJSON = [FBSDKTypeUtility stringValue:queryParameters[FBSDK_BRIDGE_API_PROTOCOL_WEB_V1_BRIDGE_ARGS_KEY]];
+  NSString *bridgeParametersJSON = [FBSDKTypeUtility coercedToStringValue:queryParameters[FBSDK_BRIDGE_API_PROTOCOL_WEB_V1_BRIDGE_ARGS_KEY]];
   NSDictionary<id, id> *bridgeParameters = [FBSDKBasicUtility objectForJSONString:bridgeParametersJSON error:&error];
   if (!bridgeParameters) {
     if (error && (errorRef != NULL)) {
@@ -102,7 +104,7 @@
     return nil;
   }
   NSString *responseActionID = bridgeParameters[FBSDK_BRIDGE_API_PROTOCOL_WEB_V1_ACTION_ID_KEY];
-  responseActionID = [FBSDKTypeUtility stringValue:responseActionID];
+  responseActionID = [FBSDKTypeUtility coercedToStringValue:responseActionID];
   if (![responseActionID isEqualToString:actionID]) {
     return nil;
   }
@@ -113,3 +115,5 @@
 }
 
 @end
+
+#endif

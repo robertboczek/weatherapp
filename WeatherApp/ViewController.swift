@@ -166,6 +166,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         super.init(coder: aDecoder)
         
         self.registerAWSConfig()
+        self.setAdvertisingTrackingEnabled()
     }
     
     func registerAWSConfig() {
@@ -180,7 +181,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
           self.uid = idfa
         }
         self.loadFavoritiesConfig()
-        
+        self.setAdvertisingTrackingEnabled()
+    }
+    
+    func setAdvertisingTrackingEnabled() {
+        // Set the flag as true
+        FBAdSettings.setAdvertiserTrackingEnabled(true)
     }
     
     func loadFavoritiesConfig() {

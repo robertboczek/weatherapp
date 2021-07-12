@@ -20,26 +20,28 @@
 
 #if !TARGET_OS_TV
 
-#import "FBSDKGameRequestFrictionlessRecipientCache.h"
+ #import "FBSDKGameRequestFrictionlessRecipientCache.h"
 
-#if defined BUCK || defined FBSDKCOCOAPODS
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
-#else
+ #if defined BUCK || defined FBSDKCOCOAPODS
+  #import <FBSDKCoreKit/FBSDKCoreKit.h>
+ #else
 @import FBSDKCoreKit;
-#endif
+ #endif
 
-#ifdef FBSDKCOCOAPODS
-#import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
-#else
-#import "FBSDKCoreKit+Internal.h"
-#endif
+ #ifdef FBSDKCOCOAPODS
+  #import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
+ #else
+  #import "FBSDKCoreKit+Internal.h"
+ #endif
+
+ #import "FBSDKCoreKitBasicsImportForShareKit.h"
 
 @implementation FBSDKGameRequestFrictionlessRecipientCache
 {
   NSSet *_recipientIDs;
 }
 
-#pragma mark - Object Lifecycle
+ #pragma mark - Object Lifecycle
 
 - (instancetype)init
 {
@@ -58,7 +60,7 @@
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-#pragma mark - Public API
+ #pragma mark - Public API
 
 - (BOOL)recipientsAreFrictionless:(id)recipients
 {
@@ -69,8 +71,13 @@
   if (!recipientIDArray && [recipients isKindOfClass:[NSString class]]) {
     recipientIDArray = [recipients componentsSeparatedByString:@","];
   }
-  NSSet *recipientIDs = [[NSSet alloc] initWithArray:recipientIDArray];
-  return [recipientIDs isSubsetOfSet:_recipientIDs];
+  if (recipientIDArray) {
+    NSSet *recipientIDs = [[NSSet alloc]
+                           initWithArray:recipientIDArray];
+    return [recipientIDs isSubsetOfSet:_recipientIDs];
+  } else {
+    return NO;
+  }
 }
 
 - (void)updateWithResults:(NSDictionary *)results
@@ -80,7 +87,7 @@
   }
 }
 
-#pragma mark - Helper Methods
+ #pragma mark - Helper Methods
 
 - (void)_accessTokenDidChangeNotification:(NSNotification *)notification
 {
@@ -98,10 +105,10 @@
     return;
   }
   FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me/apprequestformerrecipients"
-                                                                 parameters:@{@"fields":@""}
-                                                                      flags:(FBSDKGraphRequestFlagDoNotInvalidateTokenOnError |
-                                                                             FBSDKGraphRequestFlagDisableErrorRecovery)];
-  [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+                                                                 parameters:@{@"fields" : @""}
+                                                                      flags:(FBSDKGraphRequestFlagDoNotInvalidateTokenOnError
+                                                                        | FBSDKGraphRequestFlagDisableErrorRecovery)];
+  [request startWithCompletion:^(id<FBSDKGraphRequestConnecting> connection, id result, NSError *error) {
     if (!error) {
       NSArray *items = [FBSDKTypeUtility arrayValue:result[@"data"]];
       NSArray *recipientIDs = [items valueForKey:@"recipient_id"];

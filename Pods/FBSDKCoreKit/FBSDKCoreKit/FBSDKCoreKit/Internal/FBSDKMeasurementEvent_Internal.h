@@ -16,7 +16,11 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import "FBSDKMeasurementEvent.h"
+#import "TargetConditionals.h"
+
+#if !TARGET_OS_TV
+
+ #import "FBSDKMeasurementEvent.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -25,9 +29,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @interface FBSDKMeasurementEvent (Internal)
 
-+ (void)postNotificationForEventName:(NSString *)name
+- (void)postNotificationForEventName:(NSString *)name
                                 args:(NSDictionary<NSString *, id> *)args;
 
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif

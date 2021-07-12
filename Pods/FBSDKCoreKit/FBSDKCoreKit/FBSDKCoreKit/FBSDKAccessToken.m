@@ -17,11 +17,13 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #import "FBSDKAccessToken.h"
+#import "FBSDKAccessToken+Internal.h"
+#import "FBSDKAccessToken+TokenStringProviding.h"
 
+#import "FBSDKCoreKitBasicsImport.h"
 #import "FBSDKGraphRequestPiggybackManager.h"
 #import "FBSDKInternalUtility.h"
 #import "FBSDKMath.h"
-#import "FBSDKSettings+Internal.h"
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
 
@@ -39,6 +41,8 @@ NSString *const FBSDKAccessTokenChangeOldKey = @"FBSDKAccessTokenOld";
 NSString *const FBSDKAccessTokenDidExpireKey = @"FBSDKAccessTokenDidExpireKey";
 
 static FBSDKAccessToken *g_currentAccessToken;
+static id<FBSDKTokenCaching> g_tokenCache;
+static id<FBSDKGraphRequestConnectionProviding> g_connectionFactory;
 
 #define FBSDK_ACCESSTOKEN_TOKENSTRING_KEY @"tokenString"
 #define FBSDK_ACCESSTOKEN_PERMISSIONS_KEY @"permissions"
@@ -49,43 +53,72 @@ static FBSDKAccessToken *g_currentAccessToken;
 #define FBSDK_ACCESSTOKEN_REFRESHDATE_KEY @"refreshDate"
 #define FBSDK_ACCESSTOKEN_EXPIRATIONDATE_KEY @"expirationDate"
 #define FBSDK_ACCESSTOKEN_DATA_EXPIRATIONDATE_KEY @"dataAccessExpirationDate"
-
+#define FBSDK_ACCESSTOKEN_GRAPH_DOMAIN_KEY @"graphDomain"
 
 @implementation FBSDKAccessToken
 
 - (instancetype)initWithTokenString:(NSString *)tokenString
                         permissions:(NSArray *)permissions
                 declinedPermissions:(NSArray *)declinedPermissions
-                expiredPermissions:(NSArray *)expiredPermissions
+                 expiredPermissions:(NSArray *)expiredPermissions
                               appID:(NSString *)appID
                              userID:(NSString *)userID
                      expirationDate:(NSDate *)expirationDate
                         refreshDate:(NSDate *)refreshDate
            dataAccessExpirationDate:(NSDate *)dataAccessExpirationDate
 {
-    if ((self = [super init])) {
-        _tokenString = [tokenString copy];
-        _permissions = [NSSet setWithArray:permissions];
-        _declinedPermissions = [NSSet setWithArray:declinedPermissions];
-        _expiredPermissions = [NSSet setWithArray:expiredPermissions];
-        _appID = [appID copy];
-        _userID = [userID copy];
-        _expirationDate = [expirationDate copy] ?: [NSDate distantFuture];
-        _refreshDate = [refreshDate copy] ?: [NSDate date];
-        _dataAccessExpirationDate = [dataAccessExpirationDate copy] ?: [NSDate distantFuture];
-    }
-    return self;
+  if ((self = [super init])) {
+    _tokenString = [tokenString copy];
+    _permissions = [NSSet setWithArray:permissions];
+    _declinedPermissions = [NSSet setWithArray:declinedPermissions];
+    _expiredPermissions = [NSSet setWithArray:expiredPermissions];
+    _appID = [appID copy];
+    _userID = [userID copy];
+    _expirationDate = [expirationDate copy] ?: [NSDate distantFuture];
+    _refreshDate = [refreshDate copy] ?: [NSDate date];
+    _dataAccessExpirationDate = [dataAccessExpirationDate copy] ?: [NSDate distantFuture];
+  }
+  return self;
+}
+
+- (instancetype)initWithTokenString:(NSString *)tokenString
+                        permissions:(NSArray<NSString *> *)permissions
+                declinedPermissions:(NSArray<NSString *> *)declinedPermissions
+                 expiredPermissions:(NSArray<NSString *> *)expiredPermissions
+                              appID:(NSString *)appID
+                             userID:(NSString *)userID
+                     expirationDate:(NSDate *)expirationDate
+                        refreshDate:(NSDate *)refreshDate
+           dataAccessExpirationDate:(NSDate *)dataAccessExpirationDate
+                        graphDomain:(NSString *)graphDomain
+{
+  FBSDKAccessToken *accessToken =
+  [self
+   initWithTokenString:tokenString
+   permissions:permissions
+   declinedPermissions:declinedPermissions
+   expiredPermissions:expiredPermissions
+   appID:appID
+   userID:userID
+   expirationDate:expirationDate
+   refreshDate:refreshDate
+   dataAccessExpirationDate:dataAccessExpirationDate];
+
+  if (accessToken != nil) {
+    accessToken->_graphDomain = [graphDomain copy];
+  }
+
+  return accessToken;
 }
 
 - (BOOL)hasGranted:(NSString *)permission
 {
   return [self.permissions containsObject:permission];
-
 }
 
 - (BOOL)isDataAccessExpired
 {
-    return [self.dataAccessExpirationDate compare:NSDate.date] == NSOrderedAscending;
+  return [self.dataAccessExpirationDate compare:NSDate.date] == NSOrderedAscending;
 }
 
 - (BOOL)isExpired
@@ -93,17 +126,45 @@ static FBSDKAccessToken *g_currentAccessToken;
   return [self.expirationDate compare:NSDate.date] == NSOrderedAscending;
 }
 
++ (id<FBSDKTokenCaching>)tokenCache
+{
+  return g_tokenCache;
+}
+
++ (void)setTokenCache:(id<FBSDKTokenCaching>)cache
+{
+  if (g_tokenCache != cache) {
+    g_tokenCache = cache;
+  }
+}
+
++ (void)resetTokenCache
+{
+  [FBSDKAccessToken setTokenCache:nil];
+}
+
 + (FBSDKAccessToken *)currentAccessToken
 {
   return g_currentAccessToken;
 }
 
++ (NSString *)tokenString
+{
+  return FBSDKAccessToken.currentAccessToken.tokenString;
+}
+
 + (void)setCurrentAccessToken:(FBSDKAccessToken *)token
+{
+  [FBSDKAccessToken setCurrentAccessToken:token shouldDispatchNotif:YES];
+}
+
++ (void)setCurrentAccessToken:(nullable FBSDKAccessToken *)token
+          shouldDispatchNotif:(BOOL)shouldDispatchNotif
 {
   if (token != g_currentAccessToken) {
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-    [FBSDKBasicUtility dictionary:userInfo setObject:token forKey:FBSDKAccessTokenChangeNewKey];
-    [FBSDKBasicUtility dictionary:userInfo setObject:g_currentAccessToken forKey:FBSDKAccessTokenChangeOldKey];
+    [FBSDKTypeUtility dictionary:userInfo setObject:token forKey:FBSDKAccessTokenChangeNewKey];
+    [FBSDKTypeUtility dictionary:userInfo setObject:g_currentAccessToken forKey:FBSDKAccessTokenChangeOldKey];
     // We set this flag also when the current Access Token was not valid, since there might be legacy code relying on it
     if (![g_currentAccessToken.userID isEqualToString:token.userID] || !self.isCurrentAccessTokenActive) {
       userInfo[FBSDKAccessTokenDidChangeUserIDKey] = @YES;
@@ -117,10 +178,12 @@ static FBSDKAccessToken *g_currentAccessToken;
       [FBSDKInternalUtility deleteFacebookCookies];
     }
 
-    [FBSDKSettings accessTokenCache].accessToken = token;
-    [[NSNotificationCenter defaultCenter] postNotificationName:FBSDKAccessTokenDidChangeNotification
-                                                        object:[self class]
-                                                      userInfo:userInfo];
+    self.tokenCache.accessToken = token;
+    if (shouldDispatchNotif) {
+      [[NSNotificationCenter defaultCenter] postNotificationName:FBSDKAccessTokenDidChangeNotification
+                                                          object:[self class]
+                                                        userInfo:userInfo];
+    }
   }
 }
 
@@ -132,14 +195,40 @@ static FBSDKAccessToken *g_currentAccessToken;
 
 + (void)refreshCurrentAccessToken:(FBSDKGraphRequestBlock)completionHandler
 {
+  FBSDKGraphRequestCompletion completion = ^void (id<FBSDKGraphRequestConnecting> connection, id result, NSError *error) {
+    if (completionHandler) {
+      completionHandler(FBSDK_CAST_TO_CLASS_OR_NIL(connection, FBSDKGraphRequestConnection), result, error);
+    }
+  };
+  [self refreshCurrentAccessTokenWithCompletion:completion];
+}
+
++ (void)refreshCurrentAccessTokenWithCompletion:(nullable FBSDKGraphRequestCompletion)completion
+{
   if ([FBSDKAccessToken currentAccessToken]) {
-    FBSDKGraphRequestConnection *connection = [[FBSDKGraphRequestConnection alloc] init];
-    [FBSDKGraphRequestPiggybackManager addRefreshPiggyback:connection permissionHandler:completionHandler];
+    id<FBSDKGraphRequestConnecting> connection = [FBSDKAccessToken.connectionFactory createGraphRequestConnection];
+    [FBSDKGraphRequestPiggybackManager addRefreshPiggyback:connection permissionHandler:completion];
     [connection start];
-  } else if (completionHandler) {
-    completionHandler(nil, nil, [FBSDKError
-                                 errorWithCode:FBSDKErrorAccessTokenRequired
-                                 message:@"No current access token to refresh"]);
+  } else if (completion) {
+    completion(
+      nil,
+      nil,
+      [FBSDKError
+       errorWithCode:FBSDKErrorAccessTokenRequired
+       message:@"No current access token to refresh"]
+    );
+  }
+}
+
++ (id<FBSDKGraphRequestConnectionProviding>)connectionFactory
+{
+  return g_connectionFactory;
+}
+
++ (void)setConnectionFactory:(nonnull id<FBSDKGraphRequestConnectionProviding>)connectionFactory
+{
+  if (g_connectionFactory != connectionFactory) {
+    g_connectionFactory = connectionFactory;
   }
 }
 
@@ -147,6 +236,8 @@ static FBSDKAccessToken *g_currentAccessToken;
 
 - (NSUInteger)hash
 {
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wdeprecated-declarations"
   NSUInteger subhashes[] = {
     self.tokenString.hash,
     self.permissions.hash,
@@ -156,8 +247,11 @@ static FBSDKAccessToken *g_currentAccessToken;
     self.userID.hash,
     self.refreshDate.hash,
     self.expirationDate.hash,
-    self.dataAccessExpirationDate.hash
+    self.dataAccessExpirationDate.hash,
+    self.graphDomain.hash
   };
+  #pragma clange diagnostic pop
+
   return [FBSDKMath hashWithIntegerArray:subhashes count:sizeof(subhashes) / sizeof(subhashes[0])];
 }
 
@@ -174,16 +268,20 @@ static FBSDKAccessToken *g_currentAccessToken;
 
 - (BOOL)isEqualToAccessToken:(FBSDKAccessToken *)token
 {
-  return (token &&
-          [FBSDKInternalUtility object:self.tokenString isEqualToObject:token.tokenString] &&
-          [FBSDKInternalUtility object:self.permissions isEqualToObject:token.permissions] &&
-          [FBSDKInternalUtility object:self.declinedPermissions isEqualToObject:token.declinedPermissions] &&
-          [FBSDKInternalUtility object:self.expiredPermissions isEqualToObject:token.expiredPermissions] &&
-          [FBSDKInternalUtility object:self.appID isEqualToObject:token.appID] &&
-          [FBSDKInternalUtility object:self.userID isEqualToObject:token.userID] &&
-          [FBSDKInternalUtility object:self.refreshDate isEqualToObject:token.refreshDate] &&
-          [FBSDKInternalUtility object:self.expirationDate isEqualToObject:token.expirationDate] &&
-          [FBSDKInternalUtility object:self.dataAccessExpirationDate isEqualToObject:token.dataAccessExpirationDate] );
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+  return (token
+    && [FBSDKInternalUtility object:self.tokenString isEqualToObject:token.tokenString]
+    && [FBSDKInternalUtility object:self.permissions isEqualToObject:token.permissions]
+    && [FBSDKInternalUtility object:self.declinedPermissions isEqualToObject:token.declinedPermissions]
+    && [FBSDKInternalUtility object:self.expiredPermissions isEqualToObject:token.expiredPermissions]
+    && [FBSDKInternalUtility object:self.appID isEqualToObject:token.appID]
+    && [FBSDKInternalUtility object:self.userID isEqualToObject:token.userID]
+    && [FBSDKInternalUtility object:self.refreshDate isEqualToObject:token.refreshDate]
+    && [FBSDKInternalUtility object:self.expirationDate isEqualToObject:token.expirationDate]
+    && [FBSDKInternalUtility object:self.dataAccessExpirationDate isEqualToObject:token.dataAccessExpirationDate]
+    && [FBSDKInternalUtility object:self.graphDomain isEqualToObject:token.graphDomain]);
+  #pragma clange diagnostic pop
 }
 
 #pragma mark - NSCopying
@@ -212,16 +310,20 @@ static FBSDKAccessToken *g_currentAccessToken;
   NSDate *refreshDate = [decoder decodeObjectOfClass:[NSDate class] forKey:FBSDK_ACCESSTOKEN_REFRESHDATE_KEY];
   NSDate *expirationDate = [decoder decodeObjectOfClass:[NSDate class] forKey:FBSDK_ACCESSTOKEN_EXPIRATIONDATE_KEY];
   NSDate *dataAccessExpirationDate = [decoder decodeObjectOfClass:[NSDate class] forKey:FBSDK_ACCESSTOKEN_DATA_EXPIRATIONDATE_KEY];
+  NSString *graphDomain = [decoder decodeObjectOfClass:[NSString class] forKey:FBSDK_ACCESSTOKEN_GRAPH_DOMAIN_KEY];
 
-  return [self initWithTokenString:tokenString
-                       permissions:permissions.allObjects
-               declinedPermissions:declinedPermissions.allObjects
-                expiredPermissions:expiredPermissions.allObjects
-                             appID:appID
-                            userID:userID
-                    expirationDate:expirationDate
-                       refreshDate:refreshDate
-          dataAccessExpirationDate:dataAccessExpirationDate];
+  return
+  [self
+   initWithTokenString:tokenString
+   permissions:permissions.allObjects
+   declinedPermissions:declinedPermissions.allObjects
+   expiredPermissions:expiredPermissions.allObjects
+   appID:appID
+   userID:userID
+   expirationDate:expirationDate
+   refreshDate:refreshDate
+   dataAccessExpirationDate:dataAccessExpirationDate
+   graphDomain:graphDomain];
 }
 
 - (void)encodeWithCoder:(NSCoder *)encoder
@@ -235,6 +337,23 @@ static FBSDKAccessToken *g_currentAccessToken;
   [encoder encodeObject:self.expirationDate forKey:FBSDK_ACCESSTOKEN_EXPIRATIONDATE_KEY];
   [encoder encodeObject:self.refreshDate forKey:FBSDK_ACCESSTOKEN_REFRESHDATE_KEY];
   [encoder encodeObject:self.dataAccessExpirationDate forKey:FBSDK_ACCESSTOKEN_DATA_EXPIRATIONDATE_KEY];
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+  [encoder encodeObject:self.graphDomain forKey:FBSDK_ACCESSTOKEN_GRAPH_DOMAIN_KEY];
+  #pragma clange diagnostic pop
 }
+
+#pragma mark - Testability
+
+#if DEBUG
+ #if FBSDKTEST
+
++ (void)resetCurrentAccessTokenCache
+{
+  g_currentAccessToken = nil;
+}
+
+ #endif
+#endif
 
 @end

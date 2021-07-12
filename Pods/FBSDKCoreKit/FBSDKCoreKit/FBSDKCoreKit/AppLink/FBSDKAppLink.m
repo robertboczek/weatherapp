@@ -16,16 +16,11 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import "FBSDKAppLink_Internal.h"
+#import "TargetConditionals.h"
 
-#import "FBSDKAppEvents+Internal.h"
-#import "FBSDKCoreKit+Internal.h"
-#import "FBSDKURL.h"
+#if !TARGET_OS_TV
 
-static Class autoAppLinkViewControllerClass;
-static NSString *autoAppLinkIdentifier;
-static NSString *autoAppLinkStoryBoard;
-static FBSDKAutoAppLinkPresentationStyle autoAppLinkStyle;
+ #import "FBSDKAppLink_Internal.h"
 
 NSString *const FBSDKAppLinkDataParameterName = @"al_applink_data";
 NSString *const FBSDKAppLinkTargetKeyName = @"target_url";
@@ -36,15 +31,14 @@ NSString *const FBSDKAppLinkRefererAppName = @"app_name";
 NSString *const FBSDKAppLinkRefererUrl = @"url";
 NSString *const FBSDKAppLinkVersionKeyName = @"version";
 NSString *const FBSDKAppLinkVersion = @"1.0";
-NSString *const FBSDKAutoAppLinkEventName = @"fb_auto_applink";
 
-@interface FBSDKAppLink () <FBSDKApplicationObserving>
+@interface FBSDKAppLink ()
 
 @property (nonatomic, strong) NSURL *sourceURL;
 @property (nonatomic, copy) NSArray<FBSDKAppLinkTarget *> *targets;
 @property (nonatomic, strong) NSURL *webURL;
 
-@property (nonatomic, assign, getter=isBackToReferrer) BOOL backToReferrer;
+@property (nonatomic, getter = isBackToReferrer, assign) BOOL backToReferrer;
 
 @end
 
@@ -53,122 +47,33 @@ NSString *const FBSDKAutoAppLinkEventName = @"fb_auto_applink";
 + (instancetype)appLinkWithSourceURL:(NSURL *)sourceURL
                              targets:(NSArray<FBSDKAppLinkTarget *> *)targets
                               webURL:(NSURL *)webURL
-                    isBackToReferrer:(BOOL)isBackToReferrer {
-    FBSDKAppLink *link = [[self alloc] initWithIsBackToReferrer:isBackToReferrer];
-    link.sourceURL = sourceURL;
-    link.targets = [targets copy];
-    link.webURL = webURL;
-    return link;
+                    isBackToReferrer:(BOOL)isBackToReferrer
+{
+  FBSDKAppLink *link = [[self alloc] initWithIsBackToReferrer:isBackToReferrer];
+  link.sourceURL = sourceURL;
+  link.targets = [targets copy];
+  link.webURL = webURL;
+  return link;
 }
 
 + (instancetype)appLinkWithSourceURL:(NSURL *)sourceURL
                              targets:(NSArray<FBSDKAppLinkTarget *> *)targets
-                              webURL:(NSURL *)webURL {
-    return [self appLinkWithSourceURL:sourceURL
-                              targets:targets
-                               webURL:webURL
-                     isBackToReferrer:NO];
-}
-
-- (FBSDKAppLink *)initWithIsBackToReferrer:(BOOL)backToReferrer {
-    if ((self = [super init])) {
-        _backToReferrer = backToReferrer;
-    }
-    return self;
-}
-
-#pragma mark - Auto App Link Methods
-
-/**
- The Auto App Link is in Beta development and will be kept in Internal for now
-*/
-+ (FBSDKAppLink *)sharedInstance
+                              webURL:(NSURL *)webURL
 {
-  static FBSDKAppLink *_sharedInstance;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    _sharedInstance = [[self alloc] init];
-  });
-  return _sharedInstance;
+  return [self appLinkWithSourceURL:sourceURL
+                            targets:targets
+                             webURL:webURL
+                   isBackToReferrer:NO];
 }
 
-- (BOOL)application:(UIApplication *)application
-            openURL:(NSURL *)url
-  sourceApplication:(NSString *)sourceApplication
-         annotation:(id)annotation
+- (FBSDKAppLink *)initWithIsBackToReferrer:(BOOL)backToReferrer
 {
-  FBSDKURL *parsedUrl = [FBSDKURL URLWithURL:url];
-  if (!parsedUrl.isAutoAppLink) {
-    return NO;
+  if ((self = [super init])) {
+    _backToReferrer = backToReferrer;
   }
-  UIViewController<FBSDKAutoAppLink> *vc = [FBSDKAppLink getAutoAppLinkViewController];
-  if (vc) {
-    [vc setAutoAppLinkData:parsedUrl.appLinkData];
-    UIViewController *root = [FBSDKInternalUtility topMostViewController];
-    UINavigationController *nv = root.navigationController;
-    switch(autoAppLinkStyle) {
-      case FBSDKAutoAppLinkPresentationStyleAuto:
-        if (nv) {
-          [nv pushViewController:vc animated:YES];
-        } else {
-          [root presentViewController:vc animated:YES completion:nil];
-        }
-        break;
-      case FBSDKAutoAppLinkPresentationStylePresent:
-        [root presentViewController:vc animated:YES completion:nil];
-        break;
-      case FBSDKAutoAppLinkPresentationStylePush:
-        if (nv) {
-          [nv pushViewController:vc animated:YES];
-        } else {
-          [root presentViewController:[[UINavigationController alloc] initWithRootViewController:vc] animated:YES completion:nil];
-        }
-        break;
-    }
-  }
-  [FBSDKAppEvents logInternalEvent:FBSDKAutoAppLinkEventName isImplicitlyLogged:YES];
-  return YES;
-}
-
-+ (void)registerViewController:(Class)viewControllerClass
-                         style:(FBSDKAutoAppLinkPresentationStyle)style
-{
-  autoAppLinkViewControllerClass = viewControllerClass;
-  autoAppLinkStyle = style;
-  [[FBSDKApplicationDelegate sharedInstance] addObserver:[FBSDKAppLink sharedInstance]];
-}
-
-+ (void)registerIdentifier:(NSString *)identifier
-                storyBoard:(NSString *)storyBoard
-                     style:(FBSDKAutoAppLinkPresentationStyle)style
-{
-  autoAppLinkIdentifier = identifier;
-  autoAppLinkStoryBoard = storyBoard;
-  autoAppLinkStyle = style;
-  [[FBSDKApplicationDelegate sharedInstance] addObserver:[FBSDKAppLink sharedInstance]];
-}
-
-/**
- Instantiate Auto App Link viewcontroller with the registered information.
-*/
-+ (UIViewController<FBSDKAutoAppLink> *)getAutoAppLinkViewController
-{
-  if (autoAppLinkViewControllerClass) {
-    if (![autoAppLinkViewControllerClass isSubclassOfClass:[UIViewController class]]) {
-      return nil;
-    }
-    if (![autoAppLinkViewControllerClass conformsToProtocol:@protocol(FBSDKAutoAppLink)]) {
-      return nil;
-    }
-    return [[autoAppLinkViewControllerClass alloc] init];
-  } else if (autoAppLinkIdentifier && autoAppLinkStoryBoard) {
-    @try {
-      return [[UIStoryboard storyboardWithName:autoAppLinkStoryBoard
-                                bundle:nil]
-      instantiateViewControllerWithIdentifier:autoAppLinkIdentifier];
-    } @catch (NSException *exception) { }
-  }
-  return nil;
+  return self;
 }
 
 @end
+
+#endif

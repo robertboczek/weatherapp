@@ -17,8 +17,8 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import <StoreKit/StoreKit.h>
 
+#import <FBAudienceNetwork/FBAdCompanionView.h>
 #import <FBAudienceNetwork/FBAdDefines.h>
 #import <FBAudienceNetwork/FBAdExtraHint.h>
 #import <FBAudienceNetwork/FBAdView.h>
@@ -31,8 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
   A modal view controller to represent a Facebook interstitial ad. This
  is a full-screen ad shown in your application.
  */
-FB_CLASS_EXPORT FB_SUBCLASSING_RESTRICTED
-@interface FBInterstitialAd : NSObject
+FB_CLASS_EXPORT FB_SUBCLASSING_RESTRICTED @interface FBInterstitialAd : NSObject
 
 /**
   Typed access to the id of the ad placement.
@@ -46,6 +45,11 @@ FB_CLASS_EXPORT FB_SUBCLASSING_RESTRICTED
  FBAdExtraHint to provide extra info
  */
 @property (nonatomic, strong, nullable) FBAdExtraHint *extraHint;
+
+/**
+  Experimental Feature, DO NOT USE IN PRODUCTION!
+ */
+@property (nonatomic) BOOL shouldShowCompanionView;
 
 /**
   This is a method to initialize an FBInterstitialAd matching the given placement id.
@@ -148,6 +152,13 @@ FB_CLASS_EXPORT FB_SUBCLASSING_RESTRICTED
  @param interstitialAd An FBInterstitialAd object sending the message.
  */
 - (void)interstitialAdWillLogImpression:(FBInterstitialAd *)interstitialAd;
+
+/**
+  Experimental Feature, DO NOT USE IN PRODUCTION!
+
+ @param FBAdCompanionView should return a Companion View for the Interstitial Ad.
+ */
+- (void)interstitialAdCompanionViewProvider:(void (^)(FBAdCompanionView *_Nullable))completion;
 
 @end
 

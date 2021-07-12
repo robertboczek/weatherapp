@@ -16,14 +16,42 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
+#import "TargetConditionals.h"
 
-typedef void (^FBSDKDownloadCompletionBlock)(BOOL success);
+#if !TARGET_OS_TV
 
-@interface FBSDKModelManager : NSObject
+ #import <Foundation/Foundation.h>
 
-+ (void)enable;
-+ (nullable NSDictionary *)getRules;
-+ (nullable NSString *)getWeightsPath:(NSString *_Nonnull)useCaseKey;
+ #import "FBSDKEventProcessing.h"
+
+ @protocol FBSDKDataPersisting;
+ @protocol FBSDKFeatureChecking;
+ @protocol FBSDKFileManaging;
+ @protocol FBSDKGraphRequestProviding;
+ @protocol FBSDKSettings;
+ @protocol FBSDKFileDataExtracting;
+
+NS_ASSUME_NONNULL_BEGIN
+
+NS_SWIFT_NAME(ModelManager)
+@interface FBSDKModelManager : NSObject<FBSDKEventProcessing>
+
+@property (class, nonnull, readonly) FBSDKModelManager *shared;
+
+- (void)enable;
+- (nullable NSData *)getWeightsForKey:(NSString *)useCase;
+- (nullable NSArray *)getThresholdsForKey:(NSString *)useCase;
+- (BOOL)processIntegrity:(nullable NSString *)param;
+- (NSString *)processSuggestedEvents:(NSString *)textFeature denseData:(nullable float *)denseData;
+- (void)configureWithFeatureChecker:(id<FBSDKFeatureChecking>)featureChecker
+                graphRequestFactory:(id<FBSDKGraphRequestProviding>)graphRequestFactory
+                        fileManager:(id<FBSDKFileManaging>)fileManager
+                              store:(id<FBSDKDataPersisting>)store
+                           settings:(id<FBSDKSettings>)settings
+                      dataExtractor:(Class<FBSDKFileDataExtracting>)dataExtractor;
 
 @end
+
+NS_ASSUME_NONNULL_END
+
+#endif
