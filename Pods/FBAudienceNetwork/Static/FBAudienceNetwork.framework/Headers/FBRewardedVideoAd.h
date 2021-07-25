@@ -19,7 +19,6 @@
 #import <CoreMedia/CoreMedia.h>
 #import <Foundation/Foundation.h>
 
-#import <FBAudienceNetwork/FBAdCompanionView.h>
 #import <FBAudienceNetwork/FBAdDefines.h>
 #import <FBAudienceNetwork/FBAdExperienceConfig.h>
 #import <FBAudienceNetwork/FBAdExtraHint.h>
@@ -64,11 +63,6 @@ FB_CLASS_EXPORT FB_SUBCLASSING_RESTRICTED @interface FBRewardedVideoAd : NSObjec
  FBAdExperiencConfig to provide additional ad configuration
  */
 @property (nonatomic, copy, nullable) FBAdExperienceConfig *adExperienceConfig;
-
-/**
-  Experimental Feature, DO NOT USE IN PRODUCTION!
- */
-@property (nonatomic) BOOL shouldShowCompanionView;
 
 /**
   This is a method to initialize an FBRewardedVideoAd matching the given placement id.
@@ -217,13 +211,6 @@ FB_CLASS_EXPORT FB_SUBCLASSING_RESTRICTED @interface FBRewardedVideoAd : NSObjec
  @param rewardedVideoAd An FBRewardedVideoAd object sending the message.
  */
 - (void)rewardedVideoAdServerRewardDidFail:(FBRewardedVideoAd *)rewardedVideoAd;
-
-/**
-  Experimental Feature, DO NOT USE IN PRODUCTION!
-
- @param FBAdCompanionView should return a Companion View for the Interstitial Ad.
- */
-- (void)rewardedVideoAdCompanionViewProvider:(void (^)(FBAdCompanionView *_Nullable))completion;
 
 @end
 

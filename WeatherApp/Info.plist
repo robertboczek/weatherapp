@@ -2,19 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>SKAdNetworkItems</key>
-	<array>
-        <dict>
-            <key>SKAdNetworkIdentifier</key>
-            <string>v9wttpbfk9.skadnetwork</string>
-        </dict>
-        <dict>
-            <key>SKAdNetworkIdentifier</key>
-            <string>n38lu8286q.skadnetwork</string>
-        </dict>
-	</array>
-	<key>LSApplicationCategoryType</key>
+	<key>CFBundleDisplayName</key>
 	<string></string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>To help support this app and make all features work</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -52,6 +43,8 @@
 	<true/>
 	<key>FacebookDisplayName</key>
 	<string>Your Best Apps</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
@@ -70,6 +63,17 @@
 	<string>We need your location to check the weather</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need your location to check the weather</string>
+	<key>SKAdNetworkItems</key>
+	<array>
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>v9wttpbfk9.skadnetwork</string>
+		</dict>
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>n38lu8286q.skadnetwork</string>
+		</dict>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

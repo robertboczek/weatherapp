@@ -23,6 +23,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     //var myViewController: ViewController?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        // Set the flag as true
+        FBAdSettings.setAdvertiserTrackingEnabled(true)
+        
+        // Set the flag as true
+        FBAudienceNetwork.FBAdSettings.setAdvertiserTrackingEnabled(true);
+        
         // Override point for customization after application launch.
         //FBAdSettings.addTestDevice(FBAdSettings.testDeviceHash())
         ApplicationDelegate.shared.application(
@@ -38,6 +45,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         open url: URL,
         options: [UIApplication.OpenURLOptionsKey : Any] = [:]
     ) -> Bool {
+        // Set the flag as true
+        FBAdSettings.setAdvertiserTrackingEnabled(true)
+        
+        // Set the flag as true
+        FBAudienceNetwork.FBAdSettings.setAdvertiserTrackingEnabled(true)
+        
         return ApplicationDelegate.shared.application(
             app,
             open: url,

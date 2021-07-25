@@ -19,7 +19,8 @@
 #import <UIKit/UIKit.h>
 
 #import <FBAudienceNetwork/FBAdExtraHint.h>
-#import <FBAudienceNetwork/FBAdSettings.h>
+
+#import "FBAdSettings.h"
 
 typedef NS_ENUM(NSInteger, FBAdFormatType) {
     FBAdFormatTypeUnknown = 0,

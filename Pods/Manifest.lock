@@ -5,10 +5,11 @@ PODS:
   - AWSCore (2.6.35)
   - AWSDynamoDB (2.6.35):
     - AWSCore (= 2.6.35)
-  - FBAudienceNetwork (6.5.1):
-    - FBSDKCoreKit_Basics
+  - FBAudienceNetwork (6.2.1):
+    - FBSDKCoreKit/Basics (>= 7.0.1)
   - FBSDKCoreKit (11.0.1):
     - FBSDKCoreKit/Core (= 11.0.1)
+  - FBSDKCoreKit/Basics (9.3.0)
   - FBSDKCoreKit/Core (11.0.1):
     - FBSDKCoreKit_Basics (~> 11.0.1)
   - FBSDKCoreKit_Basics (11.0.1):
@@ -33,7 +34,7 @@ DEPENDENCIES:
   - Alamofire (~> 4.7)
   - AWSAuthCore (~> 2.6.1)
   - AWSDynamoDB (~> 2.6.5)
-  - FBAudienceNetwork
+  - FBAudienceNetwork (~> 6.2.1)
   - FBSDKCoreKit
   - FBSDKLoginKit
   - FBSDKShareKit
@@ -59,7 +60,7 @@ SPEC CHECKSUMS:
   AWSAuthCore: 386e045a341acebf2409425467e907ae1a45ed63
   AWSCore: 2dab62ef2e5ca5d8c72c6cbdb3a6ea1532c27c2b
   AWSDynamoDB: f4902fc37384dcf9547e2d8a32a5b208d4d1d996
-  FBAudienceNetwork: 9a5f277d6ed36a46354a045c46a4858b47407a72
+  FBAudienceNetwork: 6e85fd17319e49c0234d60026bee154389badf2c
   FBSDKCoreKit: 38c9e29a3f1436362acacff6486d3a28628c288f
   FBSDKCoreKit_Basics: 06780a4a12e16596bde8406add02c6aa1bf38616
   FBSDKLoginKit: 8243e04c590c38b85c69fcf09d1234514d2475c3
@@ -67,6 +68,6 @@ SPEC CHECKSUMS:
   NVActivityIndicatorView: 1f6c5687f1171810aa27a3296814dc2d7dec3667
   SwiftyJSON: 6faa0040f8b59dead0ee07436cbf76b73c08fd08
 
-PODFILE CHECKSUM: accac0e146b34d5ad00880c3302972c3af3e81f9
+PODFILE CHECKSUM: df72ee4a49d839ab94c5282866e6da609dadb99e
 
 COCOAPODS: 1.10.0

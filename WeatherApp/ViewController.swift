@@ -13,6 +13,7 @@ import NVActivityIndicatorView
 import CoreLocation
 import Alamofire
 import AdSupport
+import AppTrackingTransparency
 
 import FBAudienceNetwork
 import AWSDynamoDB
@@ -136,6 +137,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         print("init")
         print("Load defaults")
         
+        FBAdSettings.setAdvertiserTrackingEnabled(true)
+        
         let savedUnit = UserDefaults.standard.string(forKey: "temperatureUnit") ?? "imperial"
         print("Loaded default temperature unit: \(savedUnit)")
         apiUnit = savedUnit
@@ -151,6 +154,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     required init?(coder aDecoder: NSCoder) {
+        FBAdSettings.setAdvertiserTrackingEnabled(true)
+        
         print("init coder style")
         print("Load defaults")
         let savedUnit = UserDefaults.standard.string(forKey: "temperatureUnit") ?? "imperial"
@@ -166,7 +171,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         super.init(coder: aDecoder)
         
         self.registerAWSConfig()
-        self.setAdvertisingTrackingEnabled()
     }
     
     func registerAWSConfig() {
@@ -175,18 +179,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         let configuration = AWSServiceConfiguration(region: .USEast1, credentialsProvider: credentialProvider)
         AWSDynamoDB.register(with: configuration!, forKey: "USEast1DynamoDB")
         
+        ATTrackingManager.requestTrackingAuthorization { status in
+            DispatchQueue.main.async {
+            }
+        }
+        
         let idfa = ASIdentifierManager.shared().advertisingIdentifier.uuidString
         print("IDFA " + idfa)
         if idfa != "00000000-0000-0000-0000-000000000000" {
           self.uid = idfa
         }
         self.loadFavoritiesConfig()
-        self.setAdvertisingTrackingEnabled()
-    }
-    
-    func setAdvertisingTrackingEnabled() {
-        // Set the flag as true
-        FBAdSettings.setAdvertiserTrackingEnabled(true)
     }
     
     func loadFavoritiesConfig() {

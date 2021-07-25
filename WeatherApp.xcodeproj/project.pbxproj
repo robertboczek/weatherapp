@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BBA3B245776737ABEB3E78B1 /* Pods_WeatherApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69AED9BF1F2ECE014036DC75 /* Pods_WeatherApp.framework */; };
+		BBA3B245776737ABEB3E78B1 /* Pods_WeatherApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69AED9BF1F2ECE014036DC75 /* Pods_WeatherApp.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		D101C56A2585C9C6005BC6EE /* map icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D101C5692585C9C6005BC6EE /* map icon.png */; };
 		D10B379323CFF1C50048FB58 /* s_02d.png in Resources */ = {isa = PBXBuildFile; fileRef = D10B378123CFF1C40048FB58 /* s_02d.png */; };
 		D10B379423CFF1C50048FB58 /* s_13d.png in Resources */ = {isa = PBXBuildFile; fileRef = D10B378223CFF1C40048FB58 /* s_13d.png */; };
@@ -537,19 +537,19 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 49;
+				CURRENT_PROJECT_VERSION = 50;
 				DEVELOPMENT_TEAM = LBZQ6A27C3;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/WeatherApp/images/WeatherApp/Pods/FBAudienceNetwork/Static",
 				);
 				INFOPLIST_FILE = WeatherApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5;
+				MARKETING_VERSION = 2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.boczek.WeatherApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -563,19 +563,19 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 49;
+				CURRENT_PROJECT_VERSION = 50;
 				DEVELOPMENT_TEAM = LBZQ6A27C3;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/WeatherApp/images/WeatherApp/Pods/FBAudienceNetwork/Static",
 				);
 				INFOPLIST_FILE = WeatherApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5;
+				MARKETING_VERSION = 2.6;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				"MTL_ENABLE_DEBUG_INFO[arch=*]" = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.boczek.WeatherApp;
