@@ -847,6 +847,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             self.locationLabel.isHidden = false
         })
         }
+        let s = "http://api.openweathermap.org/data/2.5/\(endpoint)?lat=\(lat)&lon=\(lon)&appid=\(apiKey)&units=\(apiUnit)";
+        print("Request: " + s)
         
         Alamofire.request("http://api.openweathermap.org/data/2.5/\(endpoint)?lat=\(lat)&lon=\(lon)&appid=\(apiKey)&units=\(apiUnit)").responseJSON {
           response in
@@ -1457,17 +1459,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             self.additionalInfoLabel2.text = ""
             self.temperatureLabel.text = tmp
             let windFormatString = NSLocalizedString("wind", comment: "Wind")
-            self.windLabel.text = windFormatString + String(format: "%.2f", conditionJSON!["wind"]["speed"].doubleValue) + ((self.apiUnit == "imperial") ? " mph" : " m/s")
+            self.windLabel.text = windFormatString + String(format: "%.2f", conditionJSON!["wind"]["speed"].doubleValue) + ((self.apiUnit == "imperial") ? "mph" : "m/s")
             
             let humidityFormatString = NSLocalizedString("humidity", comment: "Humidity")
             self.humidityLabel.text = humidityFormatString + jsonTemp["humidity"].stringValue  + "%"
             
             let pressureFormatString = NSLocalizedString("pressure", comment: "Pressure")
-            self.pressureLabel.text = pressureFormatString + jsonTemp["pressure"].stringValue + " hPa"
+            self.pressureLabel.text = pressureFormatString + jsonTemp["pressure"].stringValue + "hPa"
             
             let clouds = conditionJSON!["clouds"]["all"].intValue
             let rain = conditionJSON!["rain"]["3h"].doubleValue
             let snow = conditionJSON!["snow"]["3h"].doubleValue
+            
+            let precipitationFormatString = NSLocalizedString("precipitation", comment: "Precipitation")
+            let precipitation = conditionJSON!["pop"].doubleValue
             //print("Clouds")
             //print(clouds)
             //print(rain)
@@ -1475,11 +1480,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
             let rainFormatString = NSLocalizedString("rain", comment: "Rain")
             let snowFormatString = NSLocalizedString("snow", comment: "Snow")
             let hourFormatString = NSLocalizedString("hour", comment: "Hour")
+            
+            let percentFormatter            = NumberFormatter()
+            percentFormatter.numberStyle    = .percent
+            percentFormatter.multiplier     = 100.00;
+            
             if (clouds > 0) {
                 self.additionalInfoLabel1.text = cloudsFormatString + String(clouds) + "%"
                 if (rain > 0.0) {
+                    self.additionalInfoLabel1.text = precipitationFormatString + (percentFormatter.string(from: NSNumber(value: precipitation)) ?? "0")
                     self.additionalInfoLabel2.text = rainFormatString + "(3" + hourFormatString + "): " + String(rain) + " mm"
                 } else if (snow > 0.0) {
+                    self.additionalInfoLabel1.text = precipitationFormatString + (percentFormatter.string(from: NSNumber(value: precipitation)) ?? "0")
                     self.additionalInfoLabel2.text = snowFormatString + "(3" + hourFormatString + "): " + String(snow) + " mm"
                 }
             } else {

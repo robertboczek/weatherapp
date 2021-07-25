@@ -13,7 +13,7 @@
 
 "humidity" = "Humidity: ";
 
-"pressure" = "Air Pressure: ";
+"pressure" = "AirPressure: ";
 
 "clouds" = "Clouds: ";
 
@@ -50,3 +50,5 @@
 "api error msg" = "Weather lookup failure";
 
 "favorites list" = "Favorites";
+
+"precipitation" = "Precipitation: ";
