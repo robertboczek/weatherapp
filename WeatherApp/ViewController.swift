@@ -181,6 +181,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
         
         ATTrackingManager.requestTrackingAuthorization { status in
             DispatchQueue.main.async {
+                switch status {
+                case .authorized:
+                    // Authorized
+                    self.uid = ASIdentifierManager.shared().advertisingIdentifier.uuidString
+                    self.loadFavoritiesConfig()
+                case .denied,
+                     .notDetermined,
+                     .restricted:
+                    break
+                @unknown default:
+                    break
+                }
             }
         }
         
