@@ -62,7 +62,9 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need your location to check the weather</string>
 	<key>NSUserTrackingUsageDescription</key>
-	<string>To help support this app and make all features work</string>
+	<string>We need your identifier to rembember your saved locations in between app updates. Tracking is also used for monetization purposes which helps support this free up.</string>
+	<key></key>
+	<string></string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>

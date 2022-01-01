@@ -15,4 +15,5 @@ target 'WeatherApp' do
   pod 'FBSDKShareKit'
   pod 'AWSAuthCore', '~> 2.6.1'
   pod 'AWSDynamoDB', '~> 2.6.5'
+  pod 'GoogleMobileAdsMediationFacebook'
 end
