@@ -13,7 +13,7 @@
 	<key>CFBundleIconName</key>
 	<string>Logo</string>
 	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<string>com.boczek.WeatherApp</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>8.0</string>
 	<key>CFBundleName</key>

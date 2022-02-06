@@ -20,7 +20,7 @@ import FBSDKCoreKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
-    //var myViewController: ViewController?
+    var myViewController: ViewController?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
@@ -75,14 +75,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillEnterForeground(_ application: UIApplication) {
          print("Reloading the view...")
         
-        AppEvents.activateApp()
+        //AppEvents.activateApp();
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
          print("Became active")
 
-         AppEvents.activateApp()
-         //myViewController?.reloadView()
+         //AppEvents.activateApp()
+         myViewController?.reloadView()
     }
     
     func applicationDidEnterBackground(_ application: UIApplication) {

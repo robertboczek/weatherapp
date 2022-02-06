@@ -5,26 +5,18 @@ PODS:
   - AWSCore (2.6.35)
   - AWSDynamoDB (2.6.35):
     - AWSCore (= 2.6.35)
-  - FBAudienceNetwork (6.2.1):
-    - FBSDKCoreKit/Basics (>= 7.0.1)
-  - FBSDKCoreKit (11.0.1):
-    - FBSDKCoreKit/Core (= 11.0.1)
-  - FBSDKCoreKit/Basics (9.3.0)
-  - FBSDKCoreKit/Core (11.0.1):
-    - FBSDKCoreKit_Basics (~> 11.0.1)
-  - FBSDKCoreKit_Basics (11.0.1):
-    - FBSDKCoreKit_Basics/Basics (= 11.0.1)
-  - FBSDKCoreKit_Basics/Basics (11.0.1)
-  - FBSDKLoginKit (11.0.1):
-    - FBSDKLoginKit/Login (= 11.0.1)
-  - FBSDKLoginKit/Login (11.0.1):
-    - FBSDKCoreKit (~> 11.0.1)
-    - FBSDKCoreKit_Basics (~> 11.0.1)
-  - FBSDKShareKit (11.0.1):
-    - FBSDKShareKit/Share (= 11.0.1)
-  - FBSDKShareKit/Share (11.0.1):
-    - FBSDKCoreKit (~> 11.0.1)
-    - FBSDKCoreKit_Basics (~> 11.0.1)
+  - FBAEMKit (12.3.1):
+    - FBSDKCoreKit_Basics (= 12.3.1)
+  - FBAudienceNetwork (6.5.1):
+    - FBSDKCoreKit_Basics
+  - FBSDKCoreKit (12.3.1):
+    - FBAEMKit (= 12.3.1)
+    - FBSDKCoreKit_Basics (= 12.3.1)
+  - FBSDKCoreKit_Basics (12.3.1)
+  - FBSDKLoginKit (12.3.1):
+    - FBSDKCoreKit (= 12.3.1)
+  - FBSDKShareKit (12.3.1):
+    - FBSDKCoreKit (= 12.3.1)
   - NVActivityIndicatorView (5.1.1):
     - NVActivityIndicatorView/Base (= 5.1.1)
   - NVActivityIndicatorView/Base (5.1.1)
@@ -34,7 +26,7 @@ DEPENDENCIES:
   - Alamofire (~> 4.7)
   - AWSAuthCore (~> 2.6.1)
   - AWSDynamoDB (~> 2.6.5)
-  - FBAudienceNetwork (~> 6.2.1)
+  - FBAudienceNetwork (~> 6.5.0)
   - FBSDKCoreKit
   - FBSDKLoginKit
   - FBSDKShareKit
@@ -47,6 +39,7 @@ SPEC REPOS:
     - AWSAuthCore
     - AWSCore
     - AWSDynamoDB
+    - FBAEMKit
     - FBAudienceNetwork
     - FBSDKCoreKit
     - FBSDKCoreKit_Basics
@@ -60,14 +53,15 @@ SPEC CHECKSUMS:
   AWSAuthCore: 386e045a341acebf2409425467e907ae1a45ed63
   AWSCore: 2dab62ef2e5ca5d8c72c6cbdb3a6ea1532c27c2b
   AWSDynamoDB: f4902fc37384dcf9547e2d8a32a5b208d4d1d996
-  FBAudienceNetwork: 6e85fd17319e49c0234d60026bee154389badf2c
-  FBSDKCoreKit: 38c9e29a3f1436362acacff6486d3a28628c288f
-  FBSDKCoreKit_Basics: 06780a4a12e16596bde8406add02c6aa1bf38616
-  FBSDKLoginKit: 8243e04c590c38b85c69fcf09d1234514d2475c3
-  FBSDKShareKit: e55ddcd33d5169597ae86866faffae0acae971c1
+  FBAEMKit: 98e4afc9f867c6db3d1c0e7e3727d94a630b5f59
+  FBAudienceNetwork: 9a5f277d6ed36a46354a045c46a4858b47407a72
+  FBSDKCoreKit: 4f348872eae956c922aca1a13771b9c2d4602088
+  FBSDKCoreKit_Basics: b832439de7a8262ee17495889264e75785af54de
+  FBSDKLoginKit: 4adb764028103621b48dfd601b08b03fe2114cdf
+  FBSDKShareKit: c09900fc885130c009194ef35992cbdcad47fe27
   NVActivityIndicatorView: 1f6c5687f1171810aa27a3296814dc2d7dec3667
   SwiftyJSON: 6faa0040f8b59dead0ee07436cbf76b73c08fd08
 
-PODFILE CHECKSUM: df72ee4a49d839ab94c5282866e6da609dadb99e
+PODFILE CHECKSUM: b0a82f8de16f6e7a3b3763db4ea8b77654c4d0ec
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.11.2
