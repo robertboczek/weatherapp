@@ -1043,8 +1043,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         // In this case, we instantiate the banner with desired ad size.
         //let adSize = GADAdSizeFromCGSize(CGSize(width: 300, height: 100))
         self.bannerView = GAMBannerView(adSize: kGADAdSizeLargeBanner)
-        // ca-app-pub-2839380108501012/5277274657
-        self.bannerView.adUnitID = "/6499/example/banner"
+        self.bannerView.adUnitID = "ca-app-pub-2839380108501012/5277274657"
         self.bannerView.rootViewController = self
         self.bannerView.translatesAutoresizingMaskIntoConstraints = false
         self.bannerView.delegate = self

@@ -13,8 +13,6 @@ import FBSDKLoginKit
 import FBSDKShareKit
 import FBSDKCoreKit
 
-//import FacebookCore
-
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
