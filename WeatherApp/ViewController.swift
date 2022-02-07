@@ -17,8 +17,9 @@ import AppTrackingTransparency
 
 import FBAudienceNetwork
 import AWSDynamoDB
+import GoogleMobileAds
 
-class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate {
+class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerViewDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet weak var searchButton: UIButton!
     @IBOutlet weak var searchButtonText: UIButton!
@@ -79,6 +80,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     @IBOutlet weak var imperialLabel: UILabel!
     
     @IBOutlet weak var adView: UIView!
+    var bannerView: GAMBannerView!
     @IBOutlet weak var nowLabel: UILabel!
     
     @IBOutlet weak var citySearchInputText: UITextField!
@@ -93,7 +95,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     var apiUnit: String
     var apiEndpoint: String
     var hourFormat: String
-    var bannerAdView: FBAdView!
     
     let gradientLayer = CAGradientLayer()
     let selectedGradientLayer = CAGradientLayer()
@@ -1039,25 +1040,33 @@ class ViewController: UIViewController, CLLocationManagerDelegate, FBAdViewDeleg
     }
     
     func loadBannerAd() {
-        self.bannerAdView = FBAdView(placementID: "639765523432024_639766196765290", adSize: kFBAdSizeHeight90Banner, rootViewController: self)
-        self.bannerAdView.frame = CGRect(x: 0, y: adView.bounds.height - bannerAdView.frame.size.height, width: bannerAdView.frame.size.width, height: bannerAdView.frame.size.height)
-        self.bannerAdView.delegate = self
-        self.adView.addSubview(self.bannerAdView)
-        self.bannerAdView.loadAd()
+        // In this case, we instantiate the banner with desired ad size.
+        //let adSize = GADAdSizeFromCGSize(CGSize(width: 300, height: 100))
+        self.bannerView = GAMBannerView(adSize: kGADAdSizeLargeBanner)
+        // ca-app-pub-2839380108501012/5277274657
+        self.bannerView.adUnitID = "/6499/example/banner"
+        self.bannerView.rootViewController = self
+        self.bannerView.translatesAutoresizingMaskIntoConstraints = false
+        self.bannerView.delegate = self
+        self.bannerView.load(GAMRequest())
+        
+        bannerView.translatesAutoresizingMaskIntoConstraints = false
+        self.adView.addSubview(self.bannerView)
+        self.adView.addConstraints(
+            [
+             NSLayoutConstraint(item: self.bannerView,
+                                  attribute: .centerX,
+                                  relatedBy: .equal,
+                                  toItem: self.adView,
+                                  attribute: .centerX,
+                                  multiplier: 1,
+                                  constant: 0)
+              ])
         self.adView.isHidden = true
     }
     
-    func adViewDidLoad(_ adView: FBAdView) {
+    func bannerViewDidReceiveAd(_ bannerView: GADBannerView) {
         self.adView.isHidden = false
-    }
-     
-    func nativeAd(_ nativeAd: FBNativeAd, didFailWithError error: Error) {
-        print("Failed to load ad")
-        print(error)
-    }
-    
-    func nativeAdDidClick(_ nativeAd: FBNativeAd) {
-        print("Did tap on the ad")
     }
     
     func updateUserDefaults() {
