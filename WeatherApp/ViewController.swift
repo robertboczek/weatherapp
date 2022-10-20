@@ -179,29 +179,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         let credentialProvider = AWSStaticCredentialsProvider.init(accessKey: self.dynamoDBKey, secretKey: self.dynamoDBSecret)
         let configuration = AWSServiceConfiguration(region: .USEast1, credentialsProvider: credentialProvider)
         AWSDynamoDB.register(with: configuration!, forKey: "USEast1DynamoDB")
-        
-        ATTrackingManager.requestTrackingAuthorization { status in
-            DispatchQueue.main.async {
-                switch status {
-                case .authorized:
-                    // Authorized
-                    self.uid = ASIdentifierManager.shared().advertisingIdentifier.uuidString
-                    self.loadFavoritiesConfig()
-                case .denied,
-                     .notDetermined,
-                     .restricted:
-                    break
-                @unknown default:
-                    break
-                }
-            }
-        }
-        
-        let idfa = ASIdentifierManager.shared().advertisingIdentifier.uuidString
-        print("IDFA " + idfa)
-        if idfa != "00000000-0000-0000-0000-000000000000" {
-          self.uid = idfa
-        }
+
+        self.uid = UIDevice.current.identifierForVendor!.uuidString
+        print("UID!!! " + self.uid)
         self.loadFavoritiesConfig()
     }
     
