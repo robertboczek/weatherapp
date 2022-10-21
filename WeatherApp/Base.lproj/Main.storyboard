@@ -219,16 +219,16 @@
                                 <state key="normal" title="Search"/>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q1g-Lb-I4k" userLabel="Go Back">
-                                <rect key="frame" x="15" y="20" width="74" height="27"/>
+                                <rect key="frame" x="15" y="20" width="75.333333333333329" height="27"/>
                                 <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="24"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <state key="normal" title="Back" image="gobackward" catalog="system"/>
+                                <state key="normal" title="Back" image="arrowshape.turn.up.backward" catalog="system"/>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c2k-d6-OEn">
                                 <rect key="frame" x="115.66666666666669" y="20" width="183" height="25"/>
                                 <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="22"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <state key="normal" title="Current Location" image="location" catalog="system"/>
+                                <state key="normal" title="Current Location" image="location.circle" catalog="system"/>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="6oi-tt-dgs" userLabel="citiesListTableView">
                                 <rect key="frame" x="0.0" y="127" width="614" height="519"/>
@@ -390,8 +390,8 @@
     </scenes>
     <resources>
         <image name="01d.png" width="500" height="500"/>
-        <image name="gobackward" catalog="system" width="121" height="128"/>
-        <image name="location" catalog="system" width="128" height="118"/>
+        <image name="arrowshape.turn.up.backward" catalog="system" width="128" height="106"/>
+        <image name="location.circle" catalog="system" width="128" height="121"/>
         <image name="map icon.png" width="20" height="31"/>
         <image name="s_01n.png" width="70" height="70"/>
         <image name="s_10d.png" width="70" height="70"/>
