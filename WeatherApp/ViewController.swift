@@ -508,16 +508,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     }
     
     @objc func searchRecords(_ textField: UITextField) {
-        self.matchingCitiesDict.removeAll()
+        //print("search records")
+        //print(matchingCitiesDict)
         self.matchingCities.removeAll()
+        self.matchingCitiesDict.removeAll()
         
         if citySearchInputText.text?.count != 0 {
             for city in citiesDict {
                 if let cityToSearch = textField.text {
                     if (city.count > 1) {
-                      let location = city[1] + " - " + city[4]
+                      let cityLabel = (city[0] != city[1]) ? city[1] + " (" + city[0] + ")" : city[0]
+                      let location = cityLabel + " " + city[7] + " " + city[6]
                       let range = location.lowercased().range(of: cityToSearch, options: .caseInsensitive, range: nil, locale: nil)
                       if range != nil {
+                          //print("append!")
                         self.matchingCities.append(location)
                         self.matchingCitiesDict.append(city)
                       }
@@ -527,7 +531,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         } else {
             for city in citiesDict {
                 if (city.count > 1) {
-                  let location = city[1] + " - " + city[4]
+                  let cityLabel = (city[0] != city[1]) ? city[1] + " (" + city[0] + ")" : city[0]
+                  let location = cityLabel + " " + city[7] + " " + city[6]
                   self.matchingCities.append(location)
                   self.matchingCitiesDict.append(city)
                 }
@@ -554,6 +559,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             
             let location = self.favoritiesDict[indexPath.row]
             
+            print(location)
             cell?.textLabel?.text = location[0]
             return cell!
         }
@@ -586,21 +592,28 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             return
         }
         
-        print("Selected Row: \(indexPath.row)")
+        //print("Selected Row: \(indexPath.row)")
         
-        citySearchInputText.isHidden = true
-        searchCitiesTableView.isHidden = true
-        searchCityLabel.isHidden = true
-        currentLocationButton.isHidden = true
-        updateItemsVisibility(isHidden: false)
+        //print(matchingCities)
+        //print(matchingCitiesDict)
         
         let selectedRow = matchingCitiesDict[indexPath.row]
         
         self.lat = Double.init(String(selectedRow[2]))!
         self.lon = Double.init(String(selectedRow[3]))!
         
+        citySearchInputText.isHidden = true
+        searchCitiesTableView.isHidden = true
+        searchCityLabel.isHidden = true
+        currentLocationButton.isHidden = true
+        updateItemsVisibility(isHidden: false)
+
+        
         shouldCheckLocation = false
         self.location = selectedRow[1]
+        if (selectedRow[0] != selectedRow[1]) {
+            self.location += " (" + selectedRow[0] + ")"
+        }
         updateLocationLabel()
         updateWeather(location: nil)
         
@@ -918,7 +931,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             rowsForToday += 1
           }
         }
-        print("rowsForToday", rowsForToday)
+        //print("rowsForToday", rowsForToday)
 
         var selectedFound = false
         
@@ -1022,7 +1035,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     func loadBannerAd() {
         // In this case, we instantiate the banner with desired ad size.
         //let adSize = GADAdSizeFromCGSize(CGSize(width: 300, height: 100))
-        self.bannerView = GAMBannerView(adSize: kGADAdSizeLargeBanner)
+        /*self.bannerView = GAMBannerView(adSize: kGADAdSizeLargeBanner)
         self.bannerView.adUnitID = "ca-app-pub-2839380108501012/5277274657"
         self.bannerView.rootViewController = self
         self.bannerView.translatesAutoresizingMaskIntoConstraints = false
@@ -1041,7 +1054,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
                                   multiplier: 1,
                                   constant: 0)
               ])
-        self.adView.isHidden = true
+        self.adView.isHidden = true*/
     }
     
     func bannerViewDidReceiveAd(_ bannerView: GADBannerView) {
