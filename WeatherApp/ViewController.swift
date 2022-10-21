@@ -457,10 +457,24 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             }
         }
         
+        // keep a background thread making sure we don't end up in invalid state
+        DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
+            self.backgroundThreadForInvalidState()
+        }
+        
         // Make the native ad view container visible.
         self.adView.isHidden = true
         
         loadBannerAd()
+    }
+    
+    func backgroundThreadForInvalidState() {
+        if self.location == "" && self.locationLabel.isHidden && self.citySearchInputText.isHidden && self.favoritiesView.isHidden {
+            self.handleLocationLookupError()
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
+            self.backgroundThreadForInvalidState()
+        }
     }
     
     func checkAuthorizationStatus() {
@@ -1035,7 +1049,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     func loadBannerAd() {
         // In this case, we instantiate the banner with desired ad size.
         //let adSize = GADAdSizeFromCGSize(CGSize(width: 300, height: 100))
-        /*self.bannerView = GAMBannerView(adSize: kGADAdSizeLargeBanner)
+        self.bannerView = GAMBannerView(adSize: kGADAdSizeLargeBanner)
         self.bannerView.adUnitID = "ca-app-pub-2839380108501012/5277274657"
         self.bannerView.rootViewController = self
         self.bannerView.translatesAutoresizingMaskIntoConstraints = false
@@ -1054,7 +1068,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
                                   multiplier: 1,
                                   constant: 0)
               ])
-        self.adView.isHidden = true*/
+        self.adView.isHidden = true
     }
     
     func bannerViewDidReceiveAd(_ bannerView: GADBannerView) {
@@ -1543,19 +1557,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.tomorrowLabel.text = dateFormatter.string(from: tomorrowDate)
         self.dayAfterTomorrowLabel.text = dateFormatter.string(from: dayAfterTomorrowDate)
 
+        setBlueGradientBackground()
         //let suffix = iconName.suffix(1)
         // show night or day background depending on the local time in the place
         var dayOrNight = ""
         if ((timeOfTheDayString == "AM" && timeInt <= 5) || (timeOfTheDayString == "PM" && timeInt >= 9 && timeInt < 12)) {
             dayOrNight = "n"
-            if (selected) {
+            /*if (selected) {
               setGrayGraidentBackground()
-            }
+            }*/
         } else {
             dayOrNight = "d"
-            if (selected) {
-              setBlueGradientBackground()
-            }
+            /*if (selected) {
+                setBlueGradientBackground()
+            }*/
         }
         
         iconName = iconName.prefix(2) + dayOrNight
