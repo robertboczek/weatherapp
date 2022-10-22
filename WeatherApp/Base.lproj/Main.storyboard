@@ -25,12 +25,6 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Type city you are looking for:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sbo-IS-sDb" userLabel="SearchCityLabel">
-                                <rect key="frame" x="40.333333333333343" y="50" width="333.33333333333326" height="28"/>
-                                <fontDescription key="fontDescription" name="ArialRoundedMTBold" family="Arial Rounded MT Bold" pointSize="24"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Sunday" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4ga-xH-al6">
                                 <rect key="frame" x="77" y="58" width="117" height="32"/>
                                 <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="28"/>
@@ -191,13 +185,13 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2EL-bi-2ui" userLabel="searchCityTextInput">
+                            <textField opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" toolTip="Type city you are searching for..." borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2EL-bi-2ui" userLabel="searchCityTextInput">
                                 <rect key="frame" x="8" y="100" width="400" height="34"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="200" id="X4j-A1-DmC"/>
+                                    <constraint firstAttribute="width" constant="280" id="X4j-A1-DmC"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <textInputTraits key="textInputTraits" textContentType="address-level2"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uzK-Lp-UpC">
                                 <rect key="frame" x="159" y="348" width="97" height="40"/>
@@ -225,13 +219,13 @@
                                 <state key="normal" image="back.png"/>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c2k-d6-OEn">
-                                <rect key="frame" x="15" y="15" width="19.666666666666671" height="25"/>
+                                <rect key="frame" x="15.000000000000002" y="15" width="19.666666666666671" height="25"/>
                                 <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="22"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" image="location.circle" catalog="system"/>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="6oi-tt-dgs" userLabel="citiesListTableView">
-                                <rect key="frame" x="0.0" y="122" width="614" height="524"/>
+                                <rect key="frame" x="0.0" y="66" width="614" height="580"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="SFz-Lm-U3d" userLabel="favoritesListTableView">
@@ -250,7 +244,7 @@
                             <constraint firstItem="sQP-8e-Urv" firstAttribute="leading" secondItem="OHN-TZ-gKZ" secondAttribute="leading" id="4w0-5D-ba2"/>
                             <constraint firstItem="SFz-Lm-U3d" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="25" id="5Tv-RG-tTO"/>
                             <constraint firstItem="b0z-HS-QCA" firstAttribute="top" secondItem="uzK-Lp-UpC" secondAttribute="bottom" id="6mw-W9-WOZ"/>
-                            <constraint firstItem="2EL-bi-2ui" firstAttribute="top" secondItem="sbo-IS-sDb" secondAttribute="bottom" constant="5" id="6rh-O9-R5S"/>
+                            <constraint firstItem="2EL-bi-2ui" firstAttribute="top" secondItem="Q1g-Lb-I4k" secondAttribute="bottom" id="6rh-O9-R5S"/>
                             <constraint firstItem="OHN-TZ-gKZ" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="7lj-An-QGA"/>
                             <constraint firstItem="11m-8d-Jb3" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="9Nk-aR-Ust"/>
                             <constraint firstItem="xD0-wi-BqF" firstAttribute="leading" secondItem="0ON-kJ-168" secondAttribute="trailing" constant="10" id="9TI-gj-djr"/>
@@ -282,7 +276,6 @@
                             <constraint firstItem="Djw-pg-HP4" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" constant="-50" id="RJU-9N-Sw2"/>
                             <constraint firstItem="cba-EJ-5FF" firstAttribute="top" secondItem="PJO-Cy-v6d" secondAttribute="bottom" id="RMJ-Z5-IO7"/>
                             <constraint firstItem="k29-61-bWL" firstAttribute="top" secondItem="t9x-GT-CLj" secondAttribute="top" id="RaO-4m-VX8"/>
-                            <constraint firstItem="sbo-IS-sDb" firstAttribute="top" secondItem="c2k-d6-OEn" secondAttribute="bottom" constant="10" id="Rl5-ht-DZb"/>
                             <constraint firstItem="PJO-Cy-v6d" firstAttribute="leading" secondItem="cba-EJ-5FF" secondAttribute="leading" constant="3" id="Rxf-ux-pvE"/>
                             <constraint firstItem="qOY-FC-OO0" firstAttribute="leading" secondItem="yyy-wh-zMF" secondAttribute="leading" id="T36-sV-RAM"/>
                             <constraint firstItem="OHN-TZ-gKZ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="TiA-hR-I8q"/>
@@ -292,7 +285,6 @@
                             <constraint firstItem="Q4L-Vk-15I" firstAttribute="leading" secondItem="4ga-xH-al6" secondAttribute="trailing" constant="4" id="Uh7-hb-jQd"/>
                             <constraint firstItem="wNb-8D-fUj" firstAttribute="top" secondItem="b84-5x-NLj" secondAttribute="top" id="VFs-Uw-2x1"/>
                             <constraint firstItem="OHN-TZ-gKZ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="WWE-ji-JQs"/>
-                            <constraint firstItem="sbo-IS-sDb" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Wvi-hu-dhC"/>
                             <constraint firstItem="11m-8d-Jb3" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" constant="-15" id="Wzw-Xn-8H5"/>
                             <constraint firstItem="wNb-8D-fUj" firstAttribute="leading" secondItem="b84-5x-NLj" secondAttribute="trailing" constant="5" id="XVt-le-yPN" userLabel="Metric Label.leading = Temperature Label.trailing"/>
                             <constraint firstItem="LOG-QK-lh1" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="8" id="Xaf-rG-dx7"/>
@@ -368,7 +360,6 @@
                         <outlet property="searchButton" destination="uzK-Lp-UpC" id="v4h-io-tyk"/>
                         <outlet property="searchButtonText" destination="b0z-HS-QCA" id="yBN-wb-IOn"/>
                         <outlet property="searchCitiesTableView" destination="6oi-tt-dgs" id="sOo-v2-65B"/>
-                        <outlet property="searchCityLabel" destination="sbo-IS-sDb" id="tBM-mP-naw"/>
                         <outlet property="sunriseLabel" destination="dPk-BG-6Sl" id="E3R-1y-OFE"/>
                         <outlet property="sunsetLabel" destination="teh-nJ-Dju" id="x7x-21-o9D"/>
                         <outlet property="temperatureLabel" destination="pcp-Ut-36g" id="1pj-Hm-Z9x"/>

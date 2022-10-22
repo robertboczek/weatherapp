@@ -28,7 +28,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     @IBOutlet weak var favoritesButton: UIButton!
     @IBOutlet weak var favoritesDropdown: UIButton!
     
-    @IBOutlet weak var searchCityLabel: UILabel!
     @IBOutlet weak var searchCitiesTableView: UITableView!
     
     @IBOutlet weak var favoritiesView: UITableView!
@@ -206,6 +205,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         citiesDict = parsedCSV
         
         citySearchInputText.delegate = self
+        
+        citySearchInputText.addTarget(self, action: #selector(clearSearchInputContent(_ :)), for: .editingDidBegin)
+        
         citySearchInputText.addTarget(self, action: #selector(searchRecords(_ :)), for: .editingChanged)
         
         searchCitiesTableView.delegate = self
@@ -215,7 +217,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         favoritiesView.dataSource = self
         
         citySearchInputText.isHidden = true
-        searchCityLabel.isHidden = true
         currentLocationButton.isHidden = true
         searchCitiesTableView.isHidden = true
         
@@ -430,13 +431,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         fillCondition(index: 5, conditionJSON: self.time5JSON, selected: self.index == 5)
     }
     
+    @objc func clearSearchInputContent(_ textField: UITextField) {
+        // clear text input
+        self.citySearchInputText.text = ""
+    }
+    
     @objc func searchRecords(_ textField: UITextField) {
         //print("search records")
         //print(matchingCitiesDict)
         self.matchingCities.removeAll()
         self.matchingCitiesDict.removeAll()
         
-        if citySearchInputText.text?.count != 0 {
+        let searchCityLabel = NSLocalizedString("search city input", comment: "City Search")
+        
+        if citySearchInputText.text?.count != 0 && self.citySearchInputText.text != searchCityLabel {
             for city in citiesDict {
                 if let cityToSearch = textField.text {
                     if (city.count > 1) {
@@ -526,7 +534,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         
         citySearchInputText.isHidden = true
         searchCitiesTableView.isHidden = true
-        searchCityLabel.isHidden = true
         updateItemsVisibility(isHidden: false)
 
         
@@ -648,8 +655,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     }
     
     func updateSearchScreenItemsVisibility(isHidden: Bool) {
+        self.citySearchInputText.text = NSLocalizedString("search city input", comment: "City Search")
         self.citySearchInputText.isHidden = isHidden
-        self.searchCityLabel.isHidden = isHidden
         self.searchCitiesTableView.isHidden = isHidden
         self.goBack.isHidden = isHidden || location == "" || self.isErrorState
     }
@@ -1289,7 +1296,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         
         self.updateSearchScreenItemsVisibility(isHidden: false)
         
-        citySearchInputText.text = ""
         searchRecords(citySearchInputText)
         
         loadBannerAd()

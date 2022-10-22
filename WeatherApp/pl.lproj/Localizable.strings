@@ -43,3 +43,5 @@
 "api error msg" = "Błąd odczytu pogody z serweru";
 
 "precipitation" = "Szansa opadów: ";
+
+"search city input" = "Podaj nazwę miasta";

@@ -50,3 +50,5 @@
 "api error msg" = "Weather lookup failure";
 
 "precipitation" = "Precipitation: ";
+
+"search city input" = "Type name of the city you are searching for";
