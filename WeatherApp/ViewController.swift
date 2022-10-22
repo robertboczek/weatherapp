@@ -253,9 +253,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.mapButton.isUserInteractionEnabled = true
         self.mapButton.addGestureRecognizer(mapButtonTap)
         
-        let favoriteTap = UITapGestureRecognizer(target: self, action: #selector(self.favoriteTapped(_:)))
+        let favoriteDropdownTap = UITapGestureRecognizer(target: self, action: #selector(self.favoriteDropdownTapped(_:)))
         self.favoritesDropdown.isUserInteractionEnabled = true
-        self.favoritesDropdown.addGestureRecognizer(favoriteTap)
+        self.favoritesDropdown.addGestureRecognizer(favoriteDropdownTap)
         
         let goBackTap = UITapGestureRecognizer(target: self, action: #selector(self.goBackTapped(_:)))
         self.goBack.isUserInteractionEnabled = true
@@ -500,8 +500,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         goBack.isHidden = true
         if (tableView == self.favoritiesView) {
             updateItemsVisibility(isHidden: true)
-            
-            currentLocationButton.isHidden = true
+
             self.favoritiesView.isHidden = true
             
             let location = self.favoritiesDict[indexPath.row]
@@ -528,7 +527,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         citySearchInputText.isHidden = true
         searchCitiesTableView.isHidden = true
         searchCityLabel.isHidden = true
-        currentLocationButton.isHidden = true
         updateItemsVisibility(isHidden: false)
 
         
@@ -644,22 +642,23 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         
         self.twelve.isHidden = isHidden
         self.twentyFour.isHidden = isHidden
+        
+        let status = CLLocationManager.authorizationStatus()
+        self.currentLocationButton.isHidden = isHidden || status == .denied
     }
     
     func updateSearchScreenItemsVisibility(isHidden: Bool) {
-        let status = CLLocationManager.authorizationStatus()
         self.citySearchInputText.isHidden = isHidden
         self.searchCityLabel.isHidden = isHidden
         self.searchCitiesTableView.isHidden = isHidden
         self.goBack.isHidden = isHidden || location == "" || self.isErrorState
-        self.currentLocationButton.isHidden = isHidden || status == .denied
     }
     
     func updateFavoritesScreenItemsVisibility(isHidden: Bool) {
         let status = CLLocationManager.authorizationStatus()
         self.favoritiesView.isHidden = isHidden
+        self.locationLabel.isHidden = isHidden
         self.goBack.isHidden = isHidden || location == "" || self.isErrorState
-        self.currentLocationButton.isHidden = isHidden || status == .denied
     }
     
     func updateItemsVisibility(isHidden: Bool) {
@@ -707,7 +706,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
           // if can't check for location, open search view by default
           searchButtonTapped(UITapGestureRecognizer())
         } else {
-          favoriteTapped(UITapGestureRecognizer())
+          favoriteDropdownTapped(UITapGestureRecognizer())
         }
     }
     
@@ -1073,14 +1072,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         reloadView()
     }
     
-    @objc func favoriteTapped(_ sender: UITapGestureRecognizer) {
+    @objc func favoriteDropdownTapped(_ sender: UITapGestureRecognizer) {
         self.shouldCheckLocation = false
         self.favoritiesView.reloadData()
+        let isFavoritesVisible = !self.favoritiesView.isHidden
         
-        self.updateItemsVisibility(isHidden: true)
+        self.updateItemsVisibility(isHidden: !isFavoritesVisible)
         self.updateSearchScreenItemsVisibility(isHidden: true)
         
-        self.updateFavoritesScreenItemsVisibility(isHidden: false)
+        self.updateFavoritesScreenItemsVisibility(isHidden: isFavoritesVisible)
         self.searchButton.isHidden = false
         self.searchButtonText.isHidden = false
         
@@ -1298,15 +1298,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     @objc func currentLocationButtonTapped(_ sender: UITapGestureRecognizer) {
         selectedItem = nil
         
-        citySearchInputText.isHidden = true
-        searchCityLabel.isHidden = true
-        searchCitiesTableView.isHidden = true
-        currentLocationButton.isHidden = true
-        goBack.isHidden = true
         favoritiesView.isHidden = true
-        citySearchInputText.endEditing(true)
         updateItemsVisibility(isHidden: false)
-        citySearchInputText.endEditing(true)
         
         shouldCheckLocation = true
         checkAuthorizationStatus()
