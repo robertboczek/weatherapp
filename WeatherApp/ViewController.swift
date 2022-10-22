@@ -26,7 +26,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     
     @IBOutlet weak var mapButton: UIButton!
     @IBOutlet weak var favoritesButton: UIButton!
-    @IBOutlet weak var favoritesListButton: UIButton!
+    @IBOutlet weak var favoritesDropdown: UIButton!
     
     @IBOutlet weak var searchCityLabel: UILabel!
     @IBOutlet weak var searchCitiesTableView: UITableView!
@@ -342,8 +342,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.mapButton.addGestureRecognizer(mapButtonTap)
         
         let favoriteTap = UITapGestureRecognizer(target: self, action: #selector(self.favoriteTapped(_:)))
-        self.favoritesListButton.isUserInteractionEnabled = true
-        self.favoritesListButton.addGestureRecognizer(favoriteTap)
+        self.favoritesDropdown.isUserInteractionEnabled = true
+        self.favoritesDropdown.addGestureRecognizer(favoriteTap)
         
         let goBackTap = UITapGestureRecognizer(target: self, action: #selector(self.goBackTapped(_:)))
         self.goBack.isUserInteractionEnabled = true
@@ -442,9 +442,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         let down = UISwipeGestureRecognizer(target : self, action : #selector(self.reloadViewConditonal))
         down.direction = .down
         self.mainView.addGestureRecognizer(down)
-        
-        let favoritesListLabel = NSLocalizedString("favorites list", comment: "Favorites List")
-        self.favoritesListButton.setTitle(favoritesListLabel, for: .normal)
         
         updatePreferredHourFormat()
         
@@ -756,7 +753,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     func updateItemsVisibility(isHidden: Bool) {
         updateMainScreenItemsVisibility(isHidden: isHidden)
         
-        self.favoritesListButton.isHidden = isHidden || (self.favoritiesDict.count == 0)
+        self.favoritesDropdown.isHidden = isHidden || (self.favoritiesDict.count == 0)
         // hide keyboard if was typing before
         citySearchInputText.endEditing(true)
     }
@@ -1235,7 +1232,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
           self.favoritesButton.setImage(UIImage(systemName: "star"), for: .normal)
         }
         
-        self.favoritesListButton.isHidden = (self.favoritiesDict.count == 0)
+        self.favoritesDropdown.isHidden = (self.favoritiesDict.count == 0)
     }
     
     @objc func metricLabelTapped(_ sender: UITapGestureRecognizer) {
