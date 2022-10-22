@@ -107,12 +107,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     
     let apiKey = "d9f9f29395c8b71049a8e921c9e89748"
 
-    let dynamoDBKey = "AKIAZDZDLXPYHLZAKH4M"
-    let dynamoDBSecret = "dH90a6XUd/1AKWGEC3jaG8T8Tg1jbsJoM/j76I+Z"
-    let dynamoDBFavoritesTableName = "YourWeatherAppFavorites"
-    let awsEndpointURL = "https://dynamodb.us-east-1.amazonaws.com"
-    var uid = ""
-
     var lat = -1.0
     var lon = -1.0
     var activityIndicator: NVActivityIndicatorView!
@@ -151,7 +145,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         print("Loaded default hour format: \(savedHourFormat)")
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         
-        self.registerAWSConfig()
+        self.loadFavoritiesConfig()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -170,28 +164,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         print("Loaded default hour format: \(savedHourFormat)")
         
         super.init(coder: aDecoder)
-        
-        self.registerAWSConfig()
-    }
-    
-    func registerAWSConfig() {
-        print("Registering AWS Provider")
-        let credentialProvider = AWSStaticCredentialsProvider.init(accessKey: self.dynamoDBKey, secretKey: self.dynamoDBSecret)
-        let configuration = AWSServiceConfiguration(region: .USEast1, credentialsProvider: credentialProvider)
-        AWSDynamoDB.register(with: configuration!, forKey: "USEast1DynamoDB")
-
-        self.uid = UIDevice.current.identifierForVendor!.uuidString
-        print("UID!!! " + self.uid)
-        self.loadFavoritiesConfig()
     }
     
     func loadFavoritiesConfig() {
         // load favorities
         let savedLocations = UserDefaults.standard.string(forKey: "favoritiesLocations")
-        if (savedLocations == nil) {
-            self.loadFavoritiesConfigFromAWS()
-            return
-        }
         self.updateFavorites(savedLocations: savedLocations!)
     }
 
@@ -206,70 +183,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         }
     }
     
-    func loadFavoritiesConfigFromAWS() {
-        let dynamoDb = AWSDynamoDB(forKey: "USEast1DynamoDB")
-        let uid = self.getUID()
-        print("Querying for uid: " + uid)
-        if uid == "" {
-            return
-        }
-        self.favoritiesDict = [[String]]()
-        // define your primary hash keys
-        let hashAttribute1 = AWSDynamoDBAttributeValue()
-        hashAttribute1?.s = uid
-
-        let keys: Array = [["uid": hashAttribute1]]
-        let keysAndAttributesMap = AWSDynamoDBKeysAndAttributes()
-        keysAndAttributesMap?.keys = keys as? [[String : AWSDynamoDBAttributeValue]]
-        keysAndAttributesMap?.consistentRead = true
-        let tableMap = [self.dynamoDBFavoritesTableName : keysAndAttributesMap]
-        let request = AWSDynamoDBBatchGetItemInput()
-        request?.requestItems = tableMap as? [String : AWSDynamoDBKeysAndAttributes]
-        request?.returnConsumedCapacity = AWSDynamoDBReturnConsumedCapacity.total
-        dynamoDb.batchGetItem(request!) { (output, error) in
-          if output != nil {
-            print("Batch Query output?.responses?.count:", output!.responses!)
-            if (output!.responses![self.dynamoDBFavoritesTableName]?.count == 1) {
-                self.updateFavorites(savedLocations: output!.responses![self.dynamoDBFavoritesTableName]!.first!["value"]!.s!)
-            }
-          }
-          if error != nil {
-            print("Batch Query error:", error!)
-          }
-        }
-    }
-    
-    func saveFavoritiesToDB(configValueToSave: String) {
-        let dynamoDb = AWSDynamoDB(forKey: "USEast1DynamoDB")
-        let uid = self.getUID()
-        print("UID: " + uid)
-        if uid == "" {
-            return
-        }
-        
-        let writeRequest = AWSDynamoDBWriteRequest()
-        writeRequest?.putRequest = AWSDynamoDBPutRequest()
-        let uidAttribute = AWSDynamoDBAttributeValue()
-        uidAttribute?.s = uid
-        let valueAttribute = AWSDynamoDBAttributeValue()
-        valueAttribute?.s = configValueToSave
-        writeRequest?.putRequest?.item = ["uid": uidAttribute!, "value": valueAttribute!]
-        let batchWriteItemInput = AWSDynamoDBBatchWriteItemInput()
-        batchWriteItemInput?.requestItems = [self.dynamoDBFavoritesTableName: [writeRequest!]]
-        dynamoDb.batchWriteItem(batchWriteItemInput!).continueWith { (task: AWSTask<AWSDynamoDBBatchWriteItemOutput>) -> Any? in
-            if let error = task.error {
-              print("The request failed. Error: \(error)")
-              return nil
-            }
-            print("Successfully updated favorites config to Amazon AWS DynamoDB")
-            return nil
-        }
-    }
-    
-    func getUID() -> String {
-        return uid
-    }
-    
     func saveFavorities() {
         var configString = ""
         self.favoritiesDict = favoritiesDict.sorted { (first, second) -> Bool in
@@ -280,12 +193,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         }
         print("Saving config:", configString)
         UserDefaults.standard.set(configString, forKey: "favoritiesLocations")
-        self.saveFavoritiesToDB(configValueToSave: configString)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        registerAWSConfig()
+        loadFavoritiesConfig()
         
         let fileContent = readDataFromFile(file: "worldcities")
         
