@@ -105,6 +105,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     let notSelectedHourItemFont = UIFont(name: "Avenir", size: 14)
     
     let apiKey = "d9f9f29395c8b71049a8e921c9e89748"
+    var currentWeatherData: JSON? = nil
 
     var lat = -1.0
     var lon = -1.0
@@ -166,9 +167,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     }
     
     func loadFavoritiesConfig() {
-        // load favorities
-        let savedLocations = UserDefaults.standard.string(forKey: "favoritiesLocations")
+      // load favorities
+      let savedLocations = UserDefaults.standard.string(forKey: "favoritiesLocations")
+        if (savedLocations != nil) {
         self.updateFavorites(savedLocations: savedLocations!)
+      }
     }
 
     func updateFavorites(savedLocations: String) {
@@ -518,6 +521,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             self.lon = Double(location[2])!
             
             self.shouldCheckLocation = false
+            self.currentWeatherData = nil
             updateWeather(location: nil)
             return
         }
@@ -543,6 +547,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             self.location += " (" + selectedRow[0] + ")"
         }
         updateLocationLabel()
+        self.currentWeatherData = nil
         updateWeather(location: nil)
         
         citySearchInputText.endEditing(true)
@@ -591,6 +596,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     func reloadWeatherDetails() {
         if (!shouldCheckLocation) {
           self.activityIndicator.startAnimating()
+          self.currentWeatherData = nil
           updateWeather(location: nil)
         } else if (shouldCheckLocation && CLLocationManager.locationServicesEnabled()) {
             print("Requesting location!")
@@ -694,6 +700,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
       if let location = locations.first {
         lat = location.coordinate.latitude
         lon = location.coordinate.longitude
+        self.currentWeatherData = nil
         updateWeather(location: location)
       }
       self.activityIndicator.stopAnimating()
@@ -738,7 +745,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     }
     
     func updateWeather(location: CLLocation?) {
-        let endpoint = "forecast" //always query forecast endpoint
+        // first query for current weather, once we get it, query for the forecast data
+        let endpoint = (self.currentWeatherData == nil) ? "weather" : "forecast"
         
         let geocoder = CLGeocoder()
         
@@ -773,7 +781,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         let s = "http://api.openweathermap.org/data/2.5/\(endpoint)?lat=\(lat)&lon=\(lon)&appid=\(apiKey)&units=\(apiUnit)";
         print("Request: " + s)
         
-        Alamofire.request("http://api.openweathermap.org/data/2.5/\(endpoint)?lat=\(lat)&lon=\(lon)&appid=\(apiKey)&units=\(apiUnit)").responseJSON {
+        Alamofire.request(s).responseJSON {
           response in
           switch response.result {
             case .failure(let _):
@@ -799,8 +807,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
           if let responseStr = response.result.value {
             print("Updating weather service")
             let jsonResponse = JSON(responseStr)
-            self.timezone = jsonResponse["city"]["timezone"].int!
-            self.updateWeather(json: jsonResponse)
+            if (self.currentWeatherData == nil) {
+                self.currentWeatherData = jsonResponse
+                self.updateWeather(location: location)
+            } else if (jsonResponse["city"].exists()) {
+              self.timezone = jsonResponse["city"]["timezone"].int!
+              self.updateWeather(json: jsonResponse)
+            }
           }
         }
     }
@@ -848,19 +861,19 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         
         todayDate = Date(timeIntervalSince1970: TimeInterval(currentTime))
         var tomorrowDayOfMonth = 0;
+        dayTimePeriodFormatter.dateFormat = "dd"
+
+        
         for weatherInstance in jsonResponse["list"].array! {
           dt = weatherInstance["dt"]
           
           let t1 = dt.intValue + Int(self.timezone) - Int(timezoneOffset)
           let date = NSDate(timeIntervalSince1970: TimeInterval(t1))
-
-          dayTimePeriodFormatter.dateFormat = "dd"
             
           if (dayTimePeriodFormatter.string(from: date as Date) == dayTimePeriodFormatter.string(from: todayDate as Date)) {
             rowsForToday += 1
           }
         }
-        //print("rowsForToday", rowsForToday)
 
         var selectedFound = false
         
@@ -868,14 +881,33 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         
         self.totalItems = 0
         
+        // fill current weather item
+        if (self.currentWeatherData != nil && self.apiEndpoint == "weather") {
+          let weatherInstance = self.currentWeatherData!
+          dt = weatherInstance["dt"]
+            
+          let t1 = dt.intValue + Int(self.timezone) - Int(timezoneOffset)
+          let date = NSDate(timeIntervalSince1970: TimeInterval(t1))
+              
+          if (dayTimePeriodFormatter.string(from: date as Date) == dayTimePeriodFormatter.string(from: todayDate as Date)) {
+              rowsForToday += 1
+          }
+            
+          if (self.apiEndpoint == "weather" &&  Int(dayTimePeriodFormatter.string(from: date as Date)) == Int(dayTimePeriodFormatter.string(from: todayDate))! &&
+            rowsForToday > 1
+          ) {
+            fillCondition(index: i + 1, conditionJSON: weatherInstance, selected: (i == 0))
+            i = i + 1
+          }
+        }
+        
+        //print("rowsForToday", rowsForToday)
+        
         for weatherInstance in jsonResponse["list"].array! {
             dt = weatherInstance["dt"]
             
             let t1 = dt.intValue + Int(self.timezone) - Int(timezoneOffset)
             let date = Date(timeIntervalSince1970: TimeInterval(t1))
-            
-            let dayTimePeriodFormatter = DateFormatter()
-            dayTimePeriodFormatter.dateFormat = "dd"
             
             //print("X", Int(dayTimePeriodFormatter.string(from: date))!)
             if (self.apiEndpoint == "forecast" && ((Int(dayTimePeriodFormatter.string(from: date as Date))! - 1 == Int(dayTimePeriodFormatter.string(from: todayDate))!) || (Int(dayTimePeriodFormatter.string(from: date as Date))! == 1 && date.timeIntervalSince1970 - todayDate.timeIntervalSince1970 < (86400 * 2) && Int(dayTimePeriodFormatter.string(from: todayDate))! != 1))) {
@@ -1160,6 +1192,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             return
         }
         self.apiUnit = "metric"
+        
         updateDayFonts()
         
         updateUserDefaults()
@@ -1183,6 +1216,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             return
         }
         self.apiUnit = "imperial"
+        
         updateDayFonts()
         
         updateUserDefaults()
@@ -1250,6 +1284,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             return
         }
         self.apiEndpoint = "weather"
+        
         updateDayFonts()
         
         updateUserDefaults()
@@ -1265,6 +1300,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             return
         }
         self.apiEndpoint = "forecast"
+        
         updateDayFonts()
         
         updateUserDefaults()
@@ -1280,6 +1316,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             return
         }
         self.apiEndpoint = "forecast2"
+        
         updateDayFonts()
         
         updateUserDefaults()
@@ -1391,8 +1428,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             self.pressureLabel.text = pressureFormatString + jsonTemp["pressure"].stringValue + "hPa"
             
             let clouds = conditionJSON!["clouds"]["all"].intValue
-            let rain = conditionJSON!["rain"]["3h"].doubleValue
-            let snow = conditionJSON!["snow"]["3h"].doubleValue
+            // current weather uses 1h vs forecast uses 3h - need to distinguish between the two
+            let hourAmount = conditionJSON!["rain"]["3h"].exists() ? "3" : "1"
+            let rain = conditionJSON!["rain"][hourAmount + "h"].doubleValue
+            let snow = conditionJSON!["snow"][hourAmount + "h"].doubleValue
             
             let precipitationFormatString = NSLocalizedString("precipitation", comment: "Precipitation")
             let precipitation = conditionJSON!["pop"].doubleValue
@@ -1412,16 +1451,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
                 self.additionalInfoLabel1.text = cloudsFormatString + String(clouds) + "%"
                 if (rain > 0.0) {
                     self.additionalInfoLabel1.text = precipitationFormatString + (percentFormatter.string(from: NSNumber(value: precipitation)) ?? "0")
-                    self.additionalInfoLabel2.text = rainFormatString + "(3" + hourFormatString + "): " + String(rain) + " mm"
+                    self.additionalInfoLabel2.text = rainFormatString + "(" + hourAmount + hourFormatString + "): " + String(rain) + " mm"
                 } else if (snow > 0.0) {
                     self.additionalInfoLabel1.text = precipitationFormatString + (percentFormatter.string(from: NSNumber(value: precipitation)) ?? "0")
-                    self.additionalInfoLabel2.text = snowFormatString + "(3" + hourFormatString + "): " + String(snow) + " mm"
+                    self.additionalInfoLabel2.text = snowFormatString + "(" + hourAmount + hourFormatString + "): " + String(snow) + " mm"
                 }
             } else {
                 if (rain > 0) {
-                    self.additionalInfoLabel2.text = rainFormatString + "(3" + hourFormatString + "): " + String(rain) + " mm"
+                    self.additionalInfoLabel2.text = rainFormatString + "(" + hourAmount + hourFormatString + "): " + String(rain) + " mm"
                 } else if (snow > 0.0) {
-                    self.additionalInfoLabel2.text = snowFormatString + "(3" + hourFormatString + "): " + String(snow) + " mm"
+                    self.additionalInfoLabel2.text = snowFormatString + "(" + hourAmount + hourFormatString + "): " + String(snow) + " mm"
                 }
             }
             setSelectedBackground(imageView: imgView)
@@ -1453,7 +1492,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         dayTimePeriodFormatter.dateFormat = self.hourFormat == "12" ? "hh a" : "HH:mm"
         
         let dateString = dayTimePeriodFormatter.string(from: date as Date)
-        label.text = dateString
+        
+        // for current time just show "Now" vs exact hour for others
+        label.text = (index == 1 && self.apiEndpoint == "weather") ? NSLocalizedString("weather now", comment: "current weather") : dateString
         
         dayTimePeriodFormatter.dateFormat = "hh"
         let timeString = dayTimePeriodFormatter.string(from: date as Date)
