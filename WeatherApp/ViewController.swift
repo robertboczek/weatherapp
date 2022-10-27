@@ -452,7 +452,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
                 if let cityToSearch = textField.text {
                     if (city.count > 1) {
                       let cityLabel = (city[0] != city[1]) ? city[1] + " (" + city[0] + ")" : city[0]
-                      let location = cityLabel + " " + city[7] + " " + city[6]
+                      let region = (city[0] != city[7]) ? (", " + city[7]) : ""
+                      let location = cityLabel + region + ", " + city[4]
                       let range = location.lowercased().range(of: cityToSearch, options: .caseInsensitive, range: nil, locale: nil)
                       if range != nil {
                           //print("append!")
@@ -466,7 +467,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             for city in citiesDict {
                 if (city.count > 1) {
                   let cityLabel = (city[0] != city[1]) ? city[1] + " (" + city[0] + ")" : city[0]
-                  let location = cityLabel + " " + city[7] + " " + city[6]
+                  let region = (city[0] != city[7]) ? (", " + city[7]) : ""
+                  let location = cityLabel + region + ", " + city[4]
                   self.matchingCities.append(location)
                   self.matchingCitiesDict.append(city)
                 }
@@ -588,7 +590,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         
         updateItemsVisibility(isHidden: true)
         self.goBack.isHidden = true
-        self.dayLabel.isHidden = true
         
         reloadWeatherDetails()
     }
@@ -882,7 +883,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.totalItems = 0
         
         // fill current weather item
-        if (self.currentWeatherData != nil && self.apiEndpoint == "weather") {
+        if (self.currentWeatherData != nil) {
           let weatherInstance = self.currentWeatherData!
           dt = weatherInstance["dt"]
             
