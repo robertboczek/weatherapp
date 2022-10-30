@@ -396,7 +396,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     
     func checkAuthorizationStatus() {
         let status = CLLocationManager.authorizationStatus()
-        print(status.rawValue)
+        //print(status.rawValue)
         switch status {
           // 1
           case .notDetermined:
@@ -499,7 +499,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             
             let location = self.favoritiesDict[indexPath.row]
             
-            print(location)
+            //print(location)
             cell?.textLabel?.text = location[0]
             return cell!
         }
@@ -852,8 +852,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             var airQualityIcon : UIImage? = nil
             var airQualityIndexText : String? = nil
             
-            print("Air quality Index: ")
-            print(airQualityIndex)
+            //print("Air quality Index: ")
+            //print(airQualityIndex)
             if (airQualityIndex == 1) {
                 airQualityIcon = UIImage(named: "good.png")
                 airQualityIndexText = "good"
@@ -1240,7 +1240,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     @objc func mapButtonTapped(_ sender: UITapGestureRecognizer) {
         let latLon = String(self.lat)+","+String(self.lon)
         let urlString = "https://maps.google.com/?ll="+latLon+"&q="+latLon+"&z=8"
-        print(urlString)
+        //print(urlString)
         let url = URL(string: urlString)!
         UIApplication.shared.open(url, options: [:])
     }
