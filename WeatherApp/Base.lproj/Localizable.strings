@@ -13,7 +13,7 @@
 
 "humidity" = "Humidity: ";
 
-"pressure" = "AirPressure: ";
+"pressure" = "Air Pressure: ";
 
 "clouds" = "Clouds: ";
 
@@ -54,3 +54,5 @@
 "search city input" = "Type name of the city you are searching for";
 
 "weather now" = "Now";
+
+"air quality" = "Air Quality: ";

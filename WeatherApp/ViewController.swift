@@ -51,6 +51,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     @IBOutlet weak var time4: UILabel!
     @IBOutlet weak var time5: UILabel!
     
+    @IBOutlet weak var airQualityImage: UIImageView!
+    @IBOutlet weak var airQualityInfoLabel: UILabel!
+    
+    
     @IBOutlet weak var twelve: UILabel!
     @IBOutlet weak var twentyFour: UILabel!
     
@@ -632,6 +636,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.favoritesButton.isHidden = isHidden
         self.mapButton.isHidden = isHidden
         
+        self.airQualityImage.isHidden = true
+        self.airQualityInfoLabel.isHidden = true
+        
         self.windLabel.isHidden = isHidden
         self.pressureLabel.isHidden = isHidden
         self.humidityLabel.isHidden = isHidden
@@ -649,6 +656,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.conditionSmall3.isHidden = isHidden
         self.conditionSmall4.isHidden = isHidden
         self.conditionSmall5.isHidden = isHidden
+        
+        if (isHidden) {
+            self.favoritesDropdown.isHidden = true
+        } else {
+            self.favoritesDropdown.isHidden = (self.favoritiesDict.count == 0)
+        }
         
         self.sunriseLabel.isHidden = isHidden
         self.sunsetLabel.isHidden = isHidden
@@ -677,8 +690,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     
     func updateItemsVisibility(isHidden: Bool) {
         updateMainScreenItemsVisibility(isHidden: isHidden)
-        
-        self.favoritesDropdown.isHidden = isHidden || (self.favoritiesDict.count == 0)
         // hide keyboard if was typing before
         citySearchInputText.endEditing(true)
     }
@@ -779,10 +790,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             self.locationLabel.isHidden = false
         })
         }
-        let s = "http://api.openweathermap.org/data/2.5/\(endpoint)?lat=\(lat)&lon=\(lon)&appid=\(apiKey)&units=\(apiUnit)";
-        print("Request: " + s)
+        let weatherConditionRequest = "http://api.openweathermap.org/data/2.5/\(endpoint)?lat=\(lat)&lon=\(lon)&appid=\(apiKey)&units=\(apiUnit)";
+        let airQualityRequest =
+        "http://api.openweathermap.org/data/2.5/air_pollution?lat=\(lat)&lon=\(lon)&appid=\(apiKey)";
+        print("Request: " + weatherConditionRequest)
         
-        Alamofire.request(s).responseJSON {
+        Alamofire.request(weatherConditionRequest).responseJSON {
           response in
           switch response.result {
             case .failure(let _):
@@ -805,6 +818,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
               print("Success result from Weather API")
                 self.isErrorState = false
           }
+          // hide air quality
+          self.airQualityInfoLabel.isHidden = true
+          self.airQualityImage.isHidden = true
+
           if let responseStr = response.result.value {
             print("Updating weather service")
             let jsonResponse = JSON(responseStr)
@@ -815,7 +832,45 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
               self.timezone = jsonResponse["city"]["timezone"].int!
               self.updateWeather(json: jsonResponse)
             }
+              
+              Alamofire.request(airQualityRequest).responseJSON {
+                  airQualityResponse in
+                  if let responseStr = airQualityResponse.result.value {
+                      print("Updating air quality labels")
+                      let jsonResponse = JSON(responseStr)
+                      self.updateAirQuality(json: jsonResponse)
+                  }
+              }
           }
+        }
+    }
+    
+    func updateAirQuality(json: JSON) {
+        // only show air quality for today
+        if (json["list"].exists() && self.apiEndpoint == "weather") {
+            let airQualityIndex = json["list"][0]["main"]["aqi"].intValue;
+            var airQualityIcon : UIImage? = nil
+            
+            if (airQualityIndex == 1) {
+                airQualityIcon = UIImage(named: "good.png")
+            } else if (airQualityIndex == 2) {
+                airQualityIcon = UIImage(named: "fair.png")
+            } else if (airQualityIndex == 3) {
+                airQualityIcon = UIImage(named: "neutral.png")
+            } else if (airQualityIndex == 4) {
+                airQualityIcon = UIImage(named: "sad.png")
+            } else if (airQualityIndex == 5) {
+                airQualityIcon = UIImage(named: "angry.png")
+            }
+            
+            let airQualityString = NSLocalizedString("air quality", comment: "Air quality")
+            let airQualityNO2Value = json["list"][0]["components"]["no2"].stringValue
+            self.airQualityInfoLabel.text = airQualityString + airQualityNO2Value + "NO2"
+            self.airQualityInfoLabel.isHidden = false
+            if (airQualityIcon != nil) {
+                self.airQualityImage.isHidden = false
+                self.airQualityImage.image = airQualityIcon
+            }
         }
     }
     
