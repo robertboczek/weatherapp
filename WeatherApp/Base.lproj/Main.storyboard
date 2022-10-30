@@ -253,7 +253,7 @@
                             <constraint firstItem="sQP-8e-Urv" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="4CJ-bG-qPB"/>
                             <constraint firstItem="sQP-8e-Urv" firstAttribute="leading" secondItem="OHN-TZ-gKZ" secondAttribute="leading" id="4w0-5D-ba2"/>
                             <constraint firstItem="SFz-Lm-U3d" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="25" id="5Tv-RG-tTO"/>
-                            <constraint firstItem="jXw-U0-N7A" firstAttribute="leading" secondItem="ol8-bo-Wth" secondAttribute="leading" constant="80" id="6By-8w-IcV"/>
+                            <constraint firstItem="jXw-U0-N7A" firstAttribute="leading" secondItem="ol8-bo-Wth" secondAttribute="trailing" constant="85" id="6By-8w-IcV"/>
                             <constraint firstItem="b0z-HS-QCA" firstAttribute="top" secondItem="uzK-Lp-UpC" secondAttribute="bottom" id="6mw-W9-WOZ"/>
                             <constraint firstItem="2EL-bi-2ui" firstAttribute="top" secondItem="Q1g-Lb-I4k" secondAttribute="bottom" id="6rh-O9-R5S"/>
                             <constraint firstItem="OHN-TZ-gKZ" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="7lj-An-QGA"/>
@@ -310,7 +310,7 @@
                             <constraint firstItem="Djw-pg-HP4" firstAttribute="top" secondItem="4ga-xH-al6" secondAttribute="bottom" id="ckH-KP-iPL"/>
                             <constraint firstItem="dPk-BG-6Sl" firstAttribute="leading" secondItem="xD0-wi-BqF" secondAttribute="trailing" constant="10" id="dOR-qm-sHm"/>
                             <constraint firstItem="3eC-42-mgh" firstAttribute="top" secondItem="Q4L-Vk-15I" secondAttribute="bottom" constant="10" id="dlm-cD-8bz"/>
-                            <constraint firstItem="jXw-U0-N7A" firstAttribute="top" secondItem="ol8-bo-Wth" secondAttribute="bottom" id="ecx-T7-h0J"/>
+                            <constraint firstItem="jXw-U0-N7A" firstAttribute="top" secondItem="ol8-bo-Wth" secondAttribute="top" id="ecx-T7-h0J"/>
                             <constraint firstItem="9yg-c8-mCy" firstAttribute="leading" secondItem="qOY-FC-OO0" secondAttribute="leading" id="gZx-gW-4kX"/>
                             <constraint firstItem="F9b-Vp-D59" firstAttribute="top" secondItem="3eC-42-mgh" secondAttribute="top" id="hCM-rP-pSQ"/>
                             <constraint firstItem="Am8-ze-xVl" firstAttribute="top" secondItem="3eC-42-mgh" secondAttribute="bottom" id="hbP-Z2-N2c"/>

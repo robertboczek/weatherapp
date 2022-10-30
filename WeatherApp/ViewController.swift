@@ -850,26 +850,34 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         if (json["list"].exists() && self.apiEndpoint == "weather") {
             let airQualityIndex = json["list"][0]["main"]["aqi"].intValue;
             var airQualityIcon : UIImage? = nil
+            var airQualityIndexText : String? = nil
             
+            print("Air quality Index: ")
+            print(airQualityIndex)
             if (airQualityIndex == 1) {
                 airQualityIcon = UIImage(named: "good.png")
+                airQualityIndexText = "good"
             } else if (airQualityIndex == 2) {
                 airQualityIcon = UIImage(named: "fair.png")
+                airQualityIndexText = "fair"
             } else if (airQualityIndex == 3) {
                 airQualityIcon = UIImage(named: "neutral.png")
+                airQualityIndexText = "moderate"
             } else if (airQualityIndex == 4) {
                 airQualityIcon = UIImage(named: "sad.png")
+                airQualityIndexText = "poor"
             } else if (airQualityIndex == 5) {
                 airQualityIcon = UIImage(named: "angry.png")
+                airQualityIndexText = "very poor"
             }
             
             let airQualityString = NSLocalizedString("air quality", comment: "Air quality")
             let airQualityNO2Value = json["list"][0]["components"]["no2"].stringValue
-            self.airQualityInfoLabel.text = airQualityString + airQualityNO2Value + "NO2"
-            self.airQualityInfoLabel.isHidden = false
             if (airQualityIcon != nil) {
                 self.airQualityImage.isHidden = false
                 self.airQualityImage.image = airQualityIcon
+                self.airQualityInfoLabel.text = airQualityString + airQualityIndexText!
+                self.airQualityInfoLabel.isHidden = false
             }
         }
     }
@@ -886,12 +894,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         let jsonResponse = json
 
         let dateFormatter = DateFormatter()
+        let monthFormatter = DateFormatter()
         var todayDate = Date()
         let timezoneOffset =  TimeZone.current.secondsFromGMT()
         let currentTime = Int(todayDate.timeIntervalSince1970)
         
         let dayTimePeriodFormatter = DateFormatter()
         dayTimePeriodFormatter.dateFormat = self.hourFormat == "12" ? "hh:mm a" : "HH:mm"
+        monthFormatter.dateFormat = "MM"
         
         let sunsetFormatString = NSLocalizedString("sunset", comment: "Sunset")
         self.sunsetLabel.text = sunsetFormatString + dayTimePeriodFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(json["city"]["sunset"].intValue + self.timezone - timezoneOffset)) as Date)
@@ -959,6 +969,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         
         //print("rowsForToday", rowsForToday)
         
+        let todayDayOfMonth = Int(dayTimePeriodFormatter.string(from: todayDate))!
+        let todayMonth = Int(monthFormatter.string(from: todayDate))!
         for weatherInstance in jsonResponse["list"].array! {
             dt = weatherInstance["dt"]
             
@@ -966,7 +978,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             let date = Date(timeIntervalSince1970: TimeInterval(t1))
             
             //print("X", Int(dayTimePeriodFormatter.string(from: date))!)
-            if (self.apiEndpoint == "forecast" && ((Int(dayTimePeriodFormatter.string(from: date as Date))! - 1 == Int(dayTimePeriodFormatter.string(from: todayDate))!) || (Int(dayTimePeriodFormatter.string(from: date as Date))! == 1 && date.timeIntervalSince1970 - todayDate.timeIntervalSince1970 < (86400 * 2) && Int(dayTimePeriodFormatter.string(from: todayDate))! != 1))) {
+            
+            // print("Today!!")
+            // print(Int(dayTimePeriodFormatter.string(from: date as Date))!)
+            // print(Int(dayTimePeriodFormatter.string(from: todayDate as Date))!)
+            
+            let dateDayOfMonth = Int(dayTimePeriodFormatter.string(from: date as Date))!
+            
+            if (
+                self.apiEndpoint == "forecast" &&
+                (
+                    (dateDayOfMonth - 1 == todayDayOfMonth) ||
+                    (dateDayOfMonth == 1 && date.timeIntervalSince1970 - todayDate.timeIntervalSince1970 < (86400 * 2) && todayDayOfMonth != 1)
+                )
+            ) {
                 // we allow max 5 items
                 if (i % 2 == 0 && (i / 2) + 1 <= 5) {
                   fillCondition(index: (i / 2) + 1, conditionJSON: weatherInstance, selected: Int(dateFormatter.string(from: date))! >= 10 && !selectedFound)
@@ -978,7 +1003,26 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
                   tomorrowDayOfMonth = Int(dayTimePeriodFormatter.string(from: date as Date))!
                 }
                 i = i + 1
-            } else if (self.apiEndpoint == "forecast2" && ((Int(dayTimePeriodFormatter.string(from: date as Date))! - 2 == Int(dayTimePeriodFormatter.string(from: todayDate))!) || (Int(dayTimePeriodFormatter.string(from: date as Date))! == 2 && tomorrowDayOfMonth == 1) || (Int(dayTimePeriodFormatter.string(from: date as Date))! == 1 && tomorrowDayOfMonth >= 28))) {
+            } else if (
+                self.apiEndpoint == "forecast2" &&
+                (
+                    (dateDayOfMonth - 2 == todayDayOfMonth) ||
+                    (
+                        dateDayOfMonth == 1 &&
+                        (
+                            (todayMonth == 1 || todayMonth == 3 || todayMonth == 5 || todayMonth == 7 || todayMonth == 8 || todayMonth == 10 || todayMonth == 12) && todayDayOfMonth == 30) ||
+                        ((todayMonth == 4 || todayMonth == 5 || todayMonth == 6 || todayMonth == 9 || todayMonth == 11) && todayDayOfMonth == 29) ||
+                        (todayMonth == 2 && todayDayOfMonth == 27)
+                    ) ||
+                    (
+                        dateDayOfMonth == 2 &&
+                        (
+                            (todayMonth == 1 || todayMonth == 3 || todayMonth == 5 || todayMonth == 7 || todayMonth == 8 || todayMonth == 10 || todayMonth == 12) && todayDayOfMonth == 31) ||
+                        ((todayMonth == 4 || todayMonth == 5 || todayMonth == 6 || todayMonth == 9 || todayMonth == 11) && todayDayOfMonth == 30) ||
+                        (todayMonth == 2 && todayDayOfMonth == 28)
+                    )
+                )
+            ) {
                 // we allow max 5 items
                 if (i % 2 == 0 && (i / 2) + 1 <= 5) {
                   fillCondition(index: (i / 2) + 1, conditionJSON: weatherInstance, selected: Int(dateFormatter.string(from: date))! >= 10 && !selectedFound)
@@ -987,7 +1031,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
                   }
                 }
                 i = i + 1
-            } else if (self.apiEndpoint == "weather" &&  Int(dayTimePeriodFormatter.string(from: date as Date)) == Int(dayTimePeriodFormatter.string(from: todayDate))! &&
+            } else if (self.apiEndpoint == "weather" && dateDayOfMonth == todayDayOfMonth &&
                 rowsForToday > 1
             ) {
                 if (i < 5) {
