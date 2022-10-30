@@ -876,6 +876,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             if (airQualityIcon != nil) {
                 self.airQualityImage.isHidden = false
                 self.airQualityImage.image = airQualityIcon
+                airQualityIndexText = NSLocalizedString(airQualityIndexText!, comment: "Air quality")
                 self.airQualityInfoLabel.text = airQualityString + airQualityIndexText!
                 self.airQualityInfoLabel.isHidden = false
             }

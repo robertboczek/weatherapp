@@ -48,4 +48,14 @@
 
 "weather now" = "Teraz";
 
-"air quality" = "Jakość Powietrza: ";
+"air quality" = "Jakość pow: ";
+
+"good" = "b.dobra";
+
+"fair" = "dobra";
+
+"moderate" = "umiarkowana";
+
+"poor" = "zła";
+
+"very poor" = "b.zła";

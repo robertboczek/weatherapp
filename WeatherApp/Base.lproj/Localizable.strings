@@ -56,3 +56,13 @@
 "weather now" = "Now";
 
 "air quality" = "Air Quality: ";
+
+"good" = "good";
+
+"fair" = "fair";
+
+"moderate" = "moderate";
+
+"poor" = "poor";
+
+"very poor" = "very poor";
