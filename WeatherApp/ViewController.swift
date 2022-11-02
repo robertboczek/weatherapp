@@ -150,6 +150,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         
         self.loadFavoritiesConfig()
+        self.requestIDFA()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -168,6 +169,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         print("Loaded default hour format: \(savedHourFormat)")
         
         super.init(coder: aDecoder)
+        self.requestIDFA()
     }
     
     func loadFavoritiesConfig() {
@@ -203,6 +205,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    
         loadFavoritiesConfig()
         
         let fileContent = readDataFromFile(file: "worldcities")
@@ -382,7 +385,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         // Make the native ad view container visible.
         self.adView.isHidden = true
         
-        loadBannerAd()
+        self.loadBannerAd()
     }
     
     func backgroundThreadForInvalidState() {
@@ -1095,6 +1098,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     }
     
     func loadBannerAd() {
+        self.requestIDFA()
+        
         // In this case, we instantiate the banner with desired ad size.
         //let adSize = GADAdSizeFromCGSize(CGSize(width: 300, height: 100))
         self.bannerView = GAMBannerView(adSize: kGADAdSizeLargeBanner)
@@ -1117,6 +1122,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
                                   constant: 0)
               ])
         self.adView.isHidden = true
+    }
+    
+    func requestIDFA() {
+      ATTrackingManager.requestTrackingAuthorization(completionHandler: { status in
+        // Tracking authorization completed. Start loading ads here.
+      })
     }
     
     func bannerViewDidReceiveAd(_ bannerView: GADBannerView) {
@@ -1224,7 +1235,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.searchButton.isHidden = false
         self.searchButtonText.isHidden = false
         
-        loadBannerAd()
+        self.loadBannerAd()
     }
     
     @objc func goBackTapped(_ sender: UITapGestureRecognizer) {
@@ -1390,7 +1401,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         
         updateUserDefaults()
         
-        loadBannerAd()
+        self.loadBannerAd()
         
         reloadView()
     }
@@ -1406,7 +1417,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         
         updateUserDefaults()
         
-        loadBannerAd()
+        self.loadBannerAd()
         
         reloadView()
     }
@@ -1422,7 +1433,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         
         updateUserDefaults()
         
-        loadBannerAd()
+        self.loadBannerAd()
         
         reloadView()
     }
@@ -1436,7 +1447,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         
         searchRecords(citySearchInputText)
         
-        loadBannerAd()
+        self.loadBannerAd()
     }
     
     @objc func currentLocationButtonTapped(_ sender: UITapGestureRecognizer) {

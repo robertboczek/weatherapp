@@ -12,6 +12,7 @@ import FBAudienceNetwork
 import FBSDKLoginKit
 import FBSDKShareKit
 import FBSDKCoreKit
+import AppTrackingTransparency
 
 
 @UIApplicationMain
@@ -43,6 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         open url: URL,
         options: [UIApplication.OpenURLOptionsKey : Any] = [:]
     ) -> Bool {
+        
         // Set the flag as true
         FBAdSettings.setAdvertiserTrackingEnabled(true)
         
