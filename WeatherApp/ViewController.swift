@@ -1531,7 +1531,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             self.additionalInfoLabel2.text = ""
             self.temperatureLabel.text = tmp
             let windFormatString = NSLocalizedString("wind", comment: "Wind")
-            self.windLabel.text = windFormatString + String(format: "%.2f", conditionJSON!["wind"]["speed"].doubleValue) + ((self.apiUnit == "imperial") ? "mph" : "m/s")
+            self.windLabel.text = windFormatString + String(format: "%.2f", conditionJSON!["wind"]["speed"].doubleValue) + ((self.apiUnit == "imperial") ? " mph" : " m/s")
             
             let humidityFormatString = NSLocalizedString("humidity", comment: "Humidity")
             self.humidityLabel.text = humidityFormatString + jsonTemp["humidity"].stringValue  + "%"
