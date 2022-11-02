@@ -1537,7 +1537,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             self.humidityLabel.text = humidityFormatString + jsonTemp["humidity"].stringValue  + "%"
             
             let pressureFormatString = NSLocalizedString("pressure", comment: "Pressure")
-            self.pressureLabel.text = pressureFormatString + jsonTemp["pressure"].stringValue + "hPa"
+            self.pressureLabel.text = pressureFormatString + jsonTemp["pressure"].stringValue + " hPa"
             
             let clouds = conditionJSON!["clouds"]["all"].intValue
             // current weather uses 1h vs forecast uses 3h - need to distinguish between the two
