@@ -7,12 +7,6 @@
 //
 
 import UIKit
-import FBAudienceNetwork
-
-import FBSDKLoginKit
-import FBSDKShareKit
-import FBSDKCoreKit
-import AppTrackingTransparency
 
 
 @UIApplicationMain
@@ -23,19 +17,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        // Set the flag as true
-        FBAdSettings.setAdvertiserTrackingEnabled(true)
-        
-        // Set the flag as true
-        FBAudienceNetwork.FBAdSettings.setAdvertiserTrackingEnabled(true);
-        
-        // Override point for customization after application launch.
-        //FBAdSettings.addTestDevice(FBAdSettings.testDeviceHash())
-        ApplicationDelegate.shared.application(
-            application,
-            didFinishLaunchingWithOptions: launchOptions
-        )
-        
         return true
     }
     
@@ -45,17 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         options: [UIApplication.OpenURLOptionsKey : Any] = [:]
     ) -> Bool {
         
-        // Set the flag as true
-        FBAdSettings.setAdvertiserTrackingEnabled(true)
-        
-        // Set the flag as true
-        FBAudienceNetwork.FBAdSettings.setAdvertiserTrackingEnabled(true)
-        
-        return ApplicationDelegate.shared.application(
-            app,
-            open: url,
-            options: options
-        )
+        return true
     }
 
     // MARK: UISceneSession Lifecycle

@@ -15,8 +15,6 @@ import Alamofire
 import AdSupport
 import AppTrackingTransparency
 
-import FBAudienceNetwork
-import AWSDynamoDB
 import GoogleMobileAds
 
 class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerViewDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate {
@@ -136,8 +134,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         print("init")
         print("Load defaults")
         
-        FBAdSettings.setAdvertiserTrackingEnabled(true)
-        
         let savedUnit = UserDefaults.standard.string(forKey: "temperatureUnit") ?? "imperial"
         print("Loaded default temperature unit: \(savedUnit)")
         apiUnit = savedUnit
@@ -154,7 +150,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     }
     
     required init?(coder aDecoder: NSCoder) {
-        FBAdSettings.setAdvertiserTrackingEnabled(true)
         
         print("init coder style")
         print("Load defaults")

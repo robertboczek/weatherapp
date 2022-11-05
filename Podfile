@@ -14,11 +14,5 @@ target 'WeatherApp' do
   pod 'Alamofire', '~> 4.7'
   pod 'SwiftyJSON', '~> 4.0'
   pod 'NVActivityIndicatorView'
-  pod 'FBAudienceNetwork', '~> 6.5.0'
-  pod 'FBSDKCoreKit'
-  pod 'FBSDKLoginKit'
-  pod 'FBSDKShareKit'
-  pod 'AWSAuthCore', '~> 2.6.1'
-  pod 'AWSDynamoDB', '~> 2.6.5'
   pod 'GoogleMobileAdsMediationFacebook'
 end
