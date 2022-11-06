@@ -378,7 +378,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         }
         
         // Make the native ad view container visible.
-        self.adView.isHidden = true
+        self.adView.isHidden = false
         
         self.loadBannerAd()
     }
@@ -1116,7 +1116,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
                                   multiplier: 1,
                                   constant: 0)
               ])
-        self.adView.isHidden = true
+        self.adView.isHidden = false
     }
     
     func requestIDFA() {
