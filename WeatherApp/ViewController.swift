@@ -1486,8 +1486,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     
     @objc func currentLocationButtonTapped(_ sender: UITapGestureRecognizer) {
         
-        shareURL()
-        
         selectedItem = nil
         
         favoritiesView.isHidden = true
