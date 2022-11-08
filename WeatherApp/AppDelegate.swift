@@ -10,10 +10,12 @@ import UIKit
 
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIWindowSceneDelegate, UIApplicationDelegate {
 
 
-    var myViewController: ViewController?
+    var rootViewController: ViewController? {
+        return self.rootViewController
+    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
@@ -25,6 +27,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         open url: URL,
         options: [UIApplication.OpenURLOptionsKey : Any] = [:]
     ) -> Bool {
+        // open deep link
+        /*print("deep link!" + url.absoluteString)
+        rootViewController?.updateWeatherViaDeeplink(latitude: 33.785834, longitude: -120.406417)*/
         
         return true
     }
@@ -45,15 +50,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationWillEnterForeground(_ application: UIApplication) {
          print("Reloading the view...")
-        
-        //AppEvents.activateApp();
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
          print("Became active")
-
-         //AppEvents.activateApp()
-         myViewController?.reloadView()
     }
     
     func applicationDidEnterBackground(_ application: UIApplication) {

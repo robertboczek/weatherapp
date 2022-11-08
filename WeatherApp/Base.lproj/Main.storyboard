@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina5_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -228,18 +228,29 @@
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" image="back.png"/>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c2k-d6-OEn">
-                                <rect key="frame" x="15.000000000000002" y="15" width="19.666666666666671" height="25"/>
+                            <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c2k-d6-OEn" userLabel="Current Location Button">
+                                <rect key="frame" x="15" y="591" width="30" height="37"/>
                                 <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="22"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <state key="normal" image="location.circle" catalog="system"/>
+                            </button>
+                            <button contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4RH-1f-RZO" userLabel="Refresh Button">
+                                <rect key="frame" x="192" y="349" width="30" height="37"/>
+                                <color key="backgroundColor" systemColor="systemCyanColor"/>
+                                <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="22"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </button>
+                            <button contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6Iq-F8-YqD" userLabel="Share Button">
+                                <rect key="frame" x="192" y="349" width="30" height="37"/>
+                                <color key="backgroundColor" systemColor="systemCyanColor"/>
+                                <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="22"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="6oi-tt-dgs" userLabel="citiesListTableView">
                                 <rect key="frame" x="0.0" y="66" width="614" height="580"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="SFz-Lm-U3d" userLabel="favoritesListTableView">
-                                <rect key="frame" x="25" y="55" width="364" height="591"/>
+                                <rect key="frame" x="25" y="643" width="364" height="3"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                         </subviews>
@@ -264,13 +275,15 @@
                             <constraint firstItem="xD0-wi-BqF" firstAttribute="top" secondItem="LOG-QK-lh1" secondAttribute="top" constant="5" id="BY7-bH-fh0"/>
                             <constraint firstItem="KLN-7d-VQc" firstAttribute="leading" secondItem="Q4L-Vk-15I" secondAttribute="trailing" constant="4" id="C1f-2x-N2h"/>
                             <constraint firstItem="PJO-Cy-v6d" firstAttribute="top" secondItem="3eC-42-mgh" secondAttribute="top" id="C91-qZ-mVh"/>
+                            <constraint firstItem="4RH-1f-RZO" firstAttribute="top" secondItem="c2k-d6-OEn" secondAttribute="top" id="CW5-dj-5ay"/>
                             <constraint firstItem="uzK-Lp-UpC" firstAttribute="top" secondItem="11m-8d-Jb3" secondAttribute="top" constant="-5" id="DMU-O9-F2v"/>
+                            <constraint firstItem="6Iq-F8-YqD" firstAttribute="leading" secondItem="4RH-1f-RZO" secondAttribute="trailing" constant="15" id="Erf-R8-jDI"/>
                             <constraint firstItem="9yg-c8-mCy" firstAttribute="top" secondItem="qOY-FC-OO0" secondAttribute="bottom" constant="5" id="Fvt-5b-34a"/>
                             <constraint firstItem="6oi-tt-dgs" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" constant="200" id="Gpt-nH-uZT"/>
                             <constraint firstItem="nzT-Gq-noQ" firstAttribute="leading" secondItem="cK7-h7-TgK" secondAttribute="leading" constant="3" id="IZg-5t-p6F"/>
                             <constraint firstItem="sQP-8e-Urv" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="Ixz-F8-sMZ"/>
                             <constraint firstItem="2EL-bi-2ui" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="K5O-zF-YSz"/>
-                            <constraint firstItem="c2k-d6-OEn" firstAttribute="top" secondItem="Q1g-Lb-I4k" secondAttribute="top" constant="15" id="LGW-Lg-R0k"/>
+                            <constraint firstItem="c2k-d6-OEn" firstAttribute="top" secondItem="pcp-Ut-36g" secondAttribute="bottom" constant="15" id="LGW-Lg-R0k"/>
                             <constraint firstItem="pcp-Ut-36g" firstAttribute="top" secondItem="dlc-Ns-m3t" secondAttribute="bottom" constant="7.7000000000000002" id="Loh-Wt-AcD"/>
                             <constraint firstItem="Q4L-Vk-15I" firstAttribute="bottom" secondItem="4ga-xH-al6" secondAttribute="bottom" id="Lwo-cd-5cU"/>
                             <constraint firstItem="Q1g-Lb-I4k" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="MTf-TS-gHt"/>
@@ -325,11 +338,13 @@
                             <constraint firstItem="LOG-QK-lh1" firstAttribute="top" secondItem="3eC-42-mgh" secondAttribute="bottom" constant="80" id="n3M-qG-Jgq"/>
                             <constraint firstItem="0ON-kJ-168" firstAttribute="leading" secondItem="LOG-QK-lh1" secondAttribute="leading" constant="10" id="nKe-gM-dvU"/>
                             <constraint firstItem="k29-61-bWL" firstAttribute="leading" secondItem="t9x-GT-CLj" secondAttribute="trailing" constant="1" id="nRV-A3-g6C"/>
+                            <constraint firstItem="4RH-1f-RZO" firstAttribute="leading" secondItem="c2k-d6-OEn" secondAttribute="trailing" constant="15" id="niB-Yf-Plc"/>
                             <constraint firstItem="c2k-d6-OEn" firstAttribute="leading" secondItem="Q1g-Lb-I4k" secondAttribute="leading" id="oVS-I3-SdP"/>
                             <constraint firstItem="6oi-tt-dgs" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" constant="-90" id="p2W-og-Yej"/>
                             <constraint firstItem="0ON-kJ-168" firstAttribute="top" secondItem="LOG-QK-lh1" secondAttribute="top" constant="5" id="pSa-Jh-1Kl"/>
                             <constraint firstItem="Ysd-cz-5Jk" firstAttribute="leading" secondItem="9yg-c8-mCy" secondAttribute="leading" id="pgA-Rk-phl"/>
                             <constraint firstItem="uzK-Lp-UpC" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" constant="-25" id="q23-yi-ygW"/>
+                            <constraint firstItem="6Iq-F8-YqD" firstAttribute="top" secondItem="4RH-1f-RZO" secondAttribute="top" id="qm6-50-yB2"/>
                             <constraint firstItem="b0z-HS-QCA" firstAttribute="leading" secondItem="uzK-Lp-UpC" secondAttribute="leading" constant="-5" id="ro6-LW-0lz"/>
                             <constraint firstItem="SFz-Lm-U3d" firstAttribute="top" secondItem="c2k-d6-OEn" secondAttribute="bottom" constant="15" id="rqB-uh-hlA"/>
                             <constraint firstItem="yyy-wh-zMF" firstAttribute="leading" secondItem="wNb-8D-fUj" secondAttribute="trailing" constant="15" id="ssU-cy-0wB"/>
@@ -358,7 +373,7 @@
                         <outlet property="conditionSmall3" destination="0nB-ZM-CZJ" id="wiq-AG-2ZV"/>
                         <outlet property="conditionSmall4" destination="cK7-h7-TgK" id="TPc-Nd-tzu"/>
                         <outlet property="conditionSmall5" destination="T9o-co-wyM" id="6By-XJ-kup"/>
-                        <outlet property="currentLocationButton" destination="c2k-d6-OEn" id="ocO-nC-s0u"/>
+                        <outlet property="currentLocationButton" destination="c2k-d6-OEn" id="DEz-4c-mIl"/>
                         <outlet property="dayAfterTomorrowLabel" destination="KLN-7d-VQc" id="KR3-kh-7V0"/>
                         <outlet property="dayLabel" destination="4ga-xH-al6" id="ZNW-qX-XHA"/>
                         <outlet property="favoritesButton" destination="t9x-GT-CLj" id="oTO-oi-vFz"/>
@@ -373,9 +388,11 @@
                         <outlet property="metricLabel" destination="b84-5x-NLj" id="NIW-8K-6fv"/>
                         <outlet property="nowLabel" destination="Djw-pg-HP4" id="u6C-O4-K13"/>
                         <outlet property="pressureLabel" destination="9yg-c8-mCy" id="kfb-iI-ekh"/>
+                        <outlet property="refreshButton" destination="4RH-1f-RZO" id="5aI-LD-xq5"/>
                         <outlet property="searchButton" destination="uzK-Lp-UpC" id="v4h-io-tyk"/>
                         <outlet property="searchButtonText" destination="b0z-HS-QCA" id="yBN-wb-IOn"/>
                         <outlet property="searchCitiesTableView" destination="6oi-tt-dgs" id="sOo-v2-65B"/>
+                        <outlet property="shareAppButton" destination="6Iq-F8-YqD" id="gA4-XN-zgU"/>
                         <outlet property="sunriseLabel" destination="dPk-BG-6Sl" id="E3R-1y-OFE"/>
                         <outlet property="sunsetLabel" destination="teh-nJ-Dju" id="x7x-21-o9D"/>
                         <outlet property="temperatureLabel" destination="pcp-Ut-36g" id="1pj-Hm-Z9x"/>
@@ -400,7 +417,6 @@
         <image name="angry.png" width="24" height="24"/>
         <image name="back.png" width="21.5" height="17.5"/>
         <image name="icons8-sort-down-48.png" width="32" height="32"/>
-        <image name="location.circle" catalog="system" width="128" height="123"/>
         <image name="map icon.png" width="20" height="31"/>
         <image name="s_01n.png" width="70" height="70"/>
         <image name="s_10d.png" width="70" height="70"/>
@@ -409,6 +425,9 @@
         <image name="star" catalog="system" width="128" height="116"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemCyanColor">
+            <color red="0.19607843137254902" green="0.67843137254901964" blue="0.90196078431372551" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

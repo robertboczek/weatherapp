@@ -33,6 +33,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     @IBOutlet var mainView: UIView!
     
     @IBOutlet weak var currentLocationButton: UIButton!
+    @IBOutlet weak var refreshButton: UIButton!
+    @IBOutlet weak var shareAppButton: UIButton!
     var selectedItem: JSON? = nil
     
     @IBOutlet weak var locationLabel: UILabel!
@@ -307,6 +309,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.currentLocationButton.isUserInteractionEnabled = true
         self.currentLocationButton.addGestureRecognizer(currentLocationButtonTap)
         
+        let shareLocationButtonTap = UITapGestureRecognizer(target: self, action: #selector(self.shareButtonTapped(_:)))
+        self.shareAppButton.isUserInteractionEnabled = true
+        self.shareAppButton.addGestureRecognizer(shareLocationButtonTap)
+        
+        let refreshButtonTap = UITapGestureRecognizer(target: self, action: #selector(self.refreshButtonTapped(_:)))
+        self.refreshButton.isUserInteractionEnabled = true
+        self.refreshButton.addGestureRecognizer(refreshButtonTap)
+        
         // label taps
         let time1LabelT = UITapGestureRecognizer(target: self, action: #selector(self.time1LabelTap(_:)))
         let time1LabelT2 = UITapGestureRecognizer(target: self, action: #selector(self.time1LabelTap(_:)))
@@ -360,6 +370,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         let down = UISwipeGestureRecognizer(target : self, action : #selector(self.reloadViewConditonal))
         down.direction = .down
         self.mainView.addGestureRecognizer(down)
+        
+        let currentLocationLabel = NSLocalizedString("current location", comment: "Current Location")
+        let shareLabel = NSLocalizedString("share", comment: "Share Button")
+        let refreshLabel = NSLocalizedString("refresh", comment: "Refresh")
+        let bottomButtonsColor = UIColor.init(red: 72.0/255.0, green: 114.0/255.0, blue: 214.0/255.0, alpha: 1.0)
+        
+        self.currentLocationButton.setTitle(currentLocationLabel, for: UIControl.State.normal)
+        
+        self.refreshButton.setTitle(refreshLabel, for: UIControl.State.normal)
+        
+        self.shareAppButton.setTitle(shareLabel, for: UIControl.State.normal)
         
         updatePreferredHourFormat()
         
@@ -634,6 +655,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.favoritesButton.isHidden = isHidden
         self.mapButton.isHidden = isHidden
         
+        self.shareAppButton.isHidden = isHidden
+        self.refreshButton.isHidden = isHidden
+        
         self.airQualityImage.isHidden = true
         self.airQualityInfoLabel.isHidden = true
         
@@ -714,6 +738,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         updateWeather(location: location)
       }
       self.activityIndicator.stopAnimating()
+    }
+    
+    func updateWeatherViaDeeplink(latitude : Double, longitude: Double) {
+        lat = latitude
+        lon = longitude
+        
+        updateWeather(location: nil)
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -1445,7 +1476,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.loadBannerAd()
     }
     
+    @objc func shareButtonTapped(_ sender: UITapGestureRecognizer) {
+        self.shareURL()
+    }
+    
+    @objc func refreshButtonTapped(_ sender: UITapGestureRecognizer) {
+        self.reloadViewConditonal()
+    }
+    
     @objc func currentLocationButtonTapped(_ sender: UITapGestureRecognizer) {
+        
+        shareURL()
+        
         selectedItem = nil
         
         favoritiesView.isHidden = true
@@ -1646,6 +1688,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         iconName = "s_" + iconName
         //print("Icon Name: " + iconName)
         imgView.image = UIImage(named: iconName)
+    }
+    
+    @IBAction func shareURL() {
+        let URLstring =  String(format: "https://apps.apple.com/us/app/your-weather-app/id1489106420")
+        let urlToShare = URL(string:URLstring)
+        let title = "Your Weather App"
+        let activityViewController = UIActivityViewController(
+            activityItems: [title,urlToShare!],
+            applicationActivities: nil)
+        activityViewController.popoverPresentationController?.sourceView = self.view
+        //so that ipads won't crash
+        present(activityViewController,animated: true,completion: nil)
     }
 }
 
