@@ -698,12 +698,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.time3.isHidden = isHidden
         self.time4.isHidden = isHidden
         self.time5.isHidden = isHidden
+        self.time6.isHidden = isHidden
+        self.time7.isHidden = isHidden
         
         self.conditionSmall1.isHidden = isHidden
         self.conditionSmall2.isHidden = isHidden
         self.conditionSmall3.isHidden = isHidden
         self.conditionSmall4.isHidden = isHidden
         self.conditionSmall5.isHidden = isHidden
+        self.conditionSmall6.isHidden = isHidden
+        self.conditionSmall7.isHidden = isHidden
         
         if (isHidden) {
             self.favoritesDropdown.isHidden = true

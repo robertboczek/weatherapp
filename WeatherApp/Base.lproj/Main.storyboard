@@ -247,7 +247,7 @@
                                 <state key="normal" image="back.png"/>
                             </button>
                             <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c2k-d6-OEn" userLabel="Current Location Button">
-                                <rect key="frame" x="15" y="591" width="20" height="25"/>
+                                <rect key="frame" x="183" y="591" width="20" height="25"/>
                                 <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="22"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" image="location" catalog="system"/>
@@ -362,8 +362,8 @@
                             <constraint firstItem="LOG-QK-lh1" firstAttribute="top" secondItem="3eC-42-mgh" secondAttribute="bottom" constant="80" id="n3M-qG-Jgq"/>
                             <constraint firstItem="0ON-kJ-168" firstAttribute="leading" secondItem="LOG-QK-lh1" secondAttribute="leading" constant="10" id="nKe-gM-dvU"/>
                             <constraint firstItem="k29-61-bWL" firstAttribute="leading" secondItem="t9x-GT-CLj" secondAttribute="trailing" constant="1" id="nRV-A3-g6C"/>
-                            <constraint firstItem="4RH-1f-RZO" firstAttribute="leading" secondItem="c2k-d6-OEn" secondAttribute="trailing" constant="10" id="niB-Yf-Plc"/>
-                            <constraint firstItem="c2k-d6-OEn" firstAttribute="leading" secondItem="Q1g-Lb-I4k" secondAttribute="leading" id="oVS-I3-SdP"/>
+                            <constraint firstItem="4RH-1f-RZO" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" constant="15" id="niB-Yf-Plc"/>
+                            <constraint firstItem="c2k-d6-OEn" firstAttribute="trailing" secondItem="4RH-1f-RZO" secondAttribute="leading" constant="-10" id="oVS-I3-SdP"/>
                             <constraint firstItem="6oi-tt-dgs" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" constant="-90" id="p2W-og-Yej"/>
                             <constraint firstItem="0ON-kJ-168" firstAttribute="top" secondItem="LOG-QK-lh1" secondAttribute="top" constant="5" id="pSa-Jh-1Kl"/>
                             <constraint firstItem="Ysd-cz-5Jk" firstAttribute="leading" secondItem="9yg-c8-mCy" secondAttribute="leading" id="pgA-Rk-phl"/>
