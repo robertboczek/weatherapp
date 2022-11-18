@@ -42,6 +42,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     @IBOutlet weak var dayLabel: UILabel!
     @IBOutlet weak var tomorrowLabel: UILabel!
     @IBOutlet weak var dayAfterTomorrowLabel: UILabel!
+    @IBOutlet weak var dayAfterAfterTomorrowLabel: UILabel!
     
     @IBOutlet weak var goBack: UIButton!
     
@@ -105,8 +106,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     let gradientLayer = CAGradientLayer()
     let selectedGradientLayer = CAGradientLayer()
     
-    let selectedItemFont = UIFont(name: "Arial Rounded MT Bold", size: 28)
-    let notSelectedItemFont = UIFont(name: "Avenir", size: 20)
+    let selectedItemFont = UIFont(name: "Arial Rounded MT Bold", size: 24)
+    let notSelectedItemFont = UIFont(name: "Avenir", size: 18)
     
     let selectedHourItemFont = UIFont(name: "Arial Rounded MT Bold", size: 14)
     let notSelectedHourItemFont = UIFont(name: "Avenir", size: 10)
@@ -294,6 +295,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         let dayAfterTomorrowLabelTap = UITapGestureRecognizer(target: self, action: #selector(self.dayAfterTomorrowLabelTapped(_:)))
         self.dayAfterTomorrowLabel.isUserInteractionEnabled = true
         self.dayAfterTomorrowLabel.addGestureRecognizer(dayAfterTomorrowLabelTap)
+        
+        let dayAfterAfterTomorrowLabelTap = UITapGestureRecognizer(target: self, action: #selector(self.dayAfterAfterTomorrowLabelTapped(_:)))
+        self.dayAfterAfterTomorrowLabel.isUserInteractionEnabled = true
+        self.dayAfterAfterTomorrowLabel.addGestureRecognizer(dayAfterAfterTomorrowLabelTap)
         
         let twentyFourLabelTap = UITapGestureRecognizer(target: self, action: #selector(self.twentyFourLabelTapped(_:)))
         self.twentyFour.isUserInteractionEnabled = true
@@ -670,6 +675,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.dayLabel.isHidden = isHidden
         self.tomorrowLabel.isHidden = isHidden
         self.dayAfterTomorrowLabel.isHidden = isHidden
+        self.dayAfterAfterTomorrowLabel.isHidden = isHidden
         self.temperatureLabel.isHidden = isHidden
         self.locationLabel.isHidden = isHidden
         self.conditionLabel.isHidden = isHidden
@@ -1091,6 +1097,38 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
                     selectedFound = true
                 }
                 i = i + 1
+            } else if (
+                self.apiEndpoint == "forecast3" &&
+                (
+                    (dateDayOfMonth - 3 == todayDayOfMonth) ||
+                    (
+                        dateDayOfMonth == 1 &&
+                        (
+                            (todayMonth == 1 || todayMonth == 3 || todayMonth == 5 || todayMonth == 7 || todayMonth == 8 || todayMonth == 10 || todayMonth == 12) && todayDayOfMonth == 29) ||
+                        ((todayMonth == 4 || todayMonth == 5 || todayMonth == 6 || todayMonth == 9 || todayMonth == 11) && todayDayOfMonth == 28) ||
+                        (todayMonth == 2 && todayDayOfMonth == 26)
+                    ) ||
+                    (
+                        dateDayOfMonth == 2 &&
+                        (
+                            (todayMonth == 1 || todayMonth == 3 || todayMonth == 5 || todayMonth == 7 || todayMonth == 8 || todayMonth == 10 || todayMonth == 12) && todayDayOfMonth == 30) ||
+                        ((todayMonth == 4 || todayMonth == 5 || todayMonth == 6 || todayMonth == 9 || todayMonth == 11) && todayDayOfMonth == 29) ||
+                        (todayMonth == 2 && todayDayOfMonth == 27)
+                    ) ||
+                    (
+                        dateDayOfMonth == 3 &&
+                        (
+                            (todayMonth == 1 || todayMonth == 3 || todayMonth == 5 || todayMonth == 7 || todayMonth == 8 || todayMonth == 10 || todayMonth == 12) && todayDayOfMonth == 31) ||
+                        ((todayMonth == 4 || todayMonth == 5 || todayMonth == 6 || todayMonth == 9 || todayMonth == 11) && todayDayOfMonth == 30) ||
+                        (todayMonth == 2 && todayDayOfMonth == 28)
+                    )
+                )
+            ) {
+                fillCondition(index: i + 1, conditionJSON: weatherInstance, selected: Int(dateFormatter.string(from: date))! >= 10 && !selectedFound)
+                if (Int(dateFormatter.string(from: date))! >= 10) {
+                    selectedFound = true
+                }
+                i = i + 1
             } else if (self.apiEndpoint == "weather" && dateDayOfMonth == todayDayOfMonth &&
                 rowsForToday > 1
             ) {
@@ -1229,6 +1267,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
       self.dayLabel.font = (self.apiEndpoint == "weather") ? self.selectedItemFont : self.notSelectedItemFont
       self.tomorrowLabel.font = (self.apiEndpoint == "forecast") ? self.selectedItemFont : self.notSelectedItemFont
       self.dayAfterTomorrowLabel.font = (self.apiEndpoint == "forecast2") ? self.selectedItemFont : self.notSelectedItemFont
+      self.dayAfterAfterTomorrowLabel.font = (self.apiEndpoint == "forecast3") ? self.selectedItemFont : self.notSelectedItemFont
     
       self.dayLabel.backgroundColor = nil
       self.dayLabel.layer.cornerRadius = 0
@@ -1241,12 +1280,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
       self.dayAfterTomorrowLabel.backgroundColor = nil
       self.dayAfterTomorrowLabel.layer.cornerRadius = 0
       self.dayAfterTomorrowLabel.clipsToBounds = false
+        
+      self.dayAfterAfterTomorrowLabel.backgroundColor = nil
+      self.dayAfterAfterTomorrowLabel.layer.cornerRadius = 0
+      self.dayAfterAfterTomorrowLabel.clipsToBounds = false
 
       var selectedLabel = self.dayAfterTomorrowLabel
       if (self.apiEndpoint == "forecast") {
         selectedLabel = self.tomorrowLabel
       } else if (self.apiEndpoint == "weather") {
         selectedLabel = self.dayLabel
+      } else if (self.apiEndpoint == "forecast2") {
+        selectedLabel = self.dayAfterTomorrowLabel
+      } else if (self.apiEndpoint == "forecast3") {
+        selectedLabel = self.dayAfterAfterTomorrowLabel
       }
       selectedLabel!.layer.cornerRadius = 10
       selectedLabel!.backgroundColor = topColor
@@ -1518,6 +1565,22 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         reloadView()
     }
     
+    @objc func dayAfterAfterTomorrowLabelTapped(_ sender: UITapGestureRecognizer) {
+        if (self.activityIndicator.isAnimating) {
+            // ignore until previous action is not completed
+            return
+        }
+        self.apiEndpoint = "forecast3"
+        
+        updateDayFonts()
+        
+        updateUserDefaults()
+        
+        self.loadBannerAd()
+        
+        reloadView()
+    }
+    
     @objc func searchButtonTapped(_ sender: UITapGestureRecognizer) {
         selectedItem = nil
         self.updateItemsVisibility(isHidden: true)
@@ -1609,6 +1672,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         let todayDate = Date()
         let tomorrowDate = Calendar.current.date(byAdding: .day, value: 1, to: todayDate)!
         let dayAfterTomorrowDate = Calendar.current.date(byAdding: .day, value: 2, to: todayDate)!
+        let dayAfterAfterTomorrowDate = Calendar.current.date(byAdding: .day, value: 3, to: todayDate)!
         
         dateFormatter.dateFormat = "HH"
         //print(conditionJSON)
@@ -1714,6 +1778,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         
         self.tomorrowLabel.text = dateFormatter.string(from: tomorrowDate)
         self.dayAfterTomorrowLabel.text = dateFormatter.string(from: dayAfterTomorrowDate)
+        self.dayAfterAfterTomorrowLabel.text = dateFormatter.string(from: dayAfterAfterTomorrowDate)
 
         setBlueGradientBackground()
         //let suffix = iconName.suffix(1)
