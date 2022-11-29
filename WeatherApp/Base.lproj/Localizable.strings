@@ -45,7 +45,9 @@
 
 "heavy intensity snow" = "heavy intensity snow";
 
-"location lookup failure" = "Location lookup failure...";
+"location lookup failure" = "Location lookup failure";
+
+"search or refresh view" = "Search new city or refresh the view";
 
 "api error msg" = "Weather lookup failure";
 

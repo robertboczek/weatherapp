@@ -809,7 +809,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.locationManager.stopUpdatingLocation()
         self.activityIndicator.stopAnimating()
         let errorFormatString = NSLocalizedString("location lookup failure", comment: "Error")
+        let errorDetailsString = NSLocalizedString("search or refresh view", comment: "Error")
         self.locationLabel.text = errorFormatString
+        self.conditionLabel.text = errorDetailsString
+        if (self.conditionLabel.text!.count > 14) {
+          self.conditionLabel.font = UILabel().font.withSize(16)
+        }
+        self.refreshButton.isHidden = false
         
         let seconds = 5.0
         DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
@@ -846,13 +852,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             } else {
                 print("Failed to get location placemarks")
                 let errorFormatString = NSLocalizedString("location lookup failure", comment: "Error")
+                let errorDetailsString = NSLocalizedString("search or refresh view", comment: "Error")
                 self.updateItemsVisibility(isHidden: true)
                 self.updateFavoritesScreenItemsVisibility(isHidden: true)
                 self.updateSearchScreenItemsVisibility(isHidden: true)
                 self.locationLabel.isHidden = false
+                self.locationLabel.text = errorFormatString
+                self.conditionLabel.isHidden = false
+                self.conditionLabel.text = errorDetailsString
+                if (self.conditionLabel.text!.count > 14) {
+                  self.conditionLabel.font = UILabel().font.withSize(16)
+                }
                 self.searchButton.isHidden = false
                 self.searchButtonText.isHidden = false
-                self.locationLabel.text = errorFormatString
+                self.refreshButton.isHidden = false
                 self.resetSmallItems()
                 self.isErrorState = true
             }
@@ -942,7 +955,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             
             let airQualityString = NSLocalizedString("air quality", comment: "Air quality")
             let airQualityNO2Value = json["list"][0]["components"]["no2"].stringValue
-            if (airQualityIcon != nil) {
+            // only show air quality if we have all other info
+            if (airQualityIcon != nil && !self.conditionLabel.isHidden) {
                 self.airQualityImage.isHidden = false
                 self.airQualityImage.image = airQualityIcon
                 airQualityIndexText = NSLocalizedString(airQualityIndexText!, comment: "Air quality")
