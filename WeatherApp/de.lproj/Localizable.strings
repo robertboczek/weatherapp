@@ -1,0 +1,76 @@
+/* 
+  Localizable.strings
+  WeatherApp
+
+  Created by Robert Boczek on 1/31/20.
+  Copyright © 2020 Robert Boczek. All rights reserved.
+*/
+"sunset" = "Sonnenuntergang: ";
+
+"sunrise" = "Sonnenaufgang: ";
+
+"wind" = "Wind: ";
+
+"humidity" = "Feuchtigkeit: ";
+
+"pressure" = "Luftdruck: ";
+
+"clouds" = "Wolken: ";
+
+"rain" = "Regen ";
+
+"snow" = "Schnee ";
+
+"hour" = "Stunde";
+
+"scattered clouds" = "vereinzelte Wolken";
+
+"few clouds" = "ein paar Wolken";
+
+"overcast clouds" = "bedeckte Wolken";
+
+"light rain" = "leichter Regen";
+
+"light snow" = "leichter Schnee";
+
+"broken clouds" = "aufgelockert bewölkt";
+
+"clear sky" = "klarer Himmel";
+
+"moderate rain" = "mäßiger Regen";
+
+"heavy intensity rain" = "starker Regen";
+
+"moderate snow" = "mäßiger Schnee";
+
+"heavy intensity snow" = "schnee mit hoher Intensität";
+
+"location lookup failure" = "Standortsuche fehlgeschlagen";
+
+"search or refresh view" = "Suchen Sie eine neue Stadt oder aktualisieren Sie die Ansicht";
+
+"api error msg" = "Fehler bei der Wettersuche";
+
+"precipitation" = "Niederschlag: ";
+
+"search city input" = "Geben Sie den Namen der gesuchten Stadt ein";
+
+"weather now" = "Jetzt";
+
+"air quality" = "Luftqualität: ";
+
+"good" = "gut";
+
+"fair" = "fair";
+
+"moderate" = "mäßig";
+
+"poor" = "arm";
+
+"very poor" = "sehr arm";
+
+"current location" = "Ihr Standort";
+
+"share" = "Teilen";
+
+"refresh" = "Aktualisierung";

@@ -1,0 +1,72 @@
+
+/* Class = "UILabel"; text = "12h"; ObjectID = "0ON-kJ-168"; */
+"0ON-kJ-168.text" = "12h";
+
+/* Class = "UITextField"; ibShadowedToolTip = "Type city you are searching for..."; ObjectID = "2EL-bi-2ui"; */
+"2EL-bi-2ui.ibShadowedToolTip" = "Type city you are searching for...";
+
+/* Class = "UILabel"; text = "Sunny"; ObjectID = "3eC-42-mgh"; */
+"3eC-42-mgh.text" = "Sunny";
+
+/* Class = "UILabel"; text = "Sunday"; ObjectID = "4ga-xH-al6"; */
+"4ga-xH-al6.text" = "Sunday";
+
+/* Class = "UILabel"; text = "Air Pressure: "; ObjectID = "9yg-c8-mCy"; */
+"9yg-c8-mCy.text" = "Air Pressure: ";
+
+/* Class = "UILabel"; text = "Sunny"; ObjectID = "F9b-Vp-D59"; */
+"F9b-Vp-D59.text" = "Sunny";
+
+/* Class = "UILabel"; text = "Sunday"; ObjectID = "KLN-7d-VQc"; */
+"KLN-7d-VQc.text" = "Sunday";
+
+/* Class = "UILabel"; text = "Sunny"; ObjectID = "PJO-Cy-v6d"; */
+"PJO-Cy-v6d.text" = "Sunny";
+
+/* Class = "UILabel"; text = "Sunday"; ObjectID = "Q4L-Vk-15I"; */
+"Q4L-Vk-15I.text" = "Sunday";
+
+/* Class = "UILabel"; text = "Wind: "; ObjectID = "Ysd-cz-5Jk"; */
+"Ysd-cz-5Jk.text" = "Wind: ";
+
+/* Class = "UILabel"; text = "°C"; ObjectID = "b84-5x-NLj"; */
+"b84-5x-NLj.text" = "°C";
+
+/* Class = "UILabel"; text = "Sunny"; ObjectID = "dlc-Ns-m3t"; */
+"dlc-Ns-m3t.text" = "Sunny";
+
+/* Class = "UILabel"; text = "Wind: "; ObjectID = "fkV-2Z-tyv"; */
+"fkV-2Z-tyv.text" = "Wind: ";
+
+/* Class = "UILabel"; text = "Sunny"; ObjectID = "lOq-YV-rsr"; */
+"lOq-YV-rsr.text" = "Sunny";
+
+/* Class = "UILabel"; text = "Sunny"; ObjectID = "lhq-h4-VMZ"; */
+"lhq-h4-VMZ.text" = "Sunny";
+
+/* Class = "UILabel"; text = "Sunny"; ObjectID = "nzT-Gq-noQ"; */
+"nzT-Gq-noQ.text" = "Sunny";
+
+/* Class = "UILabel"; text = "24"; ObjectID = "pcp-Ut-36g"; */
+"pcp-Ut-36g.text" = "24";
+
+/* Class = "UILabel"; text = "Humidity: "; ObjectID = "qOY-FC-OO0"; */
+"qOY-FC-OO0.text" = "Humidity: ";
+
+/* Class = "UILabel"; text = " "; ObjectID = "teh-nJ-Dju"; */
+"teh-nJ-Dju.text" = " ";
+
+/* Class = "UILabel"; text = "Sunday"; ObjectID = "u9V-t7-x0J"; */
+"u9V-t7-x0J.text" = "Sunday";
+
+/* Class = "UILabel"; text = "Sunny"; ObjectID = "ubb-dJ-qfw"; */
+"ubb-dJ-qfw.text" = "Sunny";
+
+/* Class = "UILabel"; text = "°F"; ObjectID = "wNb-8D-fUj"; */
+"wNb-8D-fUj.text" = "°F";
+
+/* Class = "UILabel"; text = "24h"; ObjectID = "xD0-wi-BqF"; */
+"xD0-wi-BqF.text" = "24h";
+
+/* Class = "UILabel"; text = "Wind: "; ObjectID = "yyy-wh-zMF"; */
+"yyy-wh-zMF.text" = "Wind: ";

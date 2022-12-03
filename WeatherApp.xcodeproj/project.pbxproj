@@ -128,6 +128,15 @@
 		E5DD69D0290E1C15009C2E61 /* angry.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = angry.png; sourceTree = "<group>"; };
 		E5DD69D6290E2D29009C2E61 /* fair.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fair.png; sourceTree = "<group>"; };
 		E5DD69D7290E2D29009C2E61 /* good.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = good.png; sourceTree = "<group>"; };
+		E5E06B56293AD4490039978C /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Main.strings; sourceTree = "<group>"; };
+		E5E06B57293AD4490039978C /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		E5E06B58293AD4490039978C /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		E5E06B59293AD4630039978C /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
+		E5E06B5A293AD4630039978C /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		E5E06B5B293AD4630039978C /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		E5E06B5C293AD4730039978C /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Main.strings; sourceTree = "<group>"; };
+		E5E06B5D293AD4730039978C /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		E5E06B5E293AD4730039978C /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -285,6 +294,9 @@
 				en,
 				Base,
 				pl,
+				es,
+				de,
+				fr,
 			);
 			mainGroup = D1B256BB238396C200142068;
 			productRefGroup = D1B256C5238396C200142068 /* Products */;
@@ -419,6 +431,9 @@
 			children = (
 				D12AB72223E44A8700EA1B1D /* pl */,
 				D12AB72423E44B5000EA1B1D /* Base */,
+				E5E06B58293AD4490039978C /* es */,
+				E5E06B5B293AD4630039978C /* de */,
+				E5E06B5E293AD4730039978C /* fr */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -428,6 +443,9 @@
 			children = (
 				D1B256CE238396C200142068 /* Base */,
 				D12AB72023E4439D00EA1B1D /* pl */,
+				E5E06B56293AD4490039978C /* es */,
+				E5E06B59293AD4630039978C /* de */,
+				E5E06B5C293AD4730039978C /* fr */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -436,6 +454,9 @@
 			isa = PBXVariantGroup;
 			children = (
 				D1B256D3238396C500142068 /* Base */,
+				E5E06B57293AD4490039978C /* es */,
+				E5E06B5A293AD4630039978C /* de */,
+				E5E06B5D293AD4730039978C /* fr */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
