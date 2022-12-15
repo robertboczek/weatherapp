@@ -178,13 +178,13 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dPk-BG-6Sl" userLabel="sunriseLabel">
-                                <rect key="frame" x="132" y="184" width="0.0" height="0.0"/>
+                                <rect key="frame" x="132" y="174" width="0.0" height="0.0"/>
                                 <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="15"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="teh-nJ-Dju" userLabel="sunsetLabel">
-                                <rect key="frame" x="135" y="184" width="4.3333333333333428" height="17"/>
+                                <rect key="frame" x="135" y="174" width="4.3333333333333428" height="17"/>
                                 <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="15"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -253,7 +253,7 @@
                                 <state key="normal" image="back.png"/>
                             </button>
                             <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c2k-d6-OEn" userLabel="Current Location Button">
-                                <rect key="frame" x="193" y="591" width="20" height="25"/>
+                                <rect key="frame" x="193" y="586" width="20" height="25"/>
                                 <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="22"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" image="location" catalog="system"/>
@@ -300,7 +300,7 @@
                             <constraint firstItem="dlc-Ns-m3t" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" constant="-70" id="9Tf-do-Vi9"/>
                             <constraint firstItem="u9V-t7-x0J" firstAttribute="top" secondItem="KLN-7d-VQc" secondAttribute="top" id="BFN-TS-4nU"/>
                             <constraint firstItem="Q1g-Lb-I4k" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="15" id="BUQ-kC-pUK"/>
-                            <constraint firstItem="xD0-wi-BqF" firstAttribute="top" secondItem="LOG-QK-lh1" secondAttribute="top" constant="5" id="BY7-bH-fh0"/>
+                            <constraint firstItem="xD0-wi-BqF" firstAttribute="top" secondItem="LOG-QK-lh1" secondAttribute="top" constant="-5" id="BY7-bH-fh0"/>
                             <constraint firstItem="KLN-7d-VQc" firstAttribute="leading" secondItem="Q4L-Vk-15I" secondAttribute="trailing" constant="4" id="C1f-2x-N2h"/>
                             <constraint firstItem="PJO-Cy-v6d" firstAttribute="top" secondItem="3eC-42-mgh" secondAttribute="top" id="C91-qZ-mVh"/>
                             <constraint firstItem="lOq-YV-rsr" firstAttribute="leading" secondItem="KaP-Op-RBd" secondAttribute="leading" constant="6" id="C9x-tM-C50"/>
@@ -313,7 +313,7 @@
                             <constraint firstItem="nzT-Gq-noQ" firstAttribute="leading" secondItem="cK7-h7-TgK" secondAttribute="leading" constant="5" id="IZg-5t-p6F"/>
                             <constraint firstItem="sQP-8e-Urv" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="Ixz-F8-sMZ"/>
                             <constraint firstItem="2EL-bi-2ui" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="K5O-zF-YSz"/>
-                            <constraint firstItem="c2k-d6-OEn" firstAttribute="top" secondItem="pcp-Ut-36g" secondAttribute="bottom" constant="15" id="LGW-Lg-R0k"/>
+                            <constraint firstItem="c2k-d6-OEn" firstAttribute="top" secondItem="pcp-Ut-36g" secondAttribute="bottom" constant="10" id="LGW-Lg-R0k"/>
                             <constraint firstItem="lhq-h4-VMZ" firstAttribute="leading" secondItem="eqv-LT-aaQ" secondAttribute="leading" constant="7" id="LQu-mm-ECm"/>
                             <constraint firstItem="pcp-Ut-36g" firstAttribute="top" secondItem="dlc-Ns-m3t" secondAttribute="bottom" constant="7.7000000000000002" id="Loh-Wt-AcD"/>
                             <constraint firstItem="Q4L-Vk-15I" firstAttribute="bottom" secondItem="4ga-xH-al6" secondAttribute="bottom" id="Lwo-cd-5cU"/>
@@ -373,7 +373,7 @@
                             <constraint firstItem="4RH-1f-RZO" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" constant="25" id="niB-Yf-Plc"/>
                             <constraint firstItem="c2k-d6-OEn" firstAttribute="trailing" secondItem="4RH-1f-RZO" secondAttribute="leading" constant="-10" id="oVS-I3-SdP"/>
                             <constraint firstItem="6oi-tt-dgs" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" constant="-90" id="p2W-og-Yej"/>
-                            <constraint firstItem="0ON-kJ-168" firstAttribute="top" secondItem="LOG-QK-lh1" secondAttribute="top" constant="5" id="pSa-Jh-1Kl"/>
+                            <constraint firstItem="0ON-kJ-168" firstAttribute="top" secondItem="LOG-QK-lh1" secondAttribute="top" constant="-5" id="pSa-Jh-1Kl"/>
                             <constraint firstItem="Ysd-cz-5Jk" firstAttribute="leading" secondItem="9yg-c8-mCy" secondAttribute="leading" id="pgA-Rk-phl"/>
                             <constraint firstItem="uzK-Lp-UpC" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" constant="-25" id="q23-yi-ygW"/>
                             <constraint firstItem="6Iq-F8-YqD" firstAttribute="top" secondItem="4RH-1f-RZO" secondAttribute="top" id="qm6-50-yB2"/>

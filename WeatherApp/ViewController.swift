@@ -1753,7 +1753,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             setSelectedBackground(imageView: imgView)
             
             let topColor = UIColor.init(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 0.15)
-            label.layer.cornerRadius = 10
+            label.layer.cornerRadius = 5
             label.backgroundColor = topColor
             label.clipsToBounds = true
         } else {
