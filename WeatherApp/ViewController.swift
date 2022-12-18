@@ -915,21 +915,21 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
               self.updateWeather(json: jsonResponse)
             }
               
-              Alamofire.request(airQualityRequest).responseJSON {
+              /*Alamofire.request(airQualityRequest).responseJSON {
                   airQualityResponse in
                   if let responseStr = airQualityResponse.result.value {
                       print("Updating air quality labels")
                       let jsonResponse = JSON(responseStr)
                       self.updateAirQuality(json: jsonResponse)
                   }
-              }
+              }*/
           }
         }
     }
     
     func updateAirQuality(json: JSON) {
         // only show air quality for today
-        if (json["list"].exists() && self.apiEndpoint == "weather") {
+        /*if (json["list"].exists() && self.apiEndpoint == "weather") {
             let airQualityIndex = json["list"][0]["main"]["aqi"].intValue;
             var airQualityIcon : UIImage? = nil
             var airQualityIndexText : String? = nil
@@ -963,7 +963,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
                 self.airQualityInfoLabel.text = airQualityString + airQualityIndexText!
                 self.airQualityInfoLabel.isHidden = false
             }
-        }
+        }*/
     }
     
     func updateWeather(json: JSON) {
@@ -1146,8 +1146,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             } else if (self.apiEndpoint == "weather" && dateDayOfMonth == todayDayOfMonth &&
                 rowsForToday > 1
             ) {
-                if (i < 6) {
-                  // we allow max 5 items
+                if (i < 7) {
+                  // we allow max 7 items
                   fillCondition(index: i + 1, conditionJSON: weatherInstance, selected: (i == 0))
                   i = i + 1
                 }
@@ -1196,8 +1196,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     }
     
     func setSelectedBackground(imageView: UIImageView) {
-        let topColor = UIColor.init(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 0.15)
-        imageView.layer.cornerRadius = 20
+        let topColor = UIColor.init(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 0.25)
+        imageView.layer.cornerRadius = 15
         imageView.clipsToBounds = true
         imageView.backgroundColor = topColor
     }
@@ -1752,10 +1752,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             }
             setSelectedBackground(imageView: imgView)
             
-            let topColor = UIColor.init(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 0.15)
-            label.layer.cornerRadius = 5
-            label.backgroundColor = topColor
-            label.clipsToBounds = true
+            let topColor = UIColor.init(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 0.25)
+            //label.layer.cornerRadius = 10
+            //label.backgroundColor = topColor
+            //label.clipsToBounds = true
         } else {
             imgView.backgroundColor = nil
         }
