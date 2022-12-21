@@ -123,6 +123,9 @@
 		E53F902E2900C8F90013152A /* icon-down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-down.png"; sourceTree = "<group>"; };
 		E53F903C29039A3D0013152A /* icons8-sort-down-48.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icons8-sort-down-48.png"; path = "../../../Desktop/icons8-sort-down-48.png"; sourceTree = "<group>"; };
 		E53F904029039AD30013152A /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = back.png; path = ../../../Desktop/back.png; sourceTree = "<group>"; };
+		E57247C029532B5900F6E33B /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
+		E57247C129532B5900F6E33B /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		E57247C229532B5900F6E33B /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E5DD69CD290E1C14009C2E61 /* neutral.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = neutral.png; sourceTree = "<group>"; };
 		E5DD69CF290E1C14009C2E61 /* sad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sad.png; sourceTree = "<group>"; };
 		E5DD69D0290E1C15009C2E61 /* angry.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = angry.png; sourceTree = "<group>"; };
@@ -297,6 +300,7 @@
 				es,
 				de,
 				fr,
+				ja,
 			);
 			mainGroup = D1B256BB238396C200142068;
 			productRefGroup = D1B256C5238396C200142068 /* Products */;
@@ -434,6 +438,7 @@
 				E5E06B58293AD4490039978C /* es */,
 				E5E06B5B293AD4630039978C /* de */,
 				E5E06B5E293AD4730039978C /* fr */,
+				E57247C229532B5900F6E33B /* ja */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -446,6 +451,7 @@
 				E5E06B56293AD4490039978C /* es */,
 				E5E06B59293AD4630039978C /* de */,
 				E5E06B5C293AD4730039978C /* fr */,
+				E57247C029532B5900F6E33B /* ja */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -457,6 +463,7 @@
 				E5E06B57293AD4490039978C /* es */,
 				E5E06B5A293AD4630039978C /* de */,
 				E5E06B5D293AD4730039978C /* fr */,
+				E57247C129532B5900F6E33B /* ja */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -591,7 +598,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 66;
+				CURRENT_PROJECT_VERSION = 67;
 				DEVELOPMENT_TEAM = LBZQ6A27C3;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -603,7 +610,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.5;
+				MARKETING_VERSION = 3.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.boczek.WeatherApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -617,7 +624,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 66;
+				CURRENT_PROJECT_VERSION = 67;
 				DEVELOPMENT_TEAM = LBZQ6A27C3;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -629,7 +636,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.5;
+				MARKETING_VERSION = 3.6;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				"MTL_ENABLE_DEBUG_INFO[arch=*]" = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.boczek.WeatherApp;

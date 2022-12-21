@@ -106,8 +106,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     let gradientLayer = CAGradientLayer()
     let selectedGradientLayer = CAGradientLayer()
     
-    let selectedItemFont = UIFont(name: "Arial Rounded MT Bold", size: 23)
-    let notSelectedItemFont = UIFont(name: "Avenir", size: 17)
+    let selectedItemFont = UIFont(name: "Arial Rounded MT Bold", size: 22)
+    let notSelectedItemFont = UIFont(name: "Avenir", size: 16)
     
     let selectedHourItemFont = UIFont(name: "Arial Rounded MT Bold", size: 14)
     let notSelectedHourItemFont = UIFont(name: "Avenir", size: 10)

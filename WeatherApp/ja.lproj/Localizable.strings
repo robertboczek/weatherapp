@@ -1,0 +1,76 @@
+/* 
+  Localizable.strings
+  WeatherApp
+
+  Created by Robert Boczek on 1/31/20.
+  Copyright © 2020 Robert Boczek. All rights reserved.
+*/
+"sunset" = "日没: ";
+
+"sunrise" = "日の出: ";
+
+"wind" = "風: ";
+
+"humidity" = "湿度: ";
+
+"pressure" = "空気圧: ";
+
+"clouds" = "雲: ";
+
+"rain" = "雨 ";
+
+"snow" = "雪 ";
+
+"hour" = "時間";
+
+"scattered clouds" = "散らばった雲";
+
+"few clouds" = "雲が少ない";
+
+"overcast clouds" = "どんよりした雲";
+
+"light rain" = "小雨";
+
+"light snow" = "小雪";
+
+"broken clouds" = "壊れた雲";
+
+"clear sky" = "晴天";
+
+"moderate rain" = "適度な雨";
+
+"heavy intensity rain" = "激しい雨";
+
+"moderate snow" = "中程度の雪";
+
+"heavy intensity snow" = "激しい雪";
+
+"location lookup failure" = "ロケーション検索の失敗";
+
+"search or refresh view" = "新しい都市を検索するか、ビューを更新してください";
+
+"api error msg" = "天気検索の失敗";
+
+"precipitation" = "降水量: ";
+
+"search city input" = "探している都市の名前を入力してください";
+
+"weather now" = "今";
+
+"air quality" = "空気の質: ";
+
+"good" = "良い";
+
+"fair" = "公平";
+
+"moderate" = "適度";
+
+"poor" = "貧しい";
+
+"very poor" = "非常に貧しい";
+
+"current location" = "あなたの場所";
+
+"share" = "共有";
+
+"refresh" = "リフレッシュ";
