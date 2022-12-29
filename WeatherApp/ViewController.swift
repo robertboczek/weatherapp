@@ -54,6 +54,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     @IBOutlet weak var time6: UILabel!
     @IBOutlet weak var time7: UILabel!
     
+    @IBOutlet weak var temperature1: UILabel!
+    @IBOutlet weak var temperature2: UILabel!
+    @IBOutlet weak var temperature3: UILabel!
+    @IBOutlet weak var temperature4: UILabel!
+    @IBOutlet weak var temperature5: UILabel!
+    @IBOutlet weak var temperature6: UILabel!
+    @IBOutlet weak var temperature7: UILabel!
+    
+    
     @IBOutlet weak var airQualityImage: UIImageView!
     @IBOutlet weak var airQualityInfoLabel: UILabel!
     
@@ -331,59 +340,80 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         // label taps
         let time1LabelT = UITapGestureRecognizer(target: self, action: #selector(self.time1LabelTap(_:)))
         let time1LabelT2 = UITapGestureRecognizer(target: self, action: #selector(self.time1LabelTap(_:)))
+        let time1LabelT3 = UITapGestureRecognizer(target: self, action: #selector(self.time1LabelTap(_:)))
         
         self.time1.isUserInteractionEnabled = true
         self.time1.addGestureRecognizer(time1LabelT)
         self.conditionSmall1.isUserInteractionEnabled = true
         self.conditionSmall1.addGestureRecognizer(time1LabelT2)
+        self.temperature1.isUserInteractionEnabled = true
+        self.temperature1.addGestureRecognizer(time1LabelT3)
         
         let time2LabelT = UITapGestureRecognizer(target: self, action: #selector(self.time2LabelTap(_:)))
         let time2LabelT2 = UITapGestureRecognizer(target: self, action: #selector(self.time2LabelTap(_:)))
+        let time2LabelT3 = UITapGestureRecognizer(target: self, action: #selector(self.time2LabelTap(_:)))
         
         self.time2.isUserInteractionEnabled = true
         self.time2.addGestureRecognizer(time2LabelT)
         self.conditionSmall2.isUserInteractionEnabled = true
         self.conditionSmall2.addGestureRecognizer(time2LabelT2)
+        self.temperature2.isUserInteractionEnabled = true
+        self.temperature2.addGestureRecognizer(time2LabelT3)
         
         let time3LabelT = UITapGestureRecognizer(target: self, action: #selector(self.time3LabelTap(_:)))
         let time3LabelT2 = UITapGestureRecognizer(target: self, action: #selector(self.time3LabelTap(_:)))
+        let time3LabelT3 = UITapGestureRecognizer(target: self, action: #selector(self.time3LabelTap(_:)))
         
         self.time3.isUserInteractionEnabled = true
         self.time3.addGestureRecognizer(time3LabelT)
         self.conditionSmall3.isUserInteractionEnabled = true
         self.conditionSmall3.addGestureRecognizer(time3LabelT2)
+        self.temperature3.isUserInteractionEnabled = true
+        self.temperature3.addGestureRecognizer(time3LabelT3)
         
         let time4LabelT = UITapGestureRecognizer(target: self, action: #selector(self.time4LabelTap(_:)))
         let time4LabelT2 = UITapGestureRecognizer(target: self, action: #selector(self.time4LabelTap(_:)))
+        let time4LabelT3 = UITapGestureRecognizer(target: self, action: #selector(self.time4LabelTap(_:)))
         
         self.time4.isUserInteractionEnabled = true
         self.time4.addGestureRecognizer(time4LabelT)
         self.conditionSmall4.isUserInteractionEnabled = true
         self.conditionSmall4.addGestureRecognizer(time4LabelT2)
+        self.temperature4.isUserInteractionEnabled = true
+        self.temperature4.addGestureRecognizer(time4LabelT3)
         
         let time5LabelT = UITapGestureRecognizer(target: self, action: #selector(self.time5LabelTap(_:)))
         let time5LabelT2 = UITapGestureRecognizer(target: self, action: #selector(self.time5LabelTap(_:)))
+        let time5LabelT3 = UITapGestureRecognizer(target: self, action: #selector(self.time5LabelTap(_:)))
         
         self.time5.isUserInteractionEnabled = true
         self.time5.addGestureRecognizer(time5LabelT)
         self.conditionSmall5.isUserInteractionEnabled = true
         self.conditionSmall5.addGestureRecognizer(time5LabelT2)
+        self.temperature5.isUserInteractionEnabled = true
+        self.temperature5.addGestureRecognizer(time5LabelT3)
         
         let time6LabelT = UITapGestureRecognizer(target: self, action: #selector(self.time6LabelTap(_:)))
         let time6LabelT2 = UITapGestureRecognizer(target: self, action: #selector(self.time6LabelTap(_:)))
+        let time6LabelT3 = UITapGestureRecognizer(target: self, action: #selector(self.time6LabelTap(_:)))
         
         self.time6.isUserInteractionEnabled = true
-        self.time6.addGestureRecognizer(time5LabelT)
+        self.time6.addGestureRecognizer(time6LabelT)
         self.conditionSmall6.isUserInteractionEnabled = true
         self.conditionSmall6.addGestureRecognizer(time6LabelT2)
+        self.temperature6.isUserInteractionEnabled = true
+        self.temperature6.addGestureRecognizer(time6LabelT3)
         
         let time7LabelT = UITapGestureRecognizer(target: self, action: #selector(self.time7LabelTap(_:)))
         let time7LabelT2 = UITapGestureRecognizer(target: self, action: #selector(self.time7LabelTap(_:)))
+        let time7LabelT3 = UITapGestureRecognizer(target: self, action: #selector(self.time7LabelTap(_:)))
         
         self.time7.isUserInteractionEnabled = true
-        self.time7.addGestureRecognizer(time5LabelT)
+        self.time7.addGestureRecognizer(time7LabelT)
         self.conditionSmall7.isUserInteractionEnabled = true
         self.conditionSmall7.addGestureRecognizer(time7LabelT2)
+        self.temperature7.isUserInteractionEnabled = true
+        self.temperature7.addGestureRecognizer(time7LabelT3)
         
         // configure right/left swipe gestures
         let left = UISwipeGestureRecognizer(target : self, action : #selector(self.leftSwipe))
@@ -715,6 +745,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.conditionSmall6.isHidden = isHidden
         self.conditionSmall7.isHidden = isHidden
         
+        self.temperature1.isHidden = isHidden
+        self.temperature2.isHidden = isHidden
+        self.temperature3.isHidden = isHidden
+        self.temperature4.isHidden = isHidden
+        self.temperature5.isHidden = isHidden
+        self.temperature6.isHidden = isHidden
+        self.temperature7.isHidden = isHidden
+        
         if (isHidden) {
             self.favoritesDropdown.isHidden = true
         } else {
@@ -755,18 +793,31 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     func updateConditionComponents(isHidden: Bool) {
         self.time1.isHidden = isHidden
         self.conditionSmall1.isHidden = isHidden
+        self.temperature1.isHidden = isHidden
+        
         self.time2.isHidden = isHidden
         self.conditionSmall2.isHidden = isHidden
+        self.temperature2.isHidden = isHidden
+        
         self.time3.isHidden = isHidden
         self.conditionSmall3.isHidden = isHidden
+        self.temperature3.isHidden = isHidden
+        
         self.time4.isHidden = isHidden
         self.conditionSmall4.isHidden = isHidden
+        self.temperature4.isHidden = isHidden
+        
         self.time5.isHidden = isHidden
         self.conditionSmall5.isHidden = isHidden
+        self.temperature5.isHidden = isHidden
+        
         self.time6.isHidden = isHidden
         self.conditionSmall6.isHidden = isHidden
+        self.temperature6.isHidden = isHidden
+        
         self.time7.isHidden = isHidden
         self.conditionSmall7.isHidden = isHidden
+        self.temperature7.isHidden = isHidden
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -1316,12 +1367,25 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     
     func updateHourFonts(index: Int) {
         self.time1.font = (index == 1) ? self.selectedHourItemFont : self.notSelectedHourItemFont
+        self.temperature1.font = (index == 1) ? self.selectedHourItemFont : self.notSelectedHourItemFont
+        
         self.time2.font = (index == 2) ? self.selectedHourItemFont : self.notSelectedHourItemFont
+        self.temperature2.font = (index == 2) ? self.selectedHourItemFont : self.notSelectedHourItemFont
+        
         self.time3.font = (index == 3) ? self.selectedHourItemFont : self.notSelectedHourItemFont
+        self.temperature3.font = (index == 3) ? self.selectedHourItemFont : self.notSelectedHourItemFont
+        
         self.time4.font = (index == 4) ? self.selectedHourItemFont : self.notSelectedHourItemFont
+        self.temperature4.font = (index == 4) ? self.selectedHourItemFont : self.notSelectedHourItemFont
+        
         self.time5.font = (index == 5) ? self.selectedHourItemFont : self.notSelectedHourItemFont
+        self.temperature5.font = (index == 5) ? self.selectedHourItemFont : self.notSelectedHourItemFont
+        
         self.time6.font = (index == 6) ? self.selectedHourItemFont : self.notSelectedHourItemFont
+        self.temperature6.font = (index == 6) ? self.selectedHourItemFont : self.notSelectedHourItemFont
+        
         self.time7.font = (index == 7) ? self.selectedHourItemFont : self.notSelectedHourItemFont
+        self.temperature7.font = (index == 7) ? self.selectedHourItemFont : self.notSelectedHourItemFont
     }
     
     func updatePreferredHourFormat() {
@@ -1642,41 +1706,50 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     func fillCondition(index: Int, conditionJSON: JSON?, selected: Bool) {
         var imgView: UIImageView!
         var label: UILabel!
+        var temperatureLabel: UILabel!
         
         if (index == 1) {
             self.time1JSON = conditionJSON
             imgView = self.conditionSmall1
             label = self.time1
+            temperatureLabel = self.temperature1
         } else if (index == 2) {
             self.time2JSON = conditionJSON
             imgView = self.conditionSmall2
             label = self.time2
+            temperatureLabel = self.temperature2
         } else if (index == 3) {
             self.time3JSON = conditionJSON
             imgView = self.conditionSmall3
             label = self.time3
+            temperatureLabel = self.temperature3
         } else if (index == 4) {
             self.time4JSON = conditionJSON
             imgView = self.conditionSmall4
             label = self.time4
+            temperatureLabel = self.temperature4
         } else if (index == 5) {
             self.time5JSON = conditionJSON
             imgView = self.conditionSmall5
             label = self.time5
+            temperatureLabel = self.temperature5
         }  else if (index == 6) {
             self.time6JSON = conditionJSON
             imgView = self.conditionSmall6
             label = self.time6
+            temperatureLabel = self.temperature6
         } else if (index == 7) {
             self.time7JSON = conditionJSON
             imgView = self.conditionSmall7
             label = self.time7
+            temperatureLabel = self.temperature7
         } else {
             return
         }
         
         imgView.isHidden = conditionJSON == nil
         label.isHidden = conditionJSON == nil
+        temperatureLabel.isHidden = conditionJSON == nil
         
         if (conditionJSON == nil) {
             return
@@ -1697,6 +1770,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             
         //print(conditionJSON["name"].stringValue);
         let tmp = "\(Int(round(jsonTemp["temp"].doubleValue)))"
+        let tmpUnit = (self.apiUnit == "metric") ? "°C" : "°F"
+        temperatureLabel.text = tmp + tmpUnit
         //print("Temperature: ")
         //print(tmp)
             
