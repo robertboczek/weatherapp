@@ -432,7 +432,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         let shareLabel = NSLocalizedString("share", comment: "Share Button")
         let refreshLabel = NSLocalizedString("refresh", comment: "Refresh")
         let bottomButtonsColor = UIColor.init(red: 72.0/255.0, green: 114.0/255.0, blue: 214.0/255.0, alpha: 1.0)
-        let bottomFont = UILabel().font.withSize(14)
+        let bottomFont = UILabel().font.withSize(16)
         
         self.currentLocationButton.setTitle(currentLocationLabel,  for: UIControl.State.normal)
         self.currentLocationButton.titleLabel?.font = bottomFont
