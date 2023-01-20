@@ -53,6 +53,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     @IBOutlet weak var time5: UILabel!
     @IBOutlet weak var time6: UILabel!
     @IBOutlet weak var time7: UILabel!
+    @IBOutlet weak var time8: UILabel!
+    
     
     @IBOutlet weak var temperature1: UILabel!
     @IBOutlet weak var temperature2: UILabel!
@@ -61,6 +63,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     @IBOutlet weak var temperature5: UILabel!
     @IBOutlet weak var temperature6: UILabel!
     @IBOutlet weak var temperature7: UILabel!
+    @IBOutlet weak var temperature8: UILabel!
     
     
     @IBOutlet weak var airQualityImage: UIImageView!
@@ -77,6 +80,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     @IBOutlet weak var conditionSmall5: UIImageView!
     @IBOutlet weak var conditionSmall6: UIImageView!
     @IBOutlet weak var conditionSmall7: UIImageView!
+    @IBOutlet weak var conditionSmall8: UIImageView!
+    
     
     @IBOutlet weak var sunriseLabel: UILabel!
     @IBOutlet weak var sunsetLabel: UILabel!
@@ -115,6 +120,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     let gradientLayer = CAGradientLayer()
     let selectedGradientLayer = CAGradientLayer()
     
+    let shortCityNameFont = UIFont(name: "Arial Rounded MT Bold", size: 28)
+    let longCityNameFont = UIFont(name: "Arial Rounded MT Bold", size: 22)
+    
     let selectedItemFont = UIFont(name: "Arial Rounded MT Bold", size: 22)
     let notSelectedItemFont = UIFont(name: "Avenir", size: 16)
     
@@ -136,6 +144,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     var time5JSON: JSON?
     var time6JSON: JSON?
     var time7JSON: JSON?
+    var time8JSON: JSON?
     
     var index = 1
     var totalItems = 1
@@ -415,6 +424,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.temperature7.isUserInteractionEnabled = true
         self.temperature7.addGestureRecognizer(time7LabelT3)
         
+        let time8LabelT = UITapGestureRecognizer(target: self, action: #selector(self.time8LabelTap(_:)))
+        let time8LabelT2 = UITapGestureRecognizer(target: self, action: #selector(self.time8LabelTap(_:)))
+        let time8LabelT3 = UITapGestureRecognizer(target: self, action: #selector(self.time8LabelTap(_:)))
+        
+        self.time8.isUserInteractionEnabled = true
+        self.time8.addGestureRecognizer(time8LabelT)
+        self.conditionSmall8.isUserInteractionEnabled = true
+        self.conditionSmall8.addGestureRecognizer(time8LabelT2)
+        self.temperature8.isUserInteractionEnabled = true
+        self.temperature8.addGestureRecognizer(time8LabelT3)
+        
         // configure right/left swipe gestures
         let left = UISwipeGestureRecognizer(target : self, action : #selector(self.leftSwipe))
         left.direction = .left
@@ -504,6 +524,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         fillCondition(index: 5, conditionJSON: self.time5JSON, selected: self.index == 5)
         fillCondition(index: 6, conditionJSON: self.time6JSON, selected: self.index == 6)
         fillCondition(index: 7, conditionJSON: self.time7JSON, selected: self.index == 7)
+        fillCondition(index: 8, conditionJSON: self.time8JSON, selected: self.index == 8)
     }
     
     @objc
@@ -520,6 +541,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         fillCondition(index: 5, conditionJSON: self.time5JSON, selected: self.index == 5)
         fillCondition(index: 6, conditionJSON: self.time6JSON, selected: self.index == 6)
         fillCondition(index: 7, conditionJSON: self.time7JSON, selected: self.index == 7)
+        fillCondition(index: 8, conditionJSON: self.time8JSON, selected: self.index == 8)
     }
     
     @objc func clearSearchInputContent(_ textField: UITextField) {
@@ -740,6 +762,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.time5.isHidden = isHidden
         self.time6.isHidden = isHidden
         self.time7.isHidden = isHidden
+        self.time8.isHidden = isHidden
         
         self.conditionSmall1.isHidden = isHidden
         self.conditionSmall2.isHidden = isHidden
@@ -748,6 +771,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.conditionSmall5.isHidden = isHidden
         self.conditionSmall6.isHidden = isHidden
         self.conditionSmall7.isHidden = isHidden
+        self.conditionSmall8.isHidden = isHidden
         
         self.temperature1.isHidden = isHidden
         self.temperature2.isHidden = isHidden
@@ -756,6 +780,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.temperature5.isHidden = isHidden
         self.temperature6.isHidden = isHidden
         self.temperature7.isHidden = isHidden
+        self.temperature8.isHidden = isHidden
         
         if (isHidden) {
             self.favoritesDropdown.isHidden = true
@@ -822,6 +847,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.time7.isHidden = isHidden
         self.conditionSmall7.isHidden = isHidden
         self.temperature7.isHidden = isHidden
+        
+        self.time8.isHidden = isHidden
+        self.conditionSmall8.isHidden = isHidden
+        self.temperature8.isHidden = isHidden
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -880,8 +909,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     
     func updateLocationLabel() {
         var location = self.location
-        if (location.count > 13) {
-            location = location.prefix(12) + ".."
+        if (location.count > 14) {
+            self.locationLabel.font = longCityNameFont
+            location = location.prefix(17) + ""
+            if (location.count == 17) {
+                location = location + ".."
+            }
+        } else {
+            self.locationLabel.font = shortCityNameFont
         }
         self.locationLabel.text = location
     }
@@ -1057,6 +1092,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.time5JSON = nil
         self.time6JSON = nil
         self.time7JSON = nil
+        self.time8JSON = nil
         
         print("UPDATE WEATHER!")
         
@@ -1221,7 +1257,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             }
         }
         
-        if (self.time7JSON != nil) {
+        if (self.time8JSON != nil) {
+            self.totalItems = 8
+        } else if (self.time7JSON != nil) {
             self.totalItems = 7
         } else if (self.time6JSON != nil) {
             self.totalItems = 6
@@ -1390,6 +1428,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         
         self.time7.font = (index == 7) ? self.selectedHourItemFont : self.notSelectedHourItemFont
         self.temperature7.font = (index == 7) ? self.selectedHourItemFont : self.notSelectedHourItemFont
+        
+        self.time8.font = (index == 8) ? self.selectedHourItemFont : self.notSelectedHourItemFont
+        self.temperature8.font = (index == 8) ? self.selectedHourItemFont : self.notSelectedHourItemFont
     }
     
     func updatePreferredHourFormat() {
@@ -1555,6 +1596,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.time7.layer.cornerRadius = 0
         self.time7.backgroundColor = nil
         self.time7.clipsToBounds = false
+        
+        self.time8.layer.cornerRadius = 0
+        self.time8.backgroundColor = nil
+        self.time8.clipsToBounds = false
     }
     
     func conditionSmallTapped(index: Int) {
@@ -1566,6 +1611,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         fillCondition(index: 5, conditionJSON: self.time5JSON, selected: index == 5)
         fillCondition(index: 6, conditionJSON: self.time6JSON, selected: index == 6)
         fillCondition(index: 7, conditionJSON: self.time7JSON, selected: index == 7)
+        fillCondition(index: 8, conditionJSON: self.time8JSON, selected: index == 8)
     }
     
     @objc func time1LabelTap(_ sender: UITapGestureRecognizer) {
@@ -1597,6 +1643,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     
     @objc func time7LabelTap(_ sender: UITapGestureRecognizer) {
         conditionSmallTapped(index: 7)
+    }
+    
+    @objc func time8LabelTap(_ sender: UITapGestureRecognizer) {
+        conditionSmallTapped(index: 8)
     }
     
     @objc func todayLabelTapped(_ sender: UITapGestureRecognizer) {
@@ -1747,6 +1797,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             imgView = self.conditionSmall7
             label = self.time7
             temperatureLabel = self.temperature7
+        } else if (index == 8) {
+            self.time8JSON = conditionJSON
+            imgView = self.conditionSmall8
+            label = self.time8
+            temperatureLabel = self.temperature8
         } else {
             return
         }
