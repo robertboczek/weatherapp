@@ -87,7 +87,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O7g-Kp-afw" userLabel="Time8">
-                                <rect key="frame" x="345" y="67" width="0.0" height="0.0"/>
+                                <rect key="frame" x="326" y="67" width="0.0" height="0.0"/>
                                 <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="14"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -178,7 +178,7 @@
                                 <rect key="frame" x="157" y="322" width="100" height="91"/>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="s_01n.png" translatesAutoresizingMaskIntoConstraints="NO" id="p9j-xh-pNZ" userLabel="Condition Small 8">
-                                <rect key="frame" x="339" y="67" width="45" height="45"/>
+                                <rect key="frame" x="320" y="67" width="42" height="42"/>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="s_10d.png" translatesAutoresizingMaskIntoConstraints="NO" id="cba-EJ-5FF" userLabel="Condition Small 2">
                                 <rect key="frame" x="535" y="141.66666666666666" width="100" height="91"/>
@@ -193,13 +193,13 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="01d.png" translatesAutoresizingMaskIntoConstraints="NO" id="LOG-QK-lh1">
-                                <rect key="frame" x="8" y="150" width="398" height="325"/>
+                                <rect key="frame" x="8" y="150" width="398" height="250"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="325" id="069-h9-kvc"/>
+                                    <constraint firstAttribute="height" constant="250" id="069-h9-kvc"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="24" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pcp-Ut-36g">
-                                <rect key="frame" x="33.666666666666657" y="479.66666666666669" width="67" height="67.333333333333314"/>
+                                <rect key="frame" x="33.666666666666657" y="404.66666666666669" width="67" height="67.333333333333314"/>
                                 <fontDescription key="fontDescription" name="Arial-BoldMT" family="Arial" pointSize="60"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -211,7 +211,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="°F" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wNb-8D-fUj">
-                                <rect key="frame" x="133" y="479.66666666666669" width="28.333333333333343" height="31"/>
+                                <rect key="frame" x="133" y="404.66666666666669" width="28.333333333333343" height="31"/>
                                 <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="28"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -247,13 +247,13 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Wind: " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ysd-cz-5Jk" userLabel="additionalInfoLabel1">
-                                <rect key="frame" x="174.33333333333334" y="511" width="42.666666666666657" height="17"/>
+                                <rect key="frame" x="174.33333333333334" y="442" width="42.666666666666657" height="17"/>
                                 <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="15"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Wind: " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fkV-2Z-tyv" userLabel="additionalInfoLabel2">
-                                <rect key="frame" x="174.33333333333334" y="533" width="42.666666666666657" height="17"/>
+                                <rect key="frame" x="174.33333333333334" y="464" width="42.666666666666657" height="17"/>
                                 <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="15"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -310,7 +310,7 @@
                                 <state key="normal" image="back.png"/>
                             </button>
                             <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c2k-d6-OEn" userLabel="Current Location Button">
-                                <rect key="frame" x="193" y="557" width="20" height="25"/>
+                                <rect key="frame" x="193" y="487" width="20" height="25"/>
                                 <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="22"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" image="location" catalog="system"/>
@@ -341,7 +341,7 @@
                         <constraints>
                             <constraint firstItem="u9V-t7-x0J" firstAttribute="leading" secondItem="KLN-7d-VQc" secondAttribute="trailing" constant="4" id="0af-sU-AOD"/>
                             <constraint firstItem="0nB-ZM-CZJ" firstAttribute="leading" secondItem="cba-EJ-5FF" secondAttribute="trailing" constant="3" id="0kT-KN-tK9"/>
-                            <constraint firstItem="yyy-wh-zMF" firstAttribute="top" secondItem="dlc-Ns-m3t" secondAttribute="top" id="0my-W6-2co"/>
+                            <constraint firstItem="yyy-wh-zMF" firstAttribute="top" secondItem="dlc-Ns-m3t" secondAttribute="top" constant="6" id="0my-W6-2co"/>
                             <constraint firstItem="p9j-xh-pNZ" firstAttribute="leading" secondItem="KaP-Op-RBd" secondAttribute="trailing" constant="3" id="1LO-h3-gJW"/>
                             <constraint firstItem="fkV-2Z-tyv" firstAttribute="leading" secondItem="Ysd-cz-5Jk" secondAttribute="leading" id="1pW-rX-xoa"/>
                             <constraint firstItem="8qY-Q4-VyA" firstAttribute="leading" secondItem="lhq-h4-VMZ" secondAttribute="leading" constant="5" id="2Zk-CZ-r3o"/>
@@ -379,7 +379,7 @@
                             <constraint firstItem="sQP-8e-Urv" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="Ixz-F8-sMZ"/>
                             <constraint firstItem="dXs-Rq-JSy" firstAttribute="top" secondItem="4ga-xH-al6" secondAttribute="bottom" constant="70" id="K39-Ep-hg3"/>
                             <constraint firstItem="2EL-bi-2ui" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="K5O-zF-YSz"/>
-                            <constraint firstItem="c2k-d6-OEn" firstAttribute="top" secondItem="pcp-Ut-36g" secondAttribute="bottom" constant="10" id="LGW-Lg-R0k"/>
+                            <constraint firstItem="c2k-d6-OEn" firstAttribute="top" secondItem="pcp-Ut-36g" secondAttribute="bottom" constant="15" id="LGW-Lg-R0k"/>
                             <constraint firstItem="lhq-h4-VMZ" firstAttribute="leading" secondItem="eqv-LT-aaQ" secondAttribute="leading" constant="7" id="LQu-mm-ECm"/>
                             <constraint firstItem="pcp-Ut-36g" firstAttribute="top" secondItem="dlc-Ns-m3t" secondAttribute="bottom" constant="7.7000000000000002" id="Loh-Wt-AcD"/>
                             <constraint firstItem="Q4L-Vk-15I" firstAttribute="bottom" secondItem="4ga-xH-al6" secondAttribute="bottom" id="Lwo-cd-5cU"/>
@@ -462,7 +462,7 @@
                             <constraint firstItem="6oi-tt-dgs" firstAttribute="top" secondItem="2EL-bi-2ui" secondAttribute="bottom" constant="5" id="uaR-RF-ylF"/>
                             <constraint firstItem="CXW-vZ-ylf" firstAttribute="leading" secondItem="O7g-Kp-afw" secondAttribute="leading" constant="5" id="vjx-Ox-l62"/>
                             <constraint firstItem="0nB-ZM-CZJ" firstAttribute="top" secondItem="ubb-dJ-qfw" secondAttribute="bottom" id="wC6-Pv-K5t"/>
-                            <constraint firstItem="Am8-ze-xVl" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="3" id="wHb-dm-0Dp"/>
+                            <constraint firstItem="Am8-ze-xVl" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="wHb-dm-0Dp"/>
                             <constraint firstItem="b84-5x-NLj" firstAttribute="top" secondItem="pcp-Ut-36g" secondAttribute="top" id="xNw-iQ-Ms6"/>
                             <constraint firstItem="CYm-BY-irr" firstAttribute="top" secondItem="4ga-xH-al6" secondAttribute="bottom" constant="70" id="xtR-AB-tp4"/>
                             <constraint firstItem="H7g-8f-Sk3" firstAttribute="leading" secondItem="lOq-YV-rsr" secondAttribute="leading" constant="5" id="yWv-sG-DJF"/>
@@ -548,9 +548,9 @@
         <image name="icons8-sort-down-48.png" width="32" height="32"/>
         <image name="location" catalog="system" width="128" height="121"/>
         <image name="map icon.png" width="20" height="31"/>
-        <image name="s_01n.png" width="45" height="45"/>
-        <image name="s_10d.png" width="45" height="45"/>
-        <image name="s_13d.png" width="45" height="43"/>
+        <image name="s_01n.png" width="42" height="42"/>
+        <image name="s_10d.png" width="42" height="42"/>
+        <image name="s_13d.png" width="42" height="40"/>
         <image name="search-icon.png" width="40" height="40"/>
         <image name="star" catalog="system" width="128" height="116"/>
         <systemColor name="systemBackgroundColor">

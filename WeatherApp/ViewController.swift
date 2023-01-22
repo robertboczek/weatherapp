@@ -126,7 +126,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     let selectedItemFont = UIFont(name: "Arial Rounded MT Bold", size: 22)
     let notSelectedItemFont = UIFont(name: "Avenir", size: 16)
     
-    let selectedHourItemFont = UIFont(name: "Arial Rounded MT Bold", size: 14)
+    let selectedHourItemFont = UIFont(name: "Arial Rounded MT Bold", size: 12)
     let notSelectedHourItemFont = UIFont(name: "Avenir", size: 10)
     
     let apiKey = "d9f9f29395c8b71049a8e921c9e89748"
