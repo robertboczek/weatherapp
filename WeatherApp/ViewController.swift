@@ -451,17 +451,24 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         let currentLocationLabel = NSLocalizedString("current location", comment: "Current Location")
         let shareLabel = NSLocalizedString("share", comment: "Share Button")
         let refreshLabel = NSLocalizedString("refresh", comment: "Refresh")
-        let bottomButtonsColor = UIColor.init(red: 72.0/255.0, green: 114.0/255.0, blue: 214.0/255.0, alpha: 1.0)
-        let bottomFont = UILabel().font.withSize(16)
+        
+        let engagementButtons = [self.currentLocationButton, self.refreshButton, self.shareAppButton]
+        let topColor = UIColor.init(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 0.25)
+        for engagementButton in engagementButtons {
+            var configuration = UIButton.Configuration.filled()
+            
+            configuration.background.backgroundColor = topColor
+            configuration.buttonSize = .medium
+            configuration.cornerStyle = .capsule
+            configuration.titlePadding = 10
+            configuration.baseForegroundColor = .white
+            
+            engagementButton?.configuration = configuration
+        }
         
         self.currentLocationButton.setTitle(currentLocationLabel,  for: UIControl.State.normal)
-        self.currentLocationButton.titleLabel?.font = bottomFont
-        
         self.refreshButton.setTitle(refreshLabel, for: UIControl.State.normal)
-        self.refreshButton.titleLabel?.font = bottomFont
-        
         self.shareAppButton.setTitle(shareLabel, for: UIControl.State.normal)
-        self.shareAppButton.titleLabel?.font = bottomFont
         
         updatePreferredHourFormat()
         
@@ -1350,47 +1357,32 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     
     func updateDayFonts() {
       let topColor = UIColor.init(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 0.15)
-      self.imperialLabel.font = (self.apiUnit == "metric") ? self.notSelectedItemFont : self.selectedItemFont
-        if (self.apiUnit == "metric") {
-            self.imperialLabel.layer.cornerRadius = 0
-            self.imperialLabel.backgroundColor = nil
-            self.imperialLabel.clipsToBounds = false
-            
-            self.metricLabel.layer.cornerRadius = 10
-            self.metricLabel.backgroundColor = topColor
-            self.metricLabel.clipsToBounds = true
-        } else {
-            self.imperialLabel.layer.cornerRadius = 10
-            self.imperialLabel.backgroundColor = topColor
-            self.imperialLabel.clipsToBounds = true
-            
-            self.metricLabel.layer.cornerRadius = 0
-            self.metricLabel.backgroundColor = nil
-            self.metricLabel.clipsToBounds = false
-        }
-      self.metricLabel.font = (self.apiUnit == "metric") ? self.selectedItemFont : self.notSelectedItemFont
+      let selectedButton = (self.apiUnit == "metric") ? self.metricLabel : self.imperialLabel
+      let notSelectedButton = (self.apiUnit == "metric") ? self.imperialLabel : self.metricLabel
+
+        
+      selectedButton!.layer.cornerRadius = 10
+      selectedButton!.backgroundColor = topColor
+      selectedButton!.clipsToBounds = true
+      selectedButton!.font = self.selectedItemFont
+        
+      notSelectedButton!.layer.cornerRadius = 0
+      notSelectedButton!.backgroundColor = nil
+      notSelectedButton!.clipsToBounds = false
+      notSelectedButton!.font = self.notSelectedItemFont
       
 
       self.dayLabel.font = (self.apiEndpoint == "weather") ? self.selectedItemFont : self.notSelectedItemFont
       self.tomorrowLabel.font = (self.apiEndpoint == "forecast") ? self.selectedItemFont : self.notSelectedItemFont
       self.dayAfterTomorrowLabel.font = (self.apiEndpoint == "forecast2") ? self.selectedItemFont : self.notSelectedItemFont
       self.dayAfterAfterTomorrowLabel.font = (self.apiEndpoint == "forecast3") ? self.selectedItemFont : self.notSelectedItemFont
-    
-      self.dayLabel.backgroundColor = nil
-      self.dayLabel.layer.cornerRadius = 0
-      self.dayLabel.clipsToBounds = false
-    
-      self.tomorrowLabel.backgroundColor = nil
-      self.tomorrowLabel.layer.cornerRadius = 0
-      self.tomorrowLabel.clipsToBounds = false
         
-      self.dayAfterTomorrowLabel.backgroundColor = nil
-      self.dayAfterTomorrowLabel.layer.cornerRadius = 0
-      self.dayAfterTomorrowLabel.clipsToBounds = false
-        
-      self.dayAfterAfterTomorrowLabel.backgroundColor = nil
-      self.dayAfterAfterTomorrowLabel.layer.cornerRadius = 0
-      self.dayAfterAfterTomorrowLabel.clipsToBounds = false
+      let labelsToClear = [self.dayLabel, self.tomorrowLabel, self.dayAfterTomorrowLabel, self.dayAfterAfterTomorrowLabel]
+      for label in labelsToClear {
+          label?.backgroundColor = nil
+          label?.layer.cornerRadius = 0
+          label?.clipsToBounds = false
+      }
 
       var selectedLabel = self.dayAfterTomorrowLabel
       if (self.apiEndpoint == "forecast") {
@@ -1408,29 +1400,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     }
     
     func updateHourFonts(index: Int) {
-        self.time1.font = (index == 1) ? self.selectedHourItemFont : self.notSelectedHourItemFont
-        self.temperature1.font = (index == 1) ? self.selectedHourItemFont : self.notSelectedHourItemFont
-        
-        self.time2.font = (index == 2) ? self.selectedHourItemFont : self.notSelectedHourItemFont
-        self.temperature2.font = (index == 2) ? self.selectedHourItemFont : self.notSelectedHourItemFont
-        
-        self.time3.font = (index == 3) ? self.selectedHourItemFont : self.notSelectedHourItemFont
-        self.temperature3.font = (index == 3) ? self.selectedHourItemFont : self.notSelectedHourItemFont
-        
-        self.time4.font = (index == 4) ? self.selectedHourItemFont : self.notSelectedHourItemFont
-        self.temperature4.font = (index == 4) ? self.selectedHourItemFont : self.notSelectedHourItemFont
-        
-        self.time5.font = (index == 5) ? self.selectedHourItemFont : self.notSelectedHourItemFont
-        self.temperature5.font = (index == 5) ? self.selectedHourItemFont : self.notSelectedHourItemFont
-        
-        self.time6.font = (index == 6) ? self.selectedHourItemFont : self.notSelectedHourItemFont
-        self.temperature6.font = (index == 6) ? self.selectedHourItemFont : self.notSelectedHourItemFont
-        
-        self.time7.font = (index == 7) ? self.selectedHourItemFont : self.notSelectedHourItemFont
-        self.temperature7.font = (index == 7) ? self.selectedHourItemFont : self.notSelectedHourItemFont
-        
-        self.time8.font = (index == 8) ? self.selectedHourItemFont : self.notSelectedHourItemFont
-        self.temperature8.font = (index == 8) ? self.selectedHourItemFont : self.notSelectedHourItemFont
+        let timeArray = [self.time1, self.time2, self.time3, self.time4, self.time5, self.time6, self.time7, self.time8]
+        let temperatureArray = [self.temperature1, self.temperature2, self.temperature3, self.temperature4, self.temperature5, self.temperature6, self.temperature7, self.temperature8]
+        for i in 1...timeArray.count {
+            timeArray[i-1]?.font = (index == i) ? self.selectedHourItemFont : self.notSelectedHourItemFont
+            temperatureArray[i-1]?.font = (index == i) ? self.selectedHourItemFont : self.notSelectedHourItemFont
+        }
     }
     
     func updatePreferredHourFormat() {

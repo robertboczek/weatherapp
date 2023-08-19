@@ -12,7 +12,7 @@ target 'WeatherApp' do
 
   # Pods for WeatherApp
   pod 'Alamofire', '~> 4.7'
-  pod 'SwiftyJSON', '~> 4.0'
+  pod 'SwiftyJSON'
   pod 'NVActivityIndicatorView'
   pod 'GoogleMobileAdsMediationFacebook'
 end
