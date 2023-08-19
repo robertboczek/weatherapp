@@ -523,7 +523,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.tryAgainButton.centerXAnchor.constraint(equalTo: self.errorLabel.centerXAnchor).isActive = true
         self.tryAgainButton.topAnchor.constraint(equalTo: self.errorDetailsLabel.topAnchor, constant: 50).isActive = true
         
-        //self.tryAgainButton.isUserInteractionEnabled = true
+        self.tryAgainButton.isUserInteractionEnabled = true
         self.tryAgainButton.addGestureRecognizer(refreshButtonTap)
         self.tryAgainButton.configuration = getButtonConfiguration()
         self.tryAgainButton.setTitle(refreshLabel, for: UIControl.State.normal)
