@@ -283,8 +283,25 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.favoritesButton.addGestureRecognizer(addRemoveFavoriteLocationButtonTap)
         
         let mapButtonTap = UITapGestureRecognizer(target: self, action: #selector(self.mapButtonTapped(_:)))
-        self.mapButton.isUserInteractionEnabled = true
-        self.mapButton.addGestureRecognizer(mapButtonTap)
+        self.locationLabel.isUserInteractionEnabled = true
+        self.locationLabel.addGestureRecognizer(mapButtonTap)
+        //self.locationLabel.largeContentImage =
+        let locationColor = UIColor.init(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 0.25)
+        locationLabel.layer.cornerRadius = 10
+        locationLabel.clipsToBounds = true
+        locationLabel.backgroundColor = locationColor
+        
+        let buttonColor = UIColor.init(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 0.25)
+        var configuration = UIButton.Configuration.filled()
+        
+        configuration.background.backgroundColor = buttonColor
+        configuration.buttonSize = .small
+        configuration.baseForegroundColor = .white
+        
+        searchButton.configuration = configuration
+        favoritesButton.configuration = configuration
+        configuration.buttonSize = .medium
+        goBack.configuration = configuration
         
         let favoriteDropdownTap = UITapGestureRecognizer(target: self, action: #selector(self.favoriteDropdownTapped(_:)))
         self.favoritesDropdown.isUserInteractionEnabled = true
@@ -454,6 +471,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         
         let engagementButtons = [self.currentLocationButton, self.refreshButton, self.shareAppButton]
         let topColor = UIColor.init(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 0.25)
+        
         for engagementButton in engagementButtons {
             var configuration = UIButton.Configuration.filled()
             
@@ -733,61 +751,24 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     }
     
     func updateMainScreenItemsVisibility(isHidden: Bool) {
-        self.conditionImageView.isHidden = isHidden
-        self.nowLabel.isHidden = isHidden
-        self.dayLabel.isHidden = isHidden
-        self.tomorrowLabel.isHidden = isHidden
-        self.dayAfterTomorrowLabel.isHidden = isHidden
-        self.dayAfterAfterTomorrowLabel.isHidden = isHidden
-        self.temperatureLabel.isHidden = isHidden
-        self.locationLabel.isHidden = isHidden
-        self.conditionLabel.isHidden = isHidden
-        self.temperatureLabel.isHidden = isHidden
-        self.metricLabel.isHidden = isHidden
-        self.imperialLabel.isHidden = isHidden
-        self.searchButton.isHidden = isHidden
-        self.searchButtonText.isHidden = isHidden
-        self.favoritesButton.isHidden = isHidden
-        self.mapButton.isHidden = isHidden
-        
-        self.shareAppButton.isHidden = isHidden
-        self.refreshButton.isHidden = isHidden
+        let componentsToUpdateHideStatus = [self.conditionImageView, self.nowLabel, self.dayLabel, self.tomorrowLabel,
+                                self.dayAfterTomorrowLabel, self.dayAfterAfterTomorrowLabel, self.temperatureLabel,
+                                self.locationLabel, self.conditionLabel, self.temperatureLabel, self.metricLabel,
+                                self.imperialLabel, self.searchButton, self.searchButtonText, self.favoritesButton,
+                                self.mapButton, self.shareAppButton, self.refreshButton, self.windLabel, self.pressureLabel,
+                                self.humidityLabel, self.additionalInfoLabel1, self.additionalInfoLabel2, self.time1,
+                                self.time2, self.time3, self.time4, self.time5, self.time6, self.time7, self.time8,
+                                self.conditionSmall1, self.conditionSmall2, self.conditionSmall3, self.conditionSmall4,
+                                self.conditionSmall5, self.conditionSmall6, self.conditionSmall7, self.conditionSmall8,
+                                self.temperature1, self.temperature2, self.temperature3, self.temperature4, self.temperature5,
+                                self.temperature6, self.temperature7, self.temperature8
+        ]
+        for componentToUpdateHideStatus in componentsToUpdateHideStatus {
+            componentToUpdateHideStatus?.isHidden = isHidden
+        }
         
         self.airQualityImage.isHidden = true
         self.airQualityInfoLabel.isHidden = true
-        
-        self.windLabel.isHidden = isHidden
-        self.pressureLabel.isHidden = isHidden
-        self.humidityLabel.isHidden = isHidden
-        self.additionalInfoLabel1.isHidden = isHidden
-        self.additionalInfoLabel2.isHidden = isHidden
-        
-        self.time1.isHidden = isHidden
-        self.time2.isHidden = isHidden
-        self.time3.isHidden = isHidden
-        self.time4.isHidden = isHidden
-        self.time5.isHidden = isHidden
-        self.time6.isHidden = isHidden
-        self.time7.isHidden = isHidden
-        self.time8.isHidden = isHidden
-        
-        self.conditionSmall1.isHidden = isHidden
-        self.conditionSmall2.isHidden = isHidden
-        self.conditionSmall3.isHidden = isHidden
-        self.conditionSmall4.isHidden = isHidden
-        self.conditionSmall5.isHidden = isHidden
-        self.conditionSmall6.isHidden = isHidden
-        self.conditionSmall7.isHidden = isHidden
-        self.conditionSmall8.isHidden = isHidden
-        
-        self.temperature1.isHidden = isHidden
-        self.temperature2.isHidden = isHidden
-        self.temperature3.isHidden = isHidden
-        self.temperature4.isHidden = isHidden
-        self.temperature5.isHidden = isHidden
-        self.temperature6.isHidden = isHidden
-        self.temperature7.isHidden = isHidden
-        self.temperature8.isHidden = isHidden
         
         if (isHidden) {
             self.favoritesDropdown.isHidden = true
@@ -797,7 +778,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         
         self.sunriseLabel.isHidden = isHidden
         self.sunsetLabel.isHidden = isHidden
-        //updateConditionComponents(isHidden: isHidden)
         
         self.twelve.isHidden = isHidden
         self.twentyFour.isHidden = isHidden
