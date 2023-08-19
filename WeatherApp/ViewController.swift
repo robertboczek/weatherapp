@@ -157,6 +157,36 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     var shouldCheckLocation = true
     var isErrorState = false
     
+    var errorLabel : UILabel = {
+        let label = UILabel()
+        label.text = ""
+        label.numberOfLines = 3
+        label.sizeToFit()
+        label.textColor = UIColor.white
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    var errorDetailsLabel : UILabel = {
+        let label = UILabel()
+        label.text = ""
+        label.numberOfLines = 3
+        label.sizeToFit()
+        label.textColor = UIColor.white
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    var tryAgainButton : UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.sizeToFit()
+        
+        return button
+    }()
+    
+    
+    
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?)   {
         print("init")
         print("Load defaults")
@@ -470,16 +500,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         let refreshLabel = NSLocalizedString("refresh", comment: "Refresh")
         
         let engagementButtons = [self.currentLocationButton, self.refreshButton, self.shareAppButton]
-        let topColor = UIColor.init(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 0.25)
         
         for engagementButton in engagementButtons {
-            var configuration = UIButton.Configuration.filled()
-            
-            configuration.background.backgroundColor = topColor
-            configuration.buttonSize = .medium
-            configuration.cornerStyle = .capsule
-            configuration.titlePadding = 10
-            configuration.baseForegroundColor = .white
+            let configuration = getButtonConfiguration()
             
             engagementButton?.configuration = configuration
         }
@@ -487,6 +510,23 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.currentLocationButton.setTitle(currentLocationLabel,  for: UIControl.State.normal)
         self.refreshButton.setTitle(refreshLabel, for: UIControl.State.normal)
         self.shareAppButton.setTitle(shareLabel, for: UIControl.State.normal)
+        
+        self.mainView.addSubview(errorLabel)
+        self.errorLabel.centerXAnchor.constraint(equalTo: self.mainView.centerXAnchor).isActive = true
+        self.errorLabel.topAnchor.constraint(equalTo: self.mainView.topAnchor, constant: 150).isActive = true
+        
+        self.mainView.addSubview(errorDetailsLabel)
+        self.errorDetailsLabel.centerXAnchor.constraint(equalTo: self.mainView.centerXAnchor).isActive = true
+        self.errorDetailsLabel.topAnchor.constraint(equalTo: self.errorLabel.topAnchor, constant: 50).isActive = true
+        
+        self.mainView.addSubview(tryAgainButton)
+        self.tryAgainButton.centerXAnchor.constraint(equalTo: self.errorLabel.centerXAnchor).isActive = true
+        self.tryAgainButton.topAnchor.constraint(equalTo: self.errorDetailsLabel.topAnchor, constant: 50).isActive = true
+        
+        //self.tryAgainButton.isUserInteractionEnabled = true
+        self.tryAgainButton.addGestureRecognizer(refreshButtonTap)
+        self.tryAgainButton.configuration = getButtonConfiguration()
+        self.tryAgainButton.setTitle(refreshLabel, for: UIControl.State.normal)
         
         updatePreferredHourFormat()
         
@@ -508,6 +548,19 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.adView.isHidden = false
         
         self.loadBannerAd()
+    }
+    
+    func getButtonConfiguration() -> UIButton.Configuration {
+        let topColor = UIColor.init(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 0.25)
+        var configuration = UIButton.Configuration.filled()
+        
+        configuration.background.backgroundColor = topColor
+        configuration.buttonSize = .medium
+        configuration.cornerStyle = .capsule
+        configuration.titlePadding = 10
+        configuration.baseForegroundColor = .white
+        
+        return configuration
     }
     
     func backgroundThreadForInvalidState() {
@@ -761,7 +814,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
                                 self.conditionSmall1, self.conditionSmall2, self.conditionSmall3, self.conditionSmall4,
                                 self.conditionSmall5, self.conditionSmall6, self.conditionSmall7, self.conditionSmall8,
                                 self.temperature1, self.temperature2, self.temperature3, self.temperature4, self.temperature5,
-                                self.temperature6, self.temperature7, self.temperature8
+                                self.temperature6, self.temperature7, self.temperature8, self.errorLabel, self.errorDetailsLabel,
+                                self.tryAgainButton,
         ]
         for componentToUpdateHideStatus in componentsToUpdateHideStatus {
             componentToUpdateHideStatus?.isHidden = isHidden
@@ -807,37 +861,19 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     }
     
     func updateConditionComponents(isHidden: Bool) {
-        self.time1.isHidden = isHidden
-        self.conditionSmall1.isHidden = isHidden
-        self.temperature1.isHidden = isHidden
-        
-        self.time2.isHidden = isHidden
-        self.conditionSmall2.isHidden = isHidden
-        self.temperature2.isHidden = isHidden
-        
-        self.time3.isHidden = isHidden
-        self.conditionSmall3.isHidden = isHidden
-        self.temperature3.isHidden = isHidden
-        
-        self.time4.isHidden = isHidden
-        self.conditionSmall4.isHidden = isHidden
-        self.temperature4.isHidden = isHidden
-        
-        self.time5.isHidden = isHidden
-        self.conditionSmall5.isHidden = isHidden
-        self.temperature5.isHidden = isHidden
-        
-        self.time6.isHidden = isHidden
-        self.conditionSmall6.isHidden = isHidden
-        self.temperature6.isHidden = isHidden
-        
-        self.time7.isHidden = isHidden
-        self.conditionSmall7.isHidden = isHidden
-        self.temperature7.isHidden = isHidden
-        
-        self.time8.isHidden = isHidden
-        self.conditionSmall8.isHidden = isHidden
-        self.temperature8.isHidden = isHidden
+        let componentsToUpdateHideStatus = [
+            self.time1, self.conditionSmall1, self.temperature1,
+            self.time2, self.conditionSmall2, self.temperature2,
+            self.time3, self.conditionSmall3, self.temperature3,
+            self.time4, self.conditionSmall4, self.temperature4,
+            self.time5, self.conditionSmall5, self.temperature5,
+            self.time6, self.conditionSmall6, self.temperature6,
+            self.time7, self.conditionSmall7, self.temperature7,
+            self.time8, self.conditionSmall8, self.temperature8,
+        ]
+        for componentToUpdateHideStatus in componentsToUpdateHideStatus {
+            componentToUpdateHideStatus?.isHidden = isHidden
+        }
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -881,12 +917,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.activityIndicator.stopAnimating()
         let errorFormatString = NSLocalizedString("location lookup failure", comment: "Error")
         let errorDetailsString = NSLocalizedString("search or refresh view", comment: "Error")
-        self.locationLabel.text = errorFormatString
-        self.conditionLabel.text = errorDetailsString
-        if (self.conditionLabel.text!.count > 14) {
-          self.conditionLabel.font = UILabel().font.withSize(16)
-        }
-        self.refreshButton.isHidden = false
+        self.showErrorLabel(errorMessage: errorFormatString, errorDetails: errorDetailsString)
         
         let seconds = 5.0
         DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
@@ -933,16 +964,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
                 self.updateItemsVisibility(isHidden: true)
                 self.updateFavoritesScreenItemsVisibility(isHidden: true)
                 self.updateSearchScreenItemsVisibility(isHidden: true)
-                self.locationLabel.isHidden = false
-                self.locationLabel.text = errorFormatString
-                self.conditionLabel.isHidden = false
-                self.conditionLabel.text = errorDetailsString
-                if (self.conditionLabel.text!.count > 14) {
-                  self.conditionLabel.font = UILabel().font.withSize(16)
-                }
-                self.searchButton.isHidden = false
-                self.searchButtonText.isHidden = false
-                self.refreshButton.isHidden = false
+                
+                self.showErrorLabel(errorMessage: errorFormatString, errorDetails: errorDetailsString)
+
                 self.resetSmallItems()
                 self.isErrorState = true
             }
@@ -959,19 +983,21 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
           switch response.result {
             case .failure(let _):
               print("Lookup weather failure")
-              let errorFormatString = NSLocalizedString("api error msg", comment: "Error")
+              
               self.updateItemsVisibility(isHidden: true)
               self.updateFavoritesScreenItemsVisibility(isHidden: true)
               self.updateSearchScreenItemsVisibility(isHidden: true)
-              self.locationLabel.isHidden = false
-              self.searchButton.isHidden = false
-              self.searchButtonText.isHidden = false
+              self.locationLabel.isHidden = true
+              self.searchButton.isHidden = true
+              self.searchButtonText.isHidden = true
               self.locationManager.stopUpdatingLocation()
               self.activityIndicator.stopAnimating()
-              self.time2.text = errorFormatString
-              self.time2.isHidden = false
-              self.time2.font = self.selectedHourItemFont
+              
+              let errorFormatString = NSLocalizedString("location lookup failure", comment: "Error")
+              let errorDetailsString = NSLocalizedString("search or refresh view", comment: "Error")
+              
               self.resetSmallItems()
+              self.showErrorLabel(errorMessage: errorFormatString, errorDetails: errorDetailsString)
               self.isErrorState = true
             default:
               print("Success result from Weather API")
@@ -1041,6 +1067,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
                 self.airQualityInfoLabel.isHidden = false
             }
         }*/
+    }
+    
+    func showErrorLabel(errorMessage: String, errorDetails: String?) {
+        self.errorLabel.textColor = .white
+        
+        self.errorLabel.text = errorMessage
+        self.errorLabel.font = selectedItemFont
+        self.errorLabel.isHidden = false
+        
+        self.errorDetailsLabel.text = errorDetails
+        self.errorDetailsLabel.font = notSelectedItemFont
+        self.errorDetailsLabel.isHidden = false
+        
+        self.tryAgainButton.isHidden = false
     }
     
     func updateWeather(json: JSON) {
@@ -1524,37 +1564,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     }
     
     func resetSmallItems() {
-        self.time1.layer.cornerRadius = 0
-        self.time1.backgroundColor = nil
-        self.time1.clipsToBounds = false
-        
-        self.time2.layer.cornerRadius = 0
-        self.time2.backgroundColor = nil
-        self.time2.clipsToBounds = false
-        
-        self.time3.layer.cornerRadius = 0
-        self.time3.backgroundColor = nil
-        self.time3.clipsToBounds = false
-        
-        self.time4.layer.cornerRadius = 0
-        self.time4.backgroundColor = nil
-        self.time4.clipsToBounds = false
-        
-        self.time5.layer.cornerRadius = 0
-        self.time5.backgroundColor = nil
-        self.time5.clipsToBounds = false
-        
-        self.time6.layer.cornerRadius = 0
-        self.time6.backgroundColor = nil
-        self.time6.clipsToBounds = false
-        
-        self.time7.layer.cornerRadius = 0
-        self.time7.backgroundColor = nil
-        self.time7.clipsToBounds = false
-        
-        self.time8.layer.cornerRadius = 0
-        self.time8.backgroundColor = nil
-        self.time8.clipsToBounds = false
+        let componentsToResetStatus = [
+            self.time1, self.time2, self.time3, self.time4,
+            self.time5, self.time6, self.time7, self.time8,
+        ]
+        for componentToResetStatus in componentsToResetStatus {
+            componentToResetStatus?.layer.cornerRadius = 0
+            componentToResetStatus?.backgroundColor = nil
+            componentToResetStatus?.clipsToBounds = false
+        }
     }
     
     func conditionSmallTapped(index: Int) {
@@ -1574,10 +1592,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     }
     
     @objc func time2LabelTap(_ sender: UITapGestureRecognizer) {
-        // time2 label is also used for showing error message, then ignore tapping
-        if !self.isErrorState {
-            conditionSmallTapped(index: 2)
-        }
+        conditionSmallTapped(index: 2)
     }
     
     @objc func time3LabelTap(_ sender: UITapGestureRecognizer) {
