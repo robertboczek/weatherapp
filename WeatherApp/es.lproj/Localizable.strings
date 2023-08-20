@@ -45,9 +45,11 @@
 
 "heavy intensity snow" = "nieve de gran intensidad";
 
-"location lookup failure" = "Error de búsqueda de ubicación";
+"location lookup failure" = "No se pueden obtener datos de ubicación";
 
-"search or refresh view" = "Buscar nueva ciudad o actualizar la vista";
+"weather lookup failure" = "No se puede cargar el pronóstico del tiempo";
+
+"search or refresh view" = "Puede ser por mala conectividad.\n  Inténtalo de nuevo. \n";
 
 "api error msg" = "Error de búsqueda del clima";
 

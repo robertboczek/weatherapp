@@ -40,9 +40,11 @@
 
 "heavy intensity snow" = "opady śniegu";
 
-"location lookup failure" = "Błąd odczytu lokalizacji";
+"location lookup failure" = "Wystąpił błąd odczytu lokalizacji";
 
-"search or refresh view" = "Szukaj lub odśwież widok";
+"weather lookup failure" = "Wystąpił błąd odczytu danych";
+
+"search or refresh view" = "Powodem mogą byc problemy z połaczeniem.\n  Spróbuj ponownie. \n";
 
 "api error msg" = "Błąd odczytu pogody z serweru";
 

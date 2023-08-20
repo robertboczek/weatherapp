@@ -521,10 +521,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         
         self.mainView.addSubview(tryAgainButton)
         self.tryAgainButton.centerXAnchor.constraint(equalTo: self.errorLabel.centerXAnchor).isActive = true
-        self.tryAgainButton.topAnchor.constraint(equalTo: self.errorDetailsLabel.topAnchor, constant: 50).isActive = true
+        self.tryAgainButton.topAnchor.constraint(equalTo: self.errorDetailsLabel.topAnchor, constant: 75).isActive = true
         
         self.tryAgainButton.isUserInteractionEnabled = true
-        self.tryAgainButton.addGestureRecognizer(refreshButtonTap)
+        let tryAgainButtonTap = UITapGestureRecognizer(target: self, action: #selector(self.tryAgainButtonTapped(_:)))
+        self.tryAgainButton.addGestureRecognizer(tryAgainButtonTap)
         self.tryAgainButton.configuration = getButtonConfiguration()
         self.tryAgainButton.setTitle(refreshLabel, for: UIControl.State.normal)
         
@@ -770,11 +771,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     }
     
     @objc
+    func reloadViewAfterError() {
+        reloadView()
+    }
+    
+    @objc
     func reloadView() {
         print("Reload the view.")
         
         updateSearchScreenItemsVisibility(isHidden: true)
         updateFavoritesScreenItemsVisibility(isHidden: true)
+        updateErrorItemsVisibility(isHidden: true)
         
         updateItemsVisibility(isHidden: true)
         self.goBack.isHidden = true
@@ -814,8 +821,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
                                 self.conditionSmall1, self.conditionSmall2, self.conditionSmall3, self.conditionSmall4,
                                 self.conditionSmall5, self.conditionSmall6, self.conditionSmall7, self.conditionSmall8,
                                 self.temperature1, self.temperature2, self.temperature3, self.temperature4, self.temperature5,
-                                self.temperature6, self.temperature7, self.temperature8, self.errorLabel, self.errorDetailsLabel,
-                                self.tryAgainButton,
+                                self.temperature6, self.temperature7, self.temperature8, /*self.errorLabel, self.errorDetailsLabel,
+                                self.tryAgainButton,*/
         ]
         for componentToUpdateHideStatus in componentsToUpdateHideStatus {
             componentToUpdateHideStatus?.isHidden = isHidden
@@ -852,6 +859,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         self.favoritiesView.isHidden = isHidden
         self.locationLabel.isHidden = isHidden
         self.goBack.isHidden = isHidden || location == "" || self.isErrorState
+    }
+    
+    func updateErrorItemsVisibility(isHidden: Bool) {
+        self.errorLabel.isHidden = isHidden
+        self.errorDetailsLabel.isHidden = isHidden
+        self.tryAgainButton.isHidden = isHidden
     }
     
     func updateItemsVisibility(isHidden: Bool) {
@@ -957,6 +970,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
                 self.isErrorState = false
                 self.updateFavoritesScreenItemsVisibility(isHidden: true)
                 self.updateSearchScreenItemsVisibility(isHidden: true)
+                self.updateErrorItemsVisibility(isHidden: true)
             } else {
                 print("Failed to get location placemarks")
                 let errorFormatString = NSLocalizedString("location lookup failure", comment: "Error")
@@ -964,6 +978,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
                 self.updateItemsVisibility(isHidden: true)
                 self.updateFavoritesScreenItemsVisibility(isHidden: true)
                 self.updateSearchScreenItemsVisibility(isHidden: true)
+                self.updateErrorItemsVisibility(isHidden: true)
                 
                 self.showErrorLabel(errorMessage: errorFormatString, errorDetails: errorDetailsString)
 
@@ -974,9 +989,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         })
         }
         let weatherConditionRequest = "http://api.openweathermap.org/data/2.5/\(endpoint)?lat=\(lat)&lon=\(lon)&appid=\(apiKey)&units=\(apiUnit)";
-        let airQualityRequest =
-        "http://api.openweathermap.org/data/2.5/air_pollution?lat=\(lat)&lon=\(lon)&appid=\(apiKey)";
+        //let airQualityRequest =
+        //"http://api.openweathermap.org/data/2.5/air_pollution?lat=\(lat)&lon=\(lon)&appid=\(apiKey)";
         print("Request: " + weatherConditionRequest)
+        
+        self.activityIndicator.startAnimating()
         
         Alamofire.request(weatherConditionRequest).responseJSON {
           response in
@@ -987,13 +1004,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
               self.updateItemsVisibility(isHidden: true)
               self.updateFavoritesScreenItemsVisibility(isHidden: true)
               self.updateSearchScreenItemsVisibility(isHidden: true)
+              self.updateErrorItemsVisibility(isHidden: true)
+              
               self.locationLabel.isHidden = true
               self.searchButton.isHidden = true
               self.searchButtonText.isHidden = true
               self.locationManager.stopUpdatingLocation()
               self.activityIndicator.stopAnimating()
               
-              let errorFormatString = NSLocalizedString("location lookup failure", comment: "Error")
+              let errorFormatString = NSLocalizedString("weather lookup failure", comment: "Error")
               let errorDetailsString = NSLocalizedString("search or refresh view", comment: "Error")
               
               self.resetSmallItems()
@@ -1468,6 +1487,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     @objc func goBackTapped(_ sender: UITapGestureRecognizer) {
         self.updateSearchScreenItemsVisibility(isHidden: true)
         self.updateFavoritesScreenItemsVisibility(isHidden: true)
+        self.updateErrorItemsVisibility(isHidden: true)
         
         self.updateItemsVisibility(isHidden: true)
         
@@ -1687,6 +1707,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         selectedItem = nil
         self.updateItemsVisibility(isHidden: true)
         self.updateFavoritesScreenItemsVisibility(isHidden: true)
+        self.updateErrorItemsVisibility(isHidden: true)
         
         self.updateSearchScreenItemsVisibility(isHidden: false)
         
@@ -1701,6 +1722,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     
     @objc func refreshButtonTapped(_ sender: UITapGestureRecognizer) {
         self.reloadViewConditonal()
+    }
+    
+    @objc func tryAgainButtonTapped(_ sender: UITapGestureRecognizer) {
+        print("Try again button tapped")
+        self.reloadViewAfterError()
     }
     
     @objc func currentLocationButtonTapped(_ sender: UITapGestureRecognizer) {
@@ -1855,11 +1881,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
                 }
             }
             setSelectedBackground(imageView: imgView)
-            
-            let topColor = UIColor.init(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 0.25)
-            //label.layer.cornerRadius = 10
-            //label.backgroundColor = topColor
-            //label.clipsToBounds = true
         } else {
             imgView.backgroundColor = nil
         }

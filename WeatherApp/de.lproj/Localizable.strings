@@ -45,9 +45,13 @@
 
 "heavy intensity snow" = "schnee mit hoher Intensität";
 
-"location lookup failure" = "Standortsuche fehlgeschlagen";
+"location lookup failure" = "Standortdaten können nicht abgerufen werden";
 
-"search or refresh view" = "Suchen Sie eine neue Stadt oder aktualisieren Sie die Ansicht";
+"weather lookup failure" = "Die Wettervorhersage konnte nicht geladen werden";
+
+"search or refresh view" = "Möglicherweise liegt es an einer schlechten Konnektivität.\n  Bitte versuche es erneut. \n";
+
+"search or refresh view" = "Puede ser por mala conectividad.\n  Inténtalo de nuevo. \n";
 
 "api error msg" = "Fehler bei der Wettersuche";
 
