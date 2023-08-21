@@ -1670,7 +1670,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         
         updateUserDefaults()
         
-        self.loadBannerAd()
+         self.loadBannerAd()
         
         reloadView()
     }
@@ -1686,7 +1686,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         
         updateUserDefaults()
         
-        self.loadBannerAd()
+         self.loadBannerAd()
         
         reloadView()
     }
