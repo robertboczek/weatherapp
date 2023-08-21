@@ -827,6 +827,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         for componentToUpdateHideStatus in componentsToUpdateHideStatus {
             componentToUpdateHideStatus?.isHidden = isHidden
         }
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            // always hide sharing on iPAD
+            shareAppButton.isHidden = true
+        }
         
         self.airQualityImage.isHidden = true
         self.airQualityInfoLabel.isHidden = true
@@ -1958,12 +1962,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         let URLstring =  String(format: "https://apps.apple.com/us/app/your-weather-app/id1489106420")
         let urlToShare = URL(string:URLstring)
         let title = "Your Weather App"
+        let image = UIImage(named: "logo.png")
         let activityViewController = UIActivityViewController(
-            activityItems: [title,urlToShare!],
+            activityItems: [title, image!, urlToShare!],
             applicationActivities: nil)
         activityViewController.popoverPresentationController?.sourceView = self.view
-        //so that ipads won't crash
-        present(activityViewController,animated: true,completion: nil)
+        
+        // so that ipads won't crash
+        present(activityViewController, animated: true, completion: nil)
     }
 }
 
