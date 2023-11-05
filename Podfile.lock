@@ -1,7 +1,12 @@
 PODS:
   - Alamofire (4.9.1)
+  - FBAEMKit (15.1.0):
+    - FBSDKCoreKit_Basics (= 15.1.0)
   - FBAudienceNetwork (6.5.1):
     - FBSDKCoreKit_Basics
+  - FBSDKCoreKit (15.1.0):
+    - FBAEMKit (= 15.1.0)
+    - FBSDKCoreKit_Basics (= 15.1.0)
   - FBSDKCoreKit_Basics (15.1.0)
   - Google-Mobile-Ads-SDK (8.13.0):
     - GoogleAppMeasurement (< 9.0, >= 7.0)
@@ -60,6 +65,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.7)
+  - FBSDKCoreKit
   - Google-Mobile-Ads-SDK
   - GoogleMobileAdsMediationFacebook
   - NVActivityIndicatorView
@@ -68,7 +74,9 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Alamofire
+    - FBAEMKit
     - FBAudienceNetwork
+    - FBSDKCoreKit
     - FBSDKCoreKit_Basics
     - Google-Mobile-Ads-SDK
     - GoogleAppMeasurement
@@ -82,7 +90,9 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
+  FBAEMKit: c7f82b5145d446bcbbcd50485c032689032fc6a2
   FBAudienceNetwork: 9a5f277d6ed36a46354a045c46a4858b47407a72
+  FBSDKCoreKit: 7542746fc63a2a38dd6a865eeb54268341f37b83
   FBSDKCoreKit_Basics: 92d6b26c0bed30ab09bbdd96dccaa26e6c9978d1
   Google-Mobile-Ads-SDK: 05e5d68bb42a61b2e5bef336a52789785605aa22
   GoogleAppMeasurement: aa3cb422fab2b05d2efac543a5720d1a85b9dea5
@@ -94,6 +104,6 @@ SPEC CHECKSUMS:
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
   SwiftyJSON: 6faa0040f8b59dead0ee07436cbf76b73c08fd08
 
-PODFILE CHECKSUM: ffb76b948422b7e7cbef9e99f9924947b2e909b0
+PODFILE CHECKSUM: c48bbf043724d64e60c5bc8424a0da033e6e3c01
 
 COCOAPODS: 1.12.1

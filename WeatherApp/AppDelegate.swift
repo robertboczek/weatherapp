@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import FBSDKCoreKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIWindowSceneDelegate, UIApplicationDelegate {
@@ -18,6 +18,12 @@ class AppDelegate: UIResponder, UIWindowSceneDelegate, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        ApplicationDelegate.shared.application(
+            application,
+            didFinishLaunchingWithOptions:
+            launchOptions
+        )
         
         return true
     }
@@ -31,7 +37,11 @@ class AppDelegate: UIResponder, UIWindowSceneDelegate, UIApplicationDelegate {
         /*print("deep link!" + url.absoluteString)
         rootViewController?.updateWeatherViaDeeplink(latitude: 33.785834, longitude: -120.406417)*/
         
-        return true
+        return ApplicationDelegate.shared.application(
+            app,
+            open: url,
+            options: options
+        )
     }
 
     // MARK: UISceneSession Lifecycle
@@ -53,7 +63,7 @@ class AppDelegate: UIResponder, UIWindowSceneDelegate, UIApplicationDelegate {
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
-         print("Became active")
+        print("Became active")
     }
     
     func applicationDidEnterBackground(_ application: UIApplication) {

@@ -24,33 +24,25 @@
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLIconFile</key>
-			<string>logo</string>
-			<key>CFBundleURLName</key>
-			<string>location</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.boczek.WeatherApps</string>
-			</array>
-		</dict>
-		<dict/>
-		<dict/>
-	</array>
+    <key>CFBundleURLTypes</key>
+    <array>
+      <dict>
+      <key>CFBundleURLSchemes</key>
+      <array>
+        <string>fb238958210103121</string>
+      </array>
+      </dict>
+    </array>
+    <key>FacebookAppID</key>
+    <string>238958210103121</string>
+    <key>FacebookDisplayName</key>
+    <string>Your Weather App</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>FacebookAdvertiserIDCollectionEnabled</key>
 	<true/>
-	<key>FacebookAppID</key>
-	<string>238958210103121</string>
 	<key>FacebookAutoLogAppEventsEnabled</key>
 	<true/>
-	<key>FacebookDisplayName</key>
-	<string>Your Best Apps</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-2839380108501012~1979235466</string>
 	<key>LSApplicationCategoryType</key>

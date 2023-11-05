@@ -16,4 +16,5 @@ target 'WeatherApp' do
   pod 'NVActivityIndicatorView'
   pod 'GoogleMobileAdsMediationFacebook'
   pod 'Google-Mobile-Ads-SDK'
+  pod 'FBSDKCoreKit'
 end
