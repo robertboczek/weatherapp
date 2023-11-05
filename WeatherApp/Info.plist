@@ -37,6 +37,8 @@
     <string>238958210103121</string>
     <key>FacebookDisplayName</key>
     <string>Your Weather App</string>
+    <key>FacebookClientToken</key>
+    <string>4eae5397728d2a14fe1644b72b6ad01c</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>FacebookAdvertiserIDCollectionEnabled</key>
