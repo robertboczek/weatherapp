@@ -15,4 +15,5 @@ target 'WeatherApp' do
   pod 'SwiftyJSON'
   pod 'NVActivityIndicatorView'
   pod 'GoogleMobileAdsMediationFacebook'
+  pod 'Google-Mobile-Ads-SDK'
 end

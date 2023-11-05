@@ -16,6 +16,7 @@ import AdSupport
 import AppTrackingTransparency
 
 import GoogleMobileAds
+import UserMessagingPlatform
 
 class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerViewDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate {
 
