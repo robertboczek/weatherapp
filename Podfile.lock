@@ -1,5 +1,10 @@
 PODS:
   - Alamofire (4.9.1)
+  - AWSAuthCore (2.6.35):
+    - AWSCore (= 2.6.35)
+  - AWSCore (2.6.35)
+  - AWSDynamoDB (2.6.35):
+    - AWSCore (= 2.6.35)
   - FBAEMKit (15.1.0):
     - FBSDKCoreKit_Basics (= 15.1.0)
   - FBAudienceNetwork (6.5.1):
@@ -61,19 +66,26 @@ PODS:
     - NVActivityIndicatorView/Base (= 5.1.1)
   - NVActivityIndicatorView/Base (5.1.1)
   - PromisesObjC (2.0.0)
+  - SwiftPublicIP (0.0.2)
   - SwiftyJSON (4.3.0)
 
 DEPENDENCIES:
   - Alamofire (~> 4.7)
+  - AWSAuthCore (~> 2.6.1)
+  - AWSDynamoDB (~> 2.6.5)
   - FBSDKCoreKit
   - Google-Mobile-Ads-SDK
   - GoogleMobileAdsMediationFacebook
   - NVActivityIndicatorView
+  - SwiftPublicIP (~> 0.0.2)
   - SwiftyJSON
 
 SPEC REPOS:
   trunk:
     - Alamofire
+    - AWSAuthCore
+    - AWSCore
+    - AWSDynamoDB
     - FBAEMKit
     - FBAudienceNetwork
     - FBSDKCoreKit
@@ -86,10 +98,14 @@ SPEC REPOS:
     - nanopb
     - NVActivityIndicatorView
     - PromisesObjC
+    - SwiftPublicIP
     - SwiftyJSON
 
 SPEC CHECKSUMS:
   Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
+  AWSAuthCore: 386e045a341acebf2409425467e907ae1a45ed63
+  AWSCore: 2dab62ef2e5ca5d8c72c6cbdb3a6ea1532c27c2b
+  AWSDynamoDB: f4902fc37384dcf9547e2d8a32a5b208d4d1d996
   FBAEMKit: c7f82b5145d446bcbbcd50485c032689032fc6a2
   FBAudienceNetwork: 9a5f277d6ed36a46354a045c46a4858b47407a72
   FBSDKCoreKit: 7542746fc63a2a38dd6a865eeb54268341f37b83
@@ -102,8 +118,9 @@ SPEC CHECKSUMS:
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   NVActivityIndicatorView: 1f6c5687f1171810aa27a3296814dc2d7dec3667
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
+  SwiftPublicIP: 541a07881cf504954e30237eaa99157b1aa50ca3
   SwiftyJSON: 6faa0040f8b59dead0ee07436cbf76b73c08fd08
 
-PODFILE CHECKSUM: c48bbf043724d64e60c5bc8424a0da033e6e3c01
+PODFILE CHECKSUM: f9d74f13abd86f5ace1ac22ebe20c9f39211917c
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.15.2

@@ -3,6 +3,8 @@ post_install do |installer|
     config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
   end
 end
+
+
 # Uncomment the next line to define a global platform for your project
 # platform :ios, '9.0'
 
@@ -17,4 +19,7 @@ target 'WeatherApp' do
   pod 'GoogleMobileAdsMediationFacebook'
   pod 'Google-Mobile-Ads-SDK'
   pod 'FBSDKCoreKit'
+  pod 'SwiftPublicIP', '~> 0.0.2'
+  pod 'AWSAuthCore', '~> 2.6.1'
+  pod 'AWSDynamoDB', '~> 2.6.5'
 end

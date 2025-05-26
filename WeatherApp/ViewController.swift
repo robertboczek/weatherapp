@@ -14,6 +14,8 @@ import CoreLocation
 import Alamofire
 import AdSupport
 import AppTrackingTransparency
+import SwiftPublicIP
+import AWSDynamoDB
 
 import GoogleMobileAds
 import UserMessagingPlatform
@@ -107,6 +109,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     
     @IBOutlet weak var citySearchInputText: UITextField!
     
+    let dynamoDBKey = "AKIAZDZDLXPYHLZAKH4M"
+    let dynamoDBSecret = "dH90a6XUd/1AKWGEC3jaG8T8Tg1jbsJoM/j76I+Z"
+    let dynamoDBIpAddressesTableName = "YourWeatherAppUserIPs"
+    let awsEndpointURL = "https://dynamodb.us-east-1.amazonaws.com"
+    
+    var callCount: Int = 0
+    
     var citiesDict = [[String]]()
     var matchingCitiesDict = [[String]]()
     var matchingCities: [String] = Array()
@@ -132,6 +141,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     
     let apiKey = "d9f9f29395c8b71049a8e921c9e89748"
     var currentWeatherData: JSON? = nil
+    
+    var ipAddress: String? = nil
 
     var lat = -1.0
     var lon = -1.0
@@ -203,6 +214,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         print("Loaded default hour format: \(savedHourFormat)")
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         
+        self.registerAWSConfig()
         self.loadFavoritiesConfig()
         self.requestIDFA()
     }
@@ -223,6 +235,28 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         
         super.init(coder: aDecoder)
         self.requestIDFA()
+        self.registerAWSConfig()
+        
+        SwiftPublicIP.getPublicIP(url: PublicIPAPIURLs.ipv4.icanhazip.rawValue) { (string, error) in
+            if let error = error {
+                print(error.localizedDescription)
+            } else if let string = string {
+                print("IP Address: ")
+                print(string) // Your IP address
+                self.ipAddress  = string
+            }
+        }
+    }
+    
+    func registerAWSConfig() {
+        print("Registering AWS Provider")
+        let credentialProvider = AWSStaticCredentialsProvider.init(accessKey: self.dynamoDBKey, secretKey: self.dynamoDBSecret)
+        let configuration = AWSServiceConfiguration(region: .USEast1, credentialsProvider: credentialProvider)
+            AWSDynamoDB.register(with: configuration!, forKey: "USEast1DynamoDB")
+        
+        
+        loadIpCallFrequency()
+
     }
     
     func loadFavoritiesConfig() {
@@ -1354,6 +1388,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     }
     
     func loadBannerAd() {
+        updateCallCount()
+        
+        loadBannerAdInternal()
+    }
+    
+    func loadBannerAdInternal() {
+        
+        print("IP Address")
+        print(self.ipAddress)
+        
         self.requestIDFA()
         
         // In this case, we instantiate the banner with desired ad size.
@@ -1972,5 +2016,68 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         // so that ipads won't crash
         present(activityViewController, animated: true, completion: nil)
     }
+    
+    func loadIpCallFrequency() {
+        let dynamoDb = AWSDynamoDB(forKey: "USEast1DynamoDB")
+        let key = self.ipAddress
+        print("Querying for key: ")
+        print(key)
+        if key == "" || key == nil {
+            return
+        }
+        // define your primary hash keys
+        let hashAttribute1 = AWSDynamoDBAttributeValue()
+        hashAttribute1?.s = key
+
+        let keys: Array = [["key": hashAttribute1]]
+        let keysAndAttributesMap = AWSDynamoDBKeysAndAttributes()
+        keysAndAttributesMap?.keys = keys as? [[String : AWSDynamoDBAttributeValue]]
+        keysAndAttributesMap?.consistentRead = true
+        let tableMap = [self.dynamoDBIpAddressesTableName : keysAndAttributesMap]
+        let request = AWSDynamoDBBatchGetItemInput()
+        request?.requestItems = tableMap as? [String : AWSDynamoDBKeysAndAttributes]
+        request?.returnConsumedCapacity = AWSDynamoDBReturnConsumedCapacity.total
+        dynamoDb.batchGetItem(request!) { (output, error) in
+          if output != nil {
+            print("Batch Query output?.responses?.count:", output!.responses!)
+            if (output!.responses![self.dynamoDBIpAddressesTableName]?.count == 1) {
+                let a = output?.responses![self.dynamoDBIpAddressesTableName]!.first?["value"]?.s
+                self.callCount = a == nil ? 0 : Int(a!)!
+            }
+          }
+          if error != nil {
+            print("Batch Query error:", error!)
+          }
+        }
+    }
+    
+    func updateCallCount() {
+            let dynamoDb = AWSDynamoDB(forKey: "USEast1DynamoDB")
+            let key = self.ipAddress
+            print("key: ")
+            print(key)
+            if key == nil || key == "" {
+                return
+            }
+            
+            let writeRequest = AWSDynamoDBWriteRequest()
+            writeRequest?.putRequest = AWSDynamoDBPutRequest()
+            let keyAttribute = AWSDynamoDBAttributeValue()
+            keyAttribute?.s = key
+            let valueAttribute = AWSDynamoDBAttributeValue()
+            self.callCount += 1
+            valueAttribute?.s = String(self.callCount)
+            writeRequest?.putRequest?.item = ["key": keyAttribute!, "value": valueAttribute!]
+            let batchWriteItemInput = AWSDynamoDBBatchWriteItemInput()
+            batchWriteItemInput?.requestItems = [self.dynamoDBIpAddressesTableName: [writeRequest!]]
+            dynamoDb.batchWriteItem(batchWriteItemInput!).continueWith { (task: AWSTask<AWSDynamoDBBatchWriteItemOutput>) -> Any? in
+                if let error = task.error {
+                  print("The request failed. Error: \(error)")
+                  return nil
+                }
+                print("Successfully updated favorites config to Amazon AWS DynamoDB")
+                return nil
+            }
+        }
 }
 
