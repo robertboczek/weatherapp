@@ -112,9 +112,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     let dynamoDBKey = "AKIAZDZDLXPYHLZAKH4M"
     let dynamoDBSecret = "dH90a6XUd/1AKWGEC3jaG8T8Tg1jbsJoM/j76I+Z"
     let dynamoDBIpAddressesTableName = "YourWeatherAppUserIPs"
+    let dynamoDBIpAddressesBlocklistedTableName = "YourWeatherAppBlocklistedUserIPs"
     let awsEndpointURL = "https://dynamodb.us-east-1.amazonaws.com"
     
-    var callCount: Int = 0
+    var callCount: Int? = nil
+    var isIPBlocklistedVar = false
     
     var citiesDict = [[String]]()
     var matchingCitiesDict = [[String]]()
@@ -253,7 +255,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         let credentialProvider = AWSStaticCredentialsProvider.init(accessKey: self.dynamoDBKey, secretKey: self.dynamoDBSecret)
         let configuration = AWSServiceConfiguration(region: .USEast1, credentialsProvider: credentialProvider)
             AWSDynamoDB.register(with: configuration!, forKey: "USEast1DynamoDB")
-        
         
         loadIpCallFrequency()
 
@@ -1389,8 +1390,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     
     func loadBannerAd() {
         updateCallCount()
+        isIPBlocklisted()
         
-        loadBannerAdInternal()
+        if (!self.isIPBlocklistedVar) {
+            print("Ip ok!")
+            loadBannerAdInternal()
+        } else {
+            print("Ip blocked")
+        }
     }
     
     func loadBannerAdInternal() {
@@ -2043,9 +2050,44 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             if (output!.responses![self.dynamoDBIpAddressesTableName]?.count == 1) {
                 let a = output?.responses![self.dynamoDBIpAddressesTableName]!.first?["value"]?.s
                 self.callCount = a == nil ? 0 : Int(a!)!
+            } else {
+                self.callCount = 0
             }
           }
           if error != nil {
+            print("Batch Query error:", error!)
+          }
+        }
+    }
+    
+    func isIPBlocklisted() {
+        let dynamoDb = AWSDynamoDB(forKey: "USEast1DynamoDB")
+        let key = self.ipAddress
+        print("Querying for key: ")
+        print(key)
+        if key == "" || key == nil {
+            self.isIPBlocklistedVar = false
+        }
+        // define your primary hash keys
+        let hashAttribute1 = AWSDynamoDBAttributeValue()
+        hashAttribute1?.s = key
+
+        let keys: Array = [["key": hashAttribute1]]
+        let keysAndAttributesMap = AWSDynamoDBKeysAndAttributes()
+        keysAndAttributesMap?.keys = keys as? [[String : AWSDynamoDBAttributeValue]]
+        keysAndAttributesMap?.consistentRead = true
+        let tableMap = [self.dynamoDBIpAddressesBlocklistedTableName : keysAndAttributesMap]
+        let request = AWSDynamoDBBatchGetItemInput()
+        request?.requestItems = tableMap as? [String : AWSDynamoDBKeysAndAttributes]
+        request?.returnConsumedCapacity = AWSDynamoDBReturnConsumedCapacity.total
+        dynamoDb.batchGetItem(request!) { (output, error) in
+          if output != nil {
+            print("Batch Query output?.responses?.count:", output!.responses!)
+            self.isIPBlocklistedVar = output!.responses![self.dynamoDBIpAddressesBlocklistedTableName]?.count == 1
+            
+          }
+          if error != nil {
+            self.isIPBlocklistedVar = false
             print("Batch Query error:", error!)
           }
         }
@@ -2065,8 +2107,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             let keyAttribute = AWSDynamoDBAttributeValue()
             keyAttribute?.s = key
             let valueAttribute = AWSDynamoDBAttributeValue()
-            self.callCount += 1
-            valueAttribute?.s = String(self.callCount)
+            if (self.callCount == nil) {
+              // call count hasn't been checked in dynamoDB
+              // skip writing this time so we don't override with new value
+              loadIpCallFrequency()
+              // block ads until we can load stats
+              self.isIPBlocklistedVar = true
+              return
+            }
+            self.callCount = self.callCount! + 1
+            valueAttribute?.s = String(self.callCount!)
             writeRequest?.putRequest?.item = ["key": keyAttribute!, "value": valueAttribute!]
             let batchWriteItemInput = AWSDynamoDBBatchWriteItemInput()
             batchWriteItemInput?.requestItems = [self.dynamoDBIpAddressesTableName: [writeRequest!]]
@@ -2075,7 +2125,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
                   print("The request failed. Error: \(error)")
                   return nil
                 }
-                print("Successfully updated favorites config to Amazon AWS DynamoDB")
+                print("Successfully updated call stats to Amazon AWS DynamoDB")
                 return nil
             }
         }
