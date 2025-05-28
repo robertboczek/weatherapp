@@ -2069,7 +2069,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             self.isIPBlocklistedVar = false
         }
         
-        if (self.callCount! % 5 == 0) {
+        if (self.callCount != nil && self.callCount! % 5 == 0) {
             // check 1 in 5 requests to prevent overloading DynamoDB
             return
         }
