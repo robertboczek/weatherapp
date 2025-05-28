@@ -2068,6 +2068,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
         if key == "" || key == nil {
             self.isIPBlocklistedVar = false
         }
+        
+        if (self.callCount! % 5 == 0) {
+            // check 1 in 5 requests to prevent overloading DynamoDB
+            return
+        }
         // define your primary hash keys
         let hashAttribute1 = AWSDynamoDBAttributeValue()
         hashAttribute1?.s = key
@@ -2116,6 +2121,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
               return
             }
             self.callCount = self.callCount! + 1
+            if (self.callCount! % 5 == 0) {
+              // only update 1 in 5 times
+              return
+            }
             valueAttribute?.s = String(self.callCount!)
             writeRequest?.putRequest?.item = ["key": keyAttribute!, "value": valueAttribute!]
             let batchWriteItemInput = AWSDynamoDBBatchWriteItemInput()
