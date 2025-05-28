@@ -2069,7 +2069,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
             self.isIPBlocklistedVar = false
         }
         
-        if (self.callCount != nil && self.callCount! % 5 == 0) {
+        if (self.callCount == nil || self.callCount! % 5 != 0) {
             // check 1 in 5 requests to prevent overloading DynamoDB
             return
         }
@@ -2121,7 +2121,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
               return
             }
             self.callCount = self.callCount! + 1
-            if (self.callCount! % 5 == 0) {
+            print("Update call count")
+            print(self.callCount)
+            if (self.callCount! % 5 != 0) {
               // only update 1 in 5 times
               return
             }
