@@ -110,7 +110,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GADBannerView
     @IBOutlet weak var citySearchInputText: UITextField!
     
     let dynamoDBKey = "AKIAZDZDLXPYHLZAKH4M"
-    let dynamoDBSecret = "dH90a6XUd/1AKWGEC3jaG8T8Tg1jbsJoM/j76I+Z"
+    let dynamoDBSecret = ""
     let dynamoDBIpAddressesTableName = "YourWeatherAppUserIPs"
     let dynamoDBIpAddressesBlocklistedTableName = "YourWeatherAppBlocklistedUserIPs"
     let awsEndpointURL = "https://dynamodb.us-east-1.amazonaws.com"
